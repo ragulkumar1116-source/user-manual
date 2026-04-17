@@ -2,33 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Secure Engineering Document Management System">
-    <title>Enterprise Manual Portal | Secure View</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Engineering Document Portal">
+    <title>Enterprise Manual Portal</title>
     
     <style>
         :root {
             --primary: #0f172a;
-            --primary-hover: #1e293b;
             --accent: #3b82f6;
-            --accent-hover: #2563eb;
             --sidebar-bg: #f8fafc;
             --content-bg: #ffffff;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
             --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --header-height: 64px;
         }
 
         [data-theme="dark"] {
             --primary: #f8fafc;
-            --primary-hover: #e2e8f0;
             --sidebar-bg: #0f172a;
             --content-bg: #1e293b;
             --text-primary: #f1f5f9;
@@ -40,38 +32,16 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--content-bg);
             color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
             display: grid;
             grid-template-columns: 320px 1fr;
-            transition: background 0.3s ease;
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
         }
 
         /* Mobile Header */
@@ -107,7 +77,7 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
         }
 
         .sidebar-header {
@@ -122,7 +92,6 @@
             font-weight: 700;
             font-size: 1.25rem;
             color: var(--accent);
-            margin-bottom: 4px;
         }
 
         .logo svg {
@@ -133,11 +102,9 @@
         .subtitle {
             font-size: 0.75rem;
             color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            margin-top: 4px;
         }
 
-        /* Search & Filter */
         .search-container {
             padding: 16px 24px;
             border-bottom: 1px solid var(--border);
@@ -152,11 +119,10 @@
             width: 100%;
             padding: 10px 16px 10px 40px;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 8px;
             background: var(--content-bg);
             color: var(--text-primary);
             font-size: 0.875rem;
-            transition: all 0.2s;
         }
 
         .search-box input:focus {
@@ -200,7 +166,30 @@
             border-color: var(--accent);
         }
 
-        /* Document List */
+        /* Pull to refresh indicator */
+        .pull-indicator {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .pull-indicator.visible {
+            opacity: 1;
+        }
+
+        .pull-indicator.loading svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .doc-list {
             flex: 1;
             overflow-y: auto;
@@ -217,24 +206,18 @@
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         .doc-item {
             padding: 12px 16px;
             margin: 4px 8px;
-            border-radius: var(--radius);
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
             transition: all 0.2s;
             border: 1px solid transparent;
-            position: relative;
-            overflow: hidden;
         }
 
         .doc-item:hover {
@@ -289,45 +272,7 @@
             gap: 8px;
         }
 
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--success);
-            display: inline-block;
-            margin-right: 4px;
-        }
-
-        /* Pull to refresh indicator */
-        .pull-indicator {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .pull-indicator.visible {
-            opacity: 1;
-        }
-
-        .pull-indicator svg {
-            margin-right: 8px;
-            transition: transform 0.3s;
-        }
-
-        .pull-indicator.loading svg {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Main Viewer */
+        /* Viewer */
         .viewer {
             display: flex;
             flex-direction: column;
@@ -355,19 +300,6 @@
             min-width: 0;
         }
 
-        .breadcrumb {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .breadcrumb svg {
-            width: 16px;
-            height: 16px;
-        }
-
         .doc-title-main {
             font-weight: 600;
             color: var(--text-primary);
@@ -387,7 +319,7 @@
             border: 1px solid var(--border);
             background: var(--content-bg);
             color: var(--text-primary);
-            border-radius: var(--radius);
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.875rem;
             display: inline-flex;
@@ -399,12 +331,6 @@
 
         .btn:hover {
             background: var(--sidebar-bg);
-            border-color: var(--text-secondary);
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
         }
 
         .btn-primary {
@@ -414,13 +340,12 @@
         }
 
         .btn-primary:hover {
-            background: var(--accent-hover);
-            border-color: var(--accent-hover);
+            background: var(--accent);
+            opacity: 0.9;
         }
 
         .btn-icon {
             padding: 8px;
-            border-radius: 6px;
         }
 
         .zoom-controls {
@@ -438,31 +363,8 @@
             text-align: center;
             font-size: 0.875rem;
             font-weight: 500;
-            font-variant-numeric: tabular-nums;
         }
 
-        /* Security Watermark */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 4rem;
-            font-weight: 900;
-            color: rgba(0, 0, 0, 0.03);
-            pointer-events: none;
-            z-index: 5;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            user-select: none;
-            white-space: nowrap;
-        }
-
-        [data-theme="dark"] .watermark {
-            color: rgba(255, 255, 255, 0.03);
-        }
-
-        /* Frame Container */
         .frame-container {
             flex: 1;
             position: relative;
@@ -475,26 +377,12 @@
             height: 100%;
             border: none;
             background: white;
-            transition: transform 0.3s ease;
-        }
-
-        /* Loading States */
-        .skeleton {
-            background: linear-gradient(90deg, var(--border) 25%, var(--sidebar-bg) 50%, var(--border) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
         }
 
         .loading-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -521,11 +409,6 @@
             margin-bottom: 16px;
         }
 
-        .loading-text {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
         .progress-bar {
             width: 200px;
             height: 4px;
@@ -542,7 +425,6 @@
             transition: width 0.3s;
         }
 
-        /* Error State */
         .error-state {
             position: absolute;
             inset: 0;
@@ -559,20 +441,6 @@
             display: flex;
         }
 
-        .error-icon {
-            width: 64px;
-            height: 64px;
-            background: #fee2e2;
-            color: #dc2626;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            font-size: 32px;
-        }
-
-        /* Toast Notifications */
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -587,42 +455,24 @@
             background: var(--primary);
             color: white;
             padding: 12px 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             display: flex;
             align-items: center;
             gap: 8px;
             animation: slideIn 0.3s ease;
             font-size: 0.875rem;
-            max-width: 400px;
         }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .toast.error {
-            background: var(--danger);
-        }
-
-        .toast.success {
-            background: var(--success);
-        }
+        .toast.error { background: #ef4444; }
+        .toast.success { background: #10b981; }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            body {
-                grid-template-columns: 280px 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             body {
                 grid-template-columns: 1fr;
@@ -640,6 +490,7 @@
                 width: 100%;
                 z-index: 100;
                 transform: translateX(-100%);
+                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
             }
             
             .sidebar.open {
@@ -654,27 +505,10 @@
             .zoom-controls {
                 display: none;
             }
-            
-            .btn-text {
-                display: none;
-            }
-        }
-
-        /* Print Prevention */
-        @media print {
-            body { display: none; }
-        }
-
-        /* Context Menu Block */
-        .context-block {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            display: none;
         }
     </style>
 </head>
-<body oncontextmenu="return false;" onkeydown="preventShortcut(event)">
+<body>
     <!-- Mobile Header -->
     <div class="mobile-header">
         <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
@@ -684,11 +518,9 @@
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
             <span>Engineering Portal</span>
         </div>
-        <button class="btn btn-icon" onclick="toggleTheme()">🌓</button>
     </div>
 
     <!-- Sidebar -->
@@ -698,12 +530,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
                 </svg>
                 <span>Engineering Portal</span>
             </div>
-            <div class="subtitle">Secure Document Access</div>
+            <div class="subtitle">Document Management System</div>
         </div>
 
         <div class="search-container">
@@ -723,55 +553,35 @@
         </div>
 
         <div class="pull-indicator" id="pullIndicator">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
             </svg>
             <span>Pull to refresh</span>
         </div>
 
-        <div class="doc-list" id="docList">
-            <!-- Categories and items will be populated by JS -->
-        </div>
+        <div class="doc-list" id="docList"></div>
     </aside>
 
     <!-- Main Viewer -->
     <main class="viewer">
-        <div class="watermark" id="watermark">CONFIDENTIAL</div>
-        
         <div class="viewer-toolbar">
             <div class="toolbar-left">
-                <div class="breadcrumb">
-                    <span>Manuals</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                    <span class="doc-title-main" id="currentTitle">Select a document</span>
-                </div>
+                <div class="doc-title-main" id="currentTitle">Select a document to view</div>
             </div>
             
             <div class="toolbar-right">
                 <div class="zoom-controls">
-                    <button class="btn btn-icon" onclick="zoom(-0.1)" title="Zoom Out">−</button>
+                    <button class="btn btn-icon" onclick="zoom(-0.1)">−</button>
                     <span class="zoom-level" id="zoomLevel">100%</span>
-                    <button class="btn btn-icon" onclick="zoom(0.1)" title="Zoom In">+</button>
-                    <button class="btn btn-icon" onclick="resetZoom()" title="Reset">⟲</button>
+                    <button class="btn btn-icon" onclick="zoom(0.1)">+</button>
                 </div>
                 
                 <button class="btn" onclick="toggleFullscreen()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
                         <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                     </svg>
-                    <span class="btn-text">Fullscreen</span>
-                </button>
-                
-                <button class="btn btn-primary" onclick="requestDownload()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    <span class="btn-text">Export</span>
+                    Fullscreen
                 </button>
             </div>
         </div>
@@ -779,104 +589,44 @@
         <div class="frame-container" id="frameContainer">
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="spinner"></div>
-                <div class="loading-text">Loading document...</div>
+                <div>Loading document...</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
 
             <div class="error-state" id="errorState">
-                <div class="error-icon">⚠</div>
+                <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
                 <h3>Failed to Load Document</h3>
-                <p>The document could not be loaded. Please check your connection or try again.</p>
+                <p>The document could not be loaded. Please check your connection.</p>
                 <button class="btn btn-primary" onclick="retryLoad()" style="margin-top: 16px;">Retry</button>
             </div>
 
-            <iframe id="doc-frame" src="" sandbox="allow-scripts allow-same-origin"></iframe>
+            <iframe id="doc-frame" src=""></iframe>
         </div>
     </main>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // Document Data
         const documents = [
-            {
-                id: 1,
-                title: "PLC Setup Guide V2.1",
-                file: "PLC_Setup_V1.pdf",
-                category: "plc",
-                size: "2.4 MB",
-                updated: "2024-01-15",
-                type: "Setup"
-            },
-            {
-                id: 2,
-                title: "Sensor Calibration Protocol",
-                file: "Sensor_Calibration.pdf",
-                category: "sensors",
-                size: "1.8 MB",
-                updated: "2024-01-12",
-                type: "Calibration"
-            },
-            {
-                id: 3,
-                title: "Modbus TCP Wiring Map",
-                file: "Modbus_Wiring.pdf",
-                category: "network",
-                size: "3.2 MB",
-                updated: "2024-01-10",
-                type: "Diagram"
-            },
-            {
-                id: 4,
-                title: "Troubleshooting FAQ",
-                file: "Troubleshooting.pdf",
-                category: "plc",
-                size: "856 KB",
-                updated: "2024-01-08",
-                type: "Reference"
-            },
-            {
-                id: 5,
-                title: "Safety Interlock Manual",
-                file: "Safety_Interlock.pdf",
-                category: "plc",
-                size: "4.1 MB",
-                updated: "2024-01-05",
-                type: "Safety"
-            },
-            {
-                id: 6,
-                title: "HMI Configuration Guide",
-                file: "HMI_Config.pdf",
-                category: "network",
-                size: "2.9 MB",
-                updated: "2024-01-03",
-                type: "Config"
-            }
+            { id: 1, title: "PLC Setup Guide V2.1", file: "PLC_Setup_V1.pdf", category: "plc", size: "2.4 MB", type: "Setup" },
+            { id: 2, title: "Sensor Calibration Protocol", file: "Sensor_Calibration.pdf", category: "sensors", size: "1.8 MB", type: "Calibration" },
+            { id: 3, title: "Modbus TCP Wiring Map", file: "Modbus_Wiring.pdf", category: "network", size: "3.2 MB", type: "Diagram" },
+            { id: 4, title: "Troubleshooting FAQ", file: "Troubleshooting.pdf", category: "plc", size: "856 KB", type: "Reference" },
+            { id: 5, title: "Safety Interlock Manual", file: "Safety_Interlock.pdf", category: "plc", size: "4.1 MB", type: "Safety" }
         ];
 
-        // State
         let currentDoc = null;
         let zoomScale = 1;
         let currentFilter = 'all';
         let touchStartY = 0;
-        let isRefreshing = false;
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderDocList();
             setupPullToRefresh();
-            setupKeyboardShortcuts();
-            
-            // Simulate watermark with user info
-            const username = "USER_" + Math.floor(Math.random() * 10000);
-            document.getElementById('watermark').textContent = `CONFIDENTIAL - ${username} - ${new Date().toLocaleDateString()}`;
         });
 
-        // Render Document List
         function renderDocList() {
             const list = document.getElementById('docList');
             const filtered = currentFilter === 'all' 
@@ -889,7 +639,6 @@
                 d.type.toLowerCase().includes(searchTerm)
             );
 
-            // Group by category
             const grouped = searched.reduce((acc, doc) => {
                 if (!acc[doc.category]) acc[doc.category] = [];
                 acc[doc.category].push(doc);
@@ -900,25 +649,18 @@
             for (const [category, docs] of Object.entries(grouped)) {
                 html += `
                     <div class="category">
-                        <div class="category-title">
-                            ${category.charAt(0).toUpperCase() + category.slice(1)}
-                            <span>${docs.length}</span>
-                        </div>
+                        <div class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)} (${docs.length})</div>
                         ${docs.map(doc => `
                             <div class="doc-item" onclick="loadDocument(${doc.id}, this)" data-id="${doc.id}">
                                 <div class="doc-icon">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent);">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                         <polyline points="14 2 14 8 20 8"></polyline>
                                     </svg>
                                 </div>
                                 <div class="doc-info">
                                     <div class="doc-title">${doc.title}</div>
-                                    <div class="doc-meta">
-                                        <span><span class="status-dot"></span>${doc.type}</span>
-                                        <span>•</span>
-                                        <span>${doc.size}</span>
-                                    </div>
+                                    <div class="doc-meta">${doc.type} • ${doc.size}</div>
                                 </div>
                             </div>
                         `).join('')}
@@ -929,20 +671,16 @@
             list.innerHTML = html || '<div style="padding: 24px; text-align: center; color: var(--text-secondary);">No documents found</div>';
         }
 
-        // Load Document with Progress Simulation
         async function loadDocument(id, element) {
             const doc = documents.find(d => d.id === id);
-            if (!doc || currentDoc === id) return;
+            if (!doc) return;
             
             currentDoc = id;
             
-            // Update UI
             document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
-            if (element) element.classList.add('active');
-            
+            element.classList.add('active');
             document.getElementById('currentTitle').textContent = doc.title;
             
-            // Show loading
             const overlay = document.getElementById('loadingOverlay');
             const progressFill = document.getElementById('progressFill');
             const errorState = document.getElementById('errorState');
@@ -951,167 +689,90 @@
             overlay.classList.add('active');
             errorState.classList.remove('active');
             
-            // Simulate progress
             let progress = 0;
-            const progressInterval = setInterval(() => {
+            const interval = setInterval(() => {
                 progress += Math.random() * 30;
                 if (progress > 90) progress = 90;
                 progressFill.style.width = progress + '%';
             }, 200);
-            
+
             try {
-                // Simulate network delay for "full load operation" testing
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                await new Promise(r => setTimeout(r, 1500));
                 
-                // Set source with security parameters
+                // Use Google Docs viewer or local path
                 const folderPath = "manuals/";
-                const secureUrl = `${folderPath}${doc.file}#toolbar=0&navpanes=0&scrollbar=1&zoom=${zoomScale * 100}`;
-                
-                frame.src = secureUrl;
+                frame.src = folderPath + doc.file + "#toolbar=0&navpanes=0";
                 
                 frame.onload = () => {
-                    clearInterval(progressInterval);
+                    clearInterval(interval);
                     progressFill.style.width = '100%';
-                    setTimeout(() => {
-                        overlay.classList.remove('active');
-                        showToast('Document loaded successfully', 'success');
-                    }, 300);
+                    setTimeout(() => overlay.classList.remove('active'), 300);
                 };
                 
-                frame.onerror = () => {
-                    throw new Error('Failed to load');
-                };
+                frame.onerror = () => { throw new Error('Load failed'); };
                 
-            } catch (error) {
-                clearInterval(progressInterval);
+            } catch (err) {
+                clearInterval(interval);
                 overlay.classList.remove('active');
                 errorState.classList.add('active');
                 showToast('Error loading document', 'error');
             }
             
-            // Close mobile sidebar
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('open');
             }
         }
 
-        // Zoom Controls
         function zoom(delta) {
             zoomScale = Math.max(0.5, Math.min(2.0, zoomScale + delta));
             document.getElementById('zoomLevel').textContent = Math.round(zoomScale * 100) + '%';
             
             const frame = document.getElementById('doc-frame');
-            if (frame.src) {
-                // Reload with new zoom
-                const currentSrc = frame.src;
-                const baseUrl = currentSrc.split('#')[0];
-                frame.src = baseUrl + `#toolbar=0&navpanes=0&zoom=${Math.round(zoomScale * 100)}`;
-            }
-        }
-
-        function resetZoom() {
-            zoomScale = 1;
-            document.getElementById('zoomLevel').textContent = '100%';
-            if (currentDoc) {
+            if (currentDoc && frame.src) {
                 const doc = documents.find(d => d.id === currentDoc);
-                const frame = document.getElementById('doc-frame');
-                frame.src = `manuals/${doc.file}#toolbar=0&navpanes=0&zoom=100`;
+                frame.src = `manuals/${doc.file}#toolbar=0&navpanes=0&zoom=${Math.round(zoomScale * 100)}`;
             }
         }
 
-        // Filter Functions
-        function filterDocs() {
-            renderDocList();
-        }
+        function filterDocs() { renderDocList(); }
 
-        function filterCategory(category, element) {
-            currentFilter = category;
+        function filterCategory(cat, el) {
+            currentFilter = cat;
             document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-            element.classList.add('active');
+            el.classList.add('active');
             renderDocList();
         }
 
-        // Pull to Refresh (Mobile)
         function setupPullToRefresh() {
             const sidebar = document.getElementById('sidebar');
             const indicator = document.getElementById('pullIndicator');
             
             sidebar.addEventListener('touchstart', (e) => {
-                if (sidebar.scrollTop === 0) {
-                    touchStartY = e.touches[0].clientY;
-                }
+                if (sidebar.scrollTop === 0) touchStartY = e.touches[0].clientY;
             }, { passive: true });
             
             sidebar.addEventListener('touchmove', (e) => {
-                if (sidebar.scrollTop === 0 && !isRefreshing) {
-                    const touchY = e.touches[0].clientY;
-                    const diff = touchY - touchStartY;
-                    
+                if (sidebar.scrollTop === 0) {
+                    const diff = e.touches[0].clientY - touchStartY;
                     if (diff > 0 && diff < 100) {
                         indicator.classList.add('visible');
-                        indicator.style.transform = `translateY(${diff * 0.5}px)`;
-                    }
-                    
-                    if (diff > 80) {
-                        indicator.classList.add('loading');
-                        indicator.querySelector('span').textContent = 'Release to refresh';
                     }
                 }
             }, { passive: true });
             
             sidebar.addEventListener('touchend', (e) => {
-                const touchY = e.changedTouches[0].clientY;
-                const diff = touchY - touchStartY;
-                
-                if (diff > 80 && !isRefreshing) {
-                    isRefreshing = true;
-                    indicator.querySelector('span').textContent = 'Updating...';
-                    
+                const diff = e.changedTouches[0].clientY - touchStartY;
+                if (diff > 80) {
+                    indicator.classList.add('loading');
                     setTimeout(() => {
                         indicator.classList.remove('visible', 'loading');
-                        indicator.style.transform = '';
-                        indicator.querySelector('span').textContent = 'Pull to refresh';
-                        isRefreshing = false;
                         renderDocList();
-                        showToast('Library updated', 'success');
-                    }, 1500);
+                        showToast('Library refreshed', 'success');
+                    }, 1000);
                 } else {
                     indicator.classList.remove('visible');
-                    indicator.style.transform = '';
                 }
             });
-        }
-
-        // Security & Utilities
-        function preventShortcut(e) {
-            // Disable Ctrl+S, Ctrl+P, Ctrl+U, F12
-            if ((e.ctrlKey && (e.key === 's' || e.key === 'p' || e.key === 'u')) || 
-                e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-                e.preventDefault();
-                showToast('Action blocked for security', 'error');
-                return false;
-            }
-        }
-
-        function requestDownload() {
-            if (!currentDoc) {
-                showToast('Please select a document first', 'error');
-                return;
-            }
-            
-            // Simulate authentication check
-            showToast('Requesting secure download...', 'success');
-            setTimeout(() => {
-                alert('Download request submitted for approval.\nDocument will be sent to your registered email after verification.');
-            }, 1000);
-        }
-
-        function retryLoad() {
-            if (currentDoc) {
-                const element = document.querySelector(`[data-id="${currentDoc}"]`);
-                loadDocument(currentDoc, element);
-            }
         }
 
         function toggleSidebar() {
@@ -1126,48 +787,25 @@
             }
         }
 
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        function retryLoad() {
+            if (currentDoc) {
+                const el = document.querySelector(`[data-id="${currentDoc}"]`);
+                loadDocument(currentDoc, el);
+            }
         }
 
-        // Toast System
-        function showToast(message, type = 'info') {
+        function showToast(msg, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
             const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
-            toast.innerHTML = `<span>${icon}</span> ${message}`;
-            
+            toast.innerHTML = `<span>${icon}</span> ${msg}`;
             container.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
-
-        // Setup additional security
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText('');
-                showToast('Screenshots disabled', 'error');
-            }
-        });
-
-        // Prevent drag and drop
-        document.addEventListener('dragstart', (e) => e.preventDefault());
-        document.addEventListener('drop', (e) => e.preventDefault());
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                document.getElementById('sidebar').classList.remove('open');
-            }
-        });
     </script>
 </body>
 </html>
