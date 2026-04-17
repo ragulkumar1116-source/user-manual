@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Manual Portal | Upload & Sync</title>
+    <title>Enterprise Manual Portal | Persistent Storage</title>
     
     <style>
         :root {
@@ -37,7 +37,6 @@
             grid-template-columns: 340px 1fr;
         }
 
-        /* Mobile Header */
         .mobile-header {
             display: none;
             position: fixed;
@@ -62,7 +61,6 @@
             padding: 8px;
         }
 
-        /* Sidebar */
         .sidebar {
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
@@ -120,6 +118,26 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
+        .clear-btn {
+            margin: 0 24px 16px;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .clear-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
         .search-container {
             padding: 16px 24px;
             border-bottom: 1px solid var(--border);
@@ -143,7 +161,6 @@
         .search-box input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .search-box svg {
@@ -181,7 +198,6 @@
             border-color: var(--accent);
         }
 
-        /* Doc List & Pagination */
         .doc-list-container {
             flex: 1;
             overflow-y: auto;
@@ -233,7 +249,7 @@
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
         }
 
-        .doc-item.active .doc-meta {
+        .doc-item.active .doc-meta, .doc-item.active .doc-path {
             color: rgba(255, 255, 255, 0.8);
         }
 
@@ -246,10 +262,27 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            position: relative;
         }
 
         .doc-item.active .doc-icon {
             background: rgba(255, 255, 255, 0.2);
+        }
+
+        .local-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--success);
+            color: white;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
         }
 
         .doc-info {
@@ -277,10 +310,6 @@
             text-overflow: ellipsis;
         }
 
-        .doc-item.active .doc-path {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
         .doc-meta {
             font-size: 0.75rem;
             color: var(--text-secondary);
@@ -289,7 +318,6 @@
             margin-top: 4px;
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             align-items: center;
@@ -331,7 +359,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Upload Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -414,12 +441,6 @@
             font-size: 0.875rem;
         }
 
-        .dropzone-text strong {
-            color: var(--accent);
-            display: block;
-            margin-top: 4px;
-        }
-
         .file-input {
             display: none;
         }
@@ -476,7 +497,6 @@
             display: block;
         }
 
-        /* Viewer */
         .viewer {
             display: flex;
             flex-direction: column;
@@ -680,7 +700,18 @@
         .toast.error { background: var(--danger); }
         .toast.success { background: var(--success); }
 
-        /* Responsive */
+        .storage-indicator {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.8);
+            padding: 2px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
         @media (max-width: 768px) {
             body {
                 grid-template-columns: 1fr;
@@ -717,7 +748,6 @@
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
     <div class="mobile-header">
         <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
         <div class="logo">
@@ -729,7 +759,6 @@
         </div>
     </div>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
@@ -739,7 +768,7 @@
                 </svg>
                 <span>Engineering Portal</span>
             </div>
-            <div class="subtitle">Document Management System</div>
+            <div class="subtitle">Persistent Storage System</div>
         </div>
 
         <button class="upload-btn" onclick="openUploadModal()">
@@ -749,6 +778,14 @@
                 <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
             Upload New PDF
+        </button>
+
+        <button class="clear-btn" onclick="clearLocalStorage()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear Local Files
         </button>
 
         <div class="search-container">
@@ -767,11 +804,10 @@
             </div>
         </div>
 
-        <div class="doc-list-container">
+        <div class="doc-list-container" id="docListContainer">
             <div class="doc-list" id="docList"></div>
         </div>
 
-        <!-- Pagination -->
         <div class="pagination" id="pagination">
             <button class="page-btn" onclick="changePage(-1)" id="prevBtn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -789,7 +825,6 @@
         </div>
     </aside>
 
-    <!-- Upload Modal -->
     <div class="modal-overlay" id="uploadModal" onclick="closeUploadModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -827,7 +862,6 @@
         </div>
     </div>
 
-    <!-- Main Viewer -->
     <main class="viewer">
         <div class="viewer-toolbar">
             <div class="toolbar-left">
@@ -847,13 +881,6 @@
                     </svg>
                     Fullscreen
                 </button>
-                
-                <button class="btn btn-primary" onclick="syncToGithub()" id="syncBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                    </svg>
-                    Sync to Git
-                </button>
             </div>
         </div>
 
@@ -869,64 +896,181 @@
             <div class="error-state" id="errorState">
                 <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
                 <h3>Failed to Load Document</h3>
-                <p>The document could not be loaded. Please check your connection.</p>
+                <p>The document could not be loaded. It may have been cleared from storage.</p>
                 <button class="btn btn-primary" onclick="retryLoad()" style="margin-top: 16px;">Retry</button>
             </div>
 
             <iframe id="doc-frame" src=""></iframe>
+            <div class="storage-indicator" id="storageIndicator"></div>
         </div>
     </main>
 
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // Initial data
+        // Database setup
+        const DB_NAME = 'ManualPortalDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'pdfs';
+        
+        let db = null;
         let documents = [
-            { id: 1, title: "PLC Setup Guide V2.1", file: "PLC_Setup_V1.pdf", category: "plc", size: "2.4 MB", type: "Setup", githubPath: "github.com/company/manuals/plc/PLC_Setup_V1.pdf", date: "2024-01-15" },
-            { id: 2, title: "Sensor Calibration Protocol", file: "Sensor_Calibration.pdf", category: "sensors", size: "1.8 MB", type: "Calibration", githubPath: "github.com/company/manuals/sensors/Sensor_Calibration.pdf", date: "2024-01-12" },
-            { id: 3, title: "Modbus TCP Wiring Map", file: "Modbus_Wiring.pdf", category: "network", size: "3.2 MB", type: "Diagram", githubPath: "github.com/company/manuals/network/Modbus_Wiring.pdf", date: "2024-01-10" },
-            { id: 4, title: "Troubleshooting FAQ", file: "Troubleshooting.pdf", category: "plc", size: "856 KB", type: "Reference", githubPath: "github.com/company/manuals/plc/Troubleshooting.pdf", date: "2024-01-08" },
-            { id: 5, title: "Safety Interlock Manual", file: "Safety_Interlock.pdf", category: "plc", size: "4.1 MB", type: "Safety", githubPath: "github.com/company/manuals/plc/Safety_Interlock.pdf", date: "2024-01-05" },
-            { id: 6, title: "HMI Configuration Guide", file: "HMI_Config.pdf", category: "network", size: "2.9 MB", type: "Config", githubPath: "github.com/company/manuals/network/HMI_Config.pdf", date: "2024-01-03" },
-            { id: 7, title: "Ethernet IP Setup", file: "Ethernet_IP.pdf", category: "network", size: "1.5 MB", type: "Network", githubPath: "github.com/company/manuals/network/Ethernet_IP.pdf", date: "2024-01-01" },
-            { id: 8, title: "Pressure Sensor Specs", file: "Pressure_Sensor.pdf", category: "sensors", size: "890 KB", type: "Specs", githubPath: "github.com/company/manuals/sensors/Pressure_Sensor.pdf", date: "2023-12-28" }
+            { id: 1, title: "PLC Setup Guide V2.1", file: "manuals/PLC_Setup_V1.pdf", category: "plc", size: "2.4 MB", type: "Setup", githubPath: "github.com/company/manuals/plc/PLC_Setup_V1.pdf", date: "2024-01-15", isLocal: false },
+            { id: 2, title: "Sensor Calibration Protocol", file: "manuals/Sensor_Calibration.pdf", category: "sensors", size: "1.8 MB", type: "Calibration", githubPath: "github.com/company/manuals/sensors/Sensor_Calibration.pdf", date: "2024-01-12", isLocal: false },
+            { id: 3, title: "Modbus TCP Wiring Map", file: "manuals/Modbus_Wiring.pdf", category: "network", size: "3.2 MB", type: "Diagram", githubPath: "github.com/company/manuals/network/Modbus_Wiring.pdf", date: "2024-01-10", isLocal: false }
         ];
-
-        // Pagination state
+        
         let currentPage = 1;
         const itemsPerPage = 5;
         let currentDoc = null;
         let zoomScale = 1;
         let currentFilter = 'all';
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderDocList();
-            updatePagination();
-            
-            // Drag and drop handlers
-            const dropzone = document.getElementById('dropzone');
-            
-            dropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropzone.classList.add('dragover');
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve();
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                        store.createIndex('category', 'category', { unique: false });
+                    }
+                };
             });
+        }
+
+        // Load stored PDFs from IndexedDB
+        async function loadStoredPDFs() {
+            if (!db) return;
             
-            dropzone.addEventListener('dragleave', () => {
-                dropzone.classList.remove('dragover');
-            });
+            try {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = () => {
+                    const storedDocs = request.result;
+                    // Merge with default docs, avoiding duplicates
+                    storedDocs.forEach(doc => {
+                        const exists = documents.find(d => d.id === doc.id);
+                        if (!exists) {
+                            // Recreate blob URL from stored arraybuffer
+                            if (doc.fileData) {
+                                const blob = new Blob([doc.fileData], { type: 'application/pdf' });
+                                doc.file = URL.createObjectURL(blob);
+                                doc.isLocal = true;
+                            }
+                            documents.push(doc);
+                        }
+                    });
+                    renderDocList();
+                    updateStorageIndicator();
+                };
+            } catch (e) {
+                console.error('Error loading stored PDFs:', e);
+            }
+        }
+
+        // Store PDF in IndexedDB
+        async function storePDF(doc, fileData) {
+            if (!db) return;
             
-            dropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) processUpload(files[0]);
-            });
+            try {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                
+                // Store the binary data
+                const storedDoc = {
+                    ...doc,
+                    fileData: fileData // ArrayBuffer
+                };
+                
+                await store.put(storedDoc);
+            } catch (e) {
+                console.error('Error storing PDF:', e);
+            }
+        }
+
+        // Delete all stored PDFs
+        async function clearLocalStorage() {
+            if (!db) return;
+            
+            if (!confirm('Are you sure you want to delete all uploaded PDFs? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                await store.clear();
+                
+                // Remove local docs from array
+                documents = documents.filter(d => !d.isLocal);
+                currentPage = 1;
+                renderDocList();
+                updateStorageIndicator();
+                showToast('Local storage cleared', 'success');
+                
+                // Clear viewer if showing local doc
+                if (currentDoc) {
+                    const current = documents.find(d => d.id === currentDoc);
+                    if (!current) {
+                        document.getElementById('doc-frame').src = '';
+                        document.getElementById('currentTitle').textContent = 'Select a document to view';
+                        currentDoc = null;
+                    }
+                }
+            } catch (e) {
+                console.error('Error clearing storage:', e);
+                showToast('Error clearing storage', 'error');
+            }
+        }
+
+        function updateStorageIndicator() {
+            const localCount = documents.filter(d => d.isLocal).length;
+            const indicator = document.getElementById('storageIndicator');
+            if (localCount > 0) {
+                indicator.textContent = `${localCount} local file${localCount > 1 ? 's' : ''} stored`;
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initDB();
+                await loadStoredPDFs();
+                renderDocList();
+                
+                // Drag and drop handlers
+                const dropzone = document.getElementById('dropzone');
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('dragover');
+                });
+                dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('dragover');
+                    if (e.dataTransfer.files.length > 0) processUpload(e.dataTransfer.files[0]);
+                });
+            } catch (e) {
+                console.error('Initialization error:', e);
+                showToast('Storage initialization failed', 'error');
+            }
         });
 
         function renderDocList() {
             const list = document.getElementById('docList');
-            
-            // Filter
             let filtered = currentFilter === 'all' 
                 ? documents 
                 : documents.filter(d => d.category === currentFilter);
@@ -937,7 +1081,6 @@
                 d.type.toLowerCase().includes(searchTerm)
             );
 
-            // Paginate
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages || 1;
             
@@ -945,7 +1088,6 @@
             const end = start + itemsPerPage;
             const pageItems = filtered.slice(start, end);
 
-            // Group by category
             const grouped = pageItems.reduce((acc, doc) => {
                 if (!acc[doc.category]) acc[doc.category] = [];
                 acc[doc.category].push(doc);
@@ -967,6 +1109,7 @@
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                         <polyline points="14 2 14 8 20 8"></polyline>
                                     </svg>
+                                    ${doc.isLocal ? '<span class="local-badge" title="Stored locally">L</span>' : ''}
                                 </div>
                                 <div class="doc-info">
                                     <div class="doc-title">${doc.title}</div>
@@ -980,11 +1123,10 @@
             }
             
             list.innerHTML = html || '<div style="padding: 24px; text-align: center; color: var(--text-secondary);">No documents found</div>';
-            
             updatePagination(filtered.length);
         }
 
-        function updatePagination(totalItems = documents.length) {
+        function updatePagination(totalItems) {
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages || 1}`;
             document.getElementById('prevBtn').disabled = currentPage === 1;
@@ -1021,12 +1163,13 @@
                 progressFill.style.width = progress + '%';
             }, 200);
 
-            // Check if it's a blob URL (uploaded) or relative path
-            const filePath = doc.file.startsWith('blob:') ? doc.file : `manuals/${doc.file}`;
-            
             setTimeout(() => {
                 clearInterval(interval);
                 progressFill.style.width = '100%';
+                
+                // For local files, file is already a blob URL
+                // For remote files, it's a path
+                const filePath = doc.isLocal ? doc.file : doc.file;
                 
                 frame.src = filePath + "#toolbar=0&navpanes=0";
                 
@@ -1038,14 +1181,13 @@
                     overlay.classList.remove('active');
                     errorState.classList.add('active');
                 };
-            }, 800);
+            }, 500);
             
             if (window.innerWidth <= 768) {
                 document.getElementById('sidebar').classList.remove('open');
             }
         }
 
-        // Upload Functions
         function openUploadModal() {
             document.getElementById('uploadModal').classList.add('active');
             document.getElementById('uploadProgress').classList.remove('active');
@@ -1054,7 +1196,6 @@
         function closeUploadModal(e) {
             if (!e || e.target.id === 'uploadModal' || e.target.className === 'close-btn') {
                 document.getElementById('uploadModal').classList.remove('active');
-                document.getElementById('uploadProgress').classList.remove('active');
                 document.getElementById('fileInput').value = '';
             }
         }
@@ -1064,7 +1205,7 @@
             if (file) processUpload(file);
         }
 
-        function processUpload(file) {
+        async function processUpload(file) {
             if (!file.name.endsWith('.pdf')) {
                 showToast('Please select a PDF file', 'error');
                 return;
@@ -1079,55 +1220,65 @@
             progressDiv.classList.add('active');
             fileNameSpan.textContent = file.name;
             
-            // Generate GitHub-style path
             const category = detectCategory(file.name);
             const githubPath = `github.com/company/manuals/${category}/${file.name}`;
             pathDiv.textContent = githubPath;
             
-            // Simulate upload progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress > 100) progress = 100;
+            // Read file as array buffer for storage
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const arrayBuffer = e.target.result;
                 
-                progressFill.style.width = progress + '%';
-                percentSpan.textContent = Math.round(progress) + '%';
-                
-                if (progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        // Create blob URL for the file
-                        const blobUrl = URL.createObjectURL(file);
-                        
-                        // Add to documents
-                        const newDoc = {
-                            id: Date.now(),
-                            title: file.name.replace('.pdf', ''),
-                            file: blobUrl,
-                            category: category,
-                            size: formatFileSize(file.size),
-                            type: "Uploaded",
-                            githubPath: githubPath,
-                            date: new Date().toISOString().split('T')[0],
-                            isLocal: true
-                        };
-                        
-                        documents.unshift(newDoc);
-                        currentPage = 1; // Go to first page to see new upload
-                        renderDocList();
-                        
-                        showToast('PDF uploaded successfully!', 'success');
-                        closeUploadModal();
-                        
-                        // Auto-open the uploaded file
-                        setTimeout(() => {
-                            const newItem = document.querySelector(`[data-id="${newDoc.id}"]`);
-                            if (newItem) loadDocument(newDoc.id, newItem);
+                // Simulate progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 25;
+                    if (progress > 100) progress = 100;
+                    
+                    progressFill.style.width = progress + '%';
+                    percentSpan.textContent = Math.round(progress) + '%';
+                    
+                    if (progress === 100) {
+                        clearInterval(interval);
+                        setTimeout(async () => {
+                            // Create blob URL for immediate use
+                            const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                            const blobUrl = URL.createObjectURL(blob);
+                            
+                            const newDoc = {
+                                id: Date.now(),
+                                title: file.name.replace('.pdf', ''),
+                                file: blobUrl,
+                                category: category,
+                                size: formatFileSize(file.size),
+                                type: "Uploaded",
+                                githubPath: githubPath,
+                                date: new Date().toISOString().split('T')[0],
+                                isLocal: true
+                            };
+                            
+                            // Store in IndexedDB
+                            await storePDF(newDoc, arrayBuffer);
+                            
+                            documents.unshift(newDoc);
+                            currentPage = 1;
+                            renderDocList();
+                            updateStorageIndicator();
+                            
+                            showToast('PDF saved permanently!', 'success');
+                            closeUploadModal();
+                            
+                            setTimeout(() => {
+                                const newItem = document.querySelector(`[data-id="${newDoc.id}"]`);
+                                if (newItem) loadDocument(newDoc.id, newItem);
+                            }, 500);
+                            
                         }, 500);
-                        
-                    }, 500);
-                }
-            }, 200);
+                    }
+                }, 150);
+            };
+            
+            reader.readAsArrayBuffer(file);
         }
 
         function detectCategory(filename) {
@@ -1146,25 +1297,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
-        function syncToGithub() {
-            if (!currentDoc) {
-                showToast('Please select a document first', 'error');
-                return;
-            }
-            
-            const btn = document.getElementById('syncBtn');
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Syncing...`;
-            btn.disabled = true;
-            
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                showToast('Synced to GitHub repository!', 'success');
-            }, 2000);
-        }
-
         function zoom(delta) {
             zoomScale = Math.max(0.5, Math.min(2.0, zoomScale + delta));
             document.getElementById('zoomLevel').textContent = Math.round(zoomScale * 100) + '%';
@@ -1172,7 +1304,7 @@
             const frame = document.getElementById('doc-frame');
             if (currentDoc) {
                 const doc = documents.find(d => d.id === currentDoc);
-                const base = doc.file.startsWith('blob:') ? doc.file : `manuals/${doc.file}`;
+                const base = doc.isLocal ? doc.file : doc.file;
                 frame.src = base + `#toolbar=0&navpanes=0&zoom=${Math.round(zoomScale * 100)}`;
             }
         }
