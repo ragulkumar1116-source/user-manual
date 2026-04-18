@@ -318,6 +318,20 @@
             .frame-container { margin: 12px; border-radius: 12px; }
         }
 
+        .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;   /* keeps everything in one line */
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.logo img {
+    height: 35px;
+    width: 35px;
+}
+
         .mobile-header { display: none; }
     </style>
 </head>
@@ -333,7 +347,9 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo">📁 Document Portal</div>
+            <div class="logo">
+    <img src="manuals\logo (2).ico" alt="Logo"> Document Portal
+</div>
         </div>
         
         <div class="search-box">
