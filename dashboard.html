@@ -835,72 +835,7 @@
     </script>
 
 
-<script>
-    /** * THE DATABASE 
-     * Just add or remove lines here. The dashboard updates automatically!
-     */
-    const myDatabase = [
-        { id: 1, title: "CEMS User Manual", cat: "Manual", link: "files/manual1.pdf", icon: "📘" },
-        { id: 2, title: "LDM Technical Sheet", cat: "LDM", link: "files/tech2.pdf", icon: "📑" },
-        { id: 3, title: "OCEMS Installation", cat: "OCEMS", link: "files/inst3.pdf", icon: "🛠️" }
-    ];
 
-    // Security Flag
-    let isVerified = false;
-
-    // 1. Function to build the list automatically
-    function autoBuildDashboard() {
-        const listContainer = document.getElementById('docList'); // Ensure your div has this ID
-        if (!listContainer) return;
-
-        listContainer.innerHTML = myDatabase.map(doc => `
-            <div class="doc-item" onclick="handleSecureClick(${doc.id})">
-                <div class="doc-icon">${doc.icon}</div>
-                <div>
-                    <div class="doc-title">${doc.title}</div>
-                    <div class="doc-meta">${doc.cat}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 2. Cloudflare Verification Logic
-    window.onloadTurnstileCallback = function () {
-        turnstile.render("#turnstile-container", {
-            sitekey: "YOUR_SITE_KEY_HERE",
-            callback: function(token) {
-                isVerified = true;
-                console.log("Security Cleared");
-                document.getElementById('turnstile-container').style.display = 'none';
-            }
-        });
-    };
-
-    // 3. The "Smart" Click Handler
-    function handleSecureClick(id) {
-        if (!isVerified) {
-            alert("🔒 Please complete the Cloudflare check first!");
-            return;
-        }
-
-        const selected = myDatabase.find(d => d.id === id);
-        if (selected) {
-            // Update Title
-            document.getElementById('currentTitle').innerText = selected.title;
-            // Update Iframe
-            const frame = document.getElementById('doc-frame');
-            frame.src = selected.link;
-            frame.style.display = "block";
-            // Hide Empty Message
-            if(document.getElementById('emptyState')) {
-                document.getElementById('emptyState').style.display = "none";
-            }
-        }
-    }
-
-    // Run this the second the page loads
-    document.addEventListener('DOMContentLoaded', autoBuildDashboard);
-</script>
 
 
     
