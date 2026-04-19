@@ -835,7 +835,19 @@
     </script>
 
 
+<script>
+// 🚨 Block direct access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.href = "index.html";
+}
 
+// Extra protection on reload/back
+window.addEventListener("pageshow", function () {
+    if (sessionStorage.getItem("verified") !== "true") {
+        window.location.href = "index.html";
+    }
+});
+</script>
 
 
     
