@@ -3,25 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Access</title>
+<title>Secure Access</title>
 
+<!-- Cloudflare Turnstile -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
 body {
+    margin:0;
+    height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
-    height:100vh;
     font-family:sans-serif;
     background:#0f172a;
     color:white;
 }
 .box {
-    text-align:center;
     background:#1e293b;
     padding:40px;
     border-radius:12px;
+    text-align:center;
+    width:90%;
+    max-width:400px;
 }
 </style>
 </head>
@@ -29,19 +33,24 @@ body {
 <body>
 
 <div class="box">
-    <h2>🔐 Secure Access</h2>
+    <h2>🔐 Human Verification</h2>
     <p>Please verify to continue</p>
 
     <div id="cf-turnstile"></div>
 </div>
 
 <script>
+// If already verified → go directly
+if (sessionStorage.getItem("verified") === "true") {
+    window.location.href = "database.html";
+}
+
 function handleSuccess(token) {
-    // Save verification (temporary)
+    // Save verification
     sessionStorage.setItem("verified", "true");
 
-    // Redirect to dashboard
-    window.location.href = "dashboard.html";
+    // Redirect
+    window.location.href = "database.html";
 }
 
 window.onload = function () {
