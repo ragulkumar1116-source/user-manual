@@ -836,72 +836,47 @@
 
 
 <script>
-/**
- * SECURITY & UI LOCK 
- * Purpose: Prevents access to documents until Cloudflare Turnstile is solved.
- */
+    // 1. Initial State: Locked
+    let verified = false;
 
-let isUserVerified = false; // The Master Lock
-
-// 1. Initialize Turnstile
-window.onloadTurnstileCallback = function () {
-    if (typeof turnstile !== 'undefined') {
+    // 2. Cloudflare success ஆனா மட்டும் 'verified' true ஆகும்
+    window.onloadTurnstileCallback = function () {
         turnstile.render("#turnstile-container", {
-            sitekey: "0x4AAAAAAC_oIfs4NGupxZya", // REPLACE THIS WITH YOUR KEY
+            sitekey: "YOUR_SITE_KEY", // உங்க கீ-ய இங்க போடுங்க
             callback: function(token) {
-                unlockPortal();
+                verified = true;
+                console.log("Portal Unlocked!");
+                // Captcha முடிஞ்சதும் அதை லேசா மங்கலாக்கிடுவோம்
+                document.getElementById('turnstile-container').style.opacity = "0.4";
             }
         });
-    }
-};
+    };
 
-// 2. The Unlock Function
-function unlockPortal() {
-    isUserVerified = true;
-    
-    // Hide the captcha box once done
-    const captchaBox = document.getElementById('turnstile-container');
-    if (captchaBox) captchaBox.style.opacity = "0.3"; 
-    
-    // Visual feedback
-    console.log("Access Granted: Portal Unlocked.");
-    
-    // Refresh the document list to enable clicks
-    if (typeof renderDocs === "function") {
-        renderDocs();
+    // 3. யாராவது Cloudflare முடிக்காம 'Open' கிளிக் பண்ணா தடுக்க
+    function safeOpen() {
+        if (!verified) {
+            alert("⚠️ Please complete the Cloudflare verification first!");
+            return;
+        }
+        
+        const frame = document.getElementById('doc-frame');
+        if (frame && frame.src) {
+            window.open(frame.src, '_blank');
+        } else {
+            alert("No document selected.");
+        }
     }
-}
 
-// 3. Secure Load Function (Add this to your onclicks)
-function safeLoad(id) {
-    if (!isUserVerified) {
-        alert("🔒 Verification Required: Please complete the Cloudflare check in the sidebar first.");
-        return;
+    // 4. Sidebar-ல இருக்கிற Item-ஐ கிளிக் பண்ணும்போதும் இதையே பயன்படுத்தலாம்
+    function safeLoad(id) {
+        if (!verified) {
+            alert("🔒 Access Denied! Verify first.");
+            return;
+        }
+        if (typeof loadDoc === "function") {
+            loadDoc(id);
+        }
     }
-    
-    // If verified, run your original loading logic
-    if (typeof loadDoc === "function") {
-        loadDoc(id);
-    }
-}
-
-// 4. Secure External Open
-function safeOpen() {
-    if (!isUserVerified) {
-        alert("Action Blocked: Complete security check first.");
-        return;
-    }
-    
-    const frame = document.getElementById('doc-frame');
-    if (frame && frame.src) {
-        window.open(frame.src, '_blank');
-    }
-}
-
-// Overriding existing functions to ensure they check verification
-const originalOpenInNewTab = window.openInNewTab;
-window.openInNewTab = safeOpen;
-
 </script>
 
 
