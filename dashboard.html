@@ -847,7 +847,7 @@ let isUserVerified = false; // The Master Lock
 window.onloadTurnstileCallback = function () {
     if (typeof turnstile !== 'undefined') {
         turnstile.render("#turnstile-container", {
-            sitekey: "1x00000000000000000000AA", // REPLACE THIS WITH YOUR KEY
+            sitekey: "0x4AAAAAAC_oIfs4NGupxZya", // REPLACE THIS WITH YOUR KEY
             callback: function(token) {
                 unlockPortal();
             }
