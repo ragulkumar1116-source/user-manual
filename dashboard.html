@@ -833,5 +833,78 @@
             }
         });
     </script>
+
+
+<script>
+/**
+ * SECURITY & UI LOCK 
+ * Purpose: Prevents access to documents until Cloudflare Turnstile is solved.
+ */
+
+let isUserVerified = false; // The Master Lock
+
+// 1. Initialize Turnstile
+window.onloadTurnstileCallback = function () {
+    if (typeof turnstile !== 'undefined') {
+        turnstile.render("#turnstile-container", {
+            sitekey: "1x00000000000000000000AA", // REPLACE THIS WITH YOUR KEY
+            callback: function(token) {
+                unlockPortal();
+            }
+        });
+    }
+};
+
+// 2. The Unlock Function
+function unlockPortal() {
+    isUserVerified = true;
+    
+    // Hide the captcha box once done
+    const captchaBox = document.getElementById('turnstile-container');
+    if (captchaBox) captchaBox.style.opacity = "0.3"; 
+    
+    // Visual feedback
+    console.log("Access Granted: Portal Unlocked.");
+    
+    // Refresh the document list to enable clicks
+    if (typeof renderDocs === "function") {
+        renderDocs();
+    }
+}
+
+// 3. Secure Load Function (Add this to your onclicks)
+function safeLoad(id) {
+    if (!isUserVerified) {
+        alert("🔒 Verification Required: Please complete the Cloudflare check in the sidebar first.");
+        return;
+    }
+    
+    // If verified, run your original loading logic
+    if (typeof loadDoc === "function") {
+        loadDoc(id);
+    }
+}
+
+// 4. Secure External Open
+function safeOpen() {
+    if (!isUserVerified) {
+        alert("Action Blocked: Complete security check first.");
+        return;
+    }
+    
+    const frame = document.getElementById('doc-frame');
+    if (frame && frame.src) {
+        window.open(frame.src, '_blank');
+    }
+}
+
+// Overriding existing functions to ensure they check verification
+const originalOpenInNewTab = window.openInNewTab;
+window.openInNewTab = safeOpen;
+
+</script>
+
+
+    
 </body>
 </html>
