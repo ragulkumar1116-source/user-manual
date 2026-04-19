@@ -42,7 +42,7 @@ body {
 <script>
 // If already verified → go directly
 if (sessionStorage.getItem("verified") === "true") {
-    window.location.href = "database.html";
+    window.location.href = "dashboard.html";
 }
 
 function handleSuccess(token) {
@@ -50,7 +50,7 @@ function handleSuccess(token) {
     sessionStorage.setItem("verified", "true");
 
     // Redirect
-    window.location.href = "database.html";
+    window.location.href = "dashboard.html";
 }
 
 window.onload = function () {
