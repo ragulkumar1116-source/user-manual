@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Enterprise Document Portal</title>
     
     <style>
@@ -16,14 +16,16 @@
             --border: #e2e8f0;
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --header-height: 72px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--content-bg);
             height: 100vh;
+            height: 100dvh; /* Mobile viewport fix */
             overflow: hidden;
             display: grid;
             grid-template-columns: 360px 1fr;
@@ -36,26 +38,35 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            height: 100dvh;
         }
 
         .sidebar-header {
             padding: 24px;
             border-bottom: 1px solid var(--border);
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            flex-shrink: 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: var(--primary);
+            gap: 8px;
+            white-space: nowrap;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logo img {
+            height: 35px;
+            width: 35px;
         }
 
         .search-box {
             padding: 16px 20px;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: white;
         }
 
         .search-box input {
@@ -63,8 +74,9 @@
             padding: 12px 16px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            font-size: 0.95rem;
+            font-size: 16px; /* Prevents zoom on iOS */
             transition: all 0.2s;
+            -webkit-appearance: none;
         }
 
         .search-box input:focus {
@@ -81,20 +93,31 @@
             overflow-x: auto;
             border-bottom: 1px solid var(--border);
             background: white;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE */
+            flex-shrink: 0;
+        }
+
+        .filter-tags::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
         }
 
         .tag {
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
             border: 2px solid transparent;
             transition: all 0.2s;
+            touch-action: manipulation;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
         }
 
-        .tag:hover { transform: translateY(-2px); }
+        .tag:active { transform: scale(0.95); }
         
         .tag.active { 
             transform: scale(1.05);
@@ -107,6 +130,7 @@
             overflow-y: auto;
             padding: 20px;
             background: #f8fafc;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .category-group {
@@ -123,6 +147,12 @@
             letter-spacing: 0.05em;
             margin-bottom: 12px;
             padding-left: 8px;
+            position: sticky;
+            top: 0;
+            background: #f8fafc;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            z-index: 5;
         }
 
         .category-dot {
@@ -143,6 +173,11 @@
             border: 1px solid var(--border);
             transition: all 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            min-height: 72px; /* Better touch target */
+        }
+
+        .doc-item:active {
+            transform: scale(0.98);
         }
 
         .doc-item:hover {
@@ -176,6 +211,7 @@
             justify-content: center;
             background: rgba(0,0,0,0.03);
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .doc-info { flex: 1; min-width: 0; }
@@ -195,6 +231,7 @@
             align-items: center;
             font-size: 0.8rem;
             color: var(--text-secondary);
+            flex-wrap: wrap;
         }
 
         .badge {
@@ -211,6 +248,8 @@
             display: flex;
             flex-direction: column;
             background: #e2e8f0;
+            height: 100vh;
+            height: 100dvh;
         }
 
         .viewer-toolbar {
@@ -222,12 +261,18 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
+            flex-shrink: 0;
+            gap: 12px;
         }
 
         .doc-title-main {
             font-weight: 600;
             font-size: 1.1rem;
             color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
         }
 
         .btn {
@@ -242,6 +287,12 @@
             align-items: center;
             gap: 8px;
             transition: all 0.2s;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
         }
 
         .btn:hover {
@@ -260,12 +311,15 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
         }
 
         iframe {
             width: 100%;
             height: 100%;
             border: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .empty-state {
@@ -277,6 +331,8 @@
             justify-content: center;
             color: var(--text-secondary);
             background: white;
+            padding: 40px;
+            text-align: center;
         }
 
         .empty-state-icon {
@@ -285,9 +341,26 @@
             opacity: 0.3;
         }
 
+        /* Mobile Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
         /* Mobile */
         @media (max-width: 768px) {
             body { grid-template-columns: 1fr; }
+            
             .sidebar {
                 position: fixed;
                 left: -100%;
@@ -296,10 +369,16 @@
                 width: 85%;
                 max-width: 360px;
                 z-index: 100;
-                transition: left 0.3s ease;
+                transition: transform 0.3s ease;
+                transform: translateX(0);
                 box-shadow: 2px 0 20px rgba(0,0,0,0.1);
             }
-            .sidebar.open { left: 0; }
+            
+            .sidebar.open { 
+                left: 0;
+                transform: translateX(0);
+            }
+
             .mobile-header {
                 display: flex;
                 position: fixed;
@@ -314,33 +393,98 @@
                 align-items: center;
                 justify-content: space-between;
             }
-            .viewer { margin-top: var(--header-height); height: calc(100vh - var(--header-height)); }
-            .frame-container { margin: 12px; border-radius: 12px; }
+
+            .viewer { 
+                margin-top: var(--header-height); 
+                height: calc(100vh - var(--header-height));
+                height: calc(100dvh - var(--header-height));
+            }
+
+            .frame-container { 
+                margin: 12px; 
+                border-radius: 12px;
+                margin-bottom: calc(12px + var(--safe-bottom));
+            }
+
+            .doc-title-main {
+                font-size: 1rem;
+                max-width: 60%;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            /* Better mobile touch targets */
+            .doc-item {
+                min-height: 80px;
+                padding: 12px 16px;
+            }
+
+            .doc-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+
+            .filter-tags {
+                padding: 12px 16px;
+            }
+
+            .search-box {
+                padding: 12px 16px;
+            }
         }
 
-        .logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;   /* keeps everything in one line */
-    font-size: 20px;
-    font-weight: 600;
-}
+        @media (min-width: 769px) {
+            .mobile-header { display: none; }
+            .sidebar-backdrop { display: none !important; }
+        }
 
-.logo img {
-    height: 35px;
-    width: 35px;
-}
+        /* Loading state */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
 
-        .mobile-header { display: none; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar styling for webkit */
+        .doc-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .doc-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .doc-list::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-backdrop" id="backdrop" onclick="toggleSidebar()"></div>
+
     <!-- Mobile Menu Button -->
     <div class="mobile-header">
-        <button onclick="toggleSidebar()" style="background:none;border:none;font-size:24px;cursor:pointer;">☰</button>
-        <div style="font-weight:700;color:var(--accent);">📁 Documents</div>
+        <button onclick="toggleSidebar()" style="background:none;border:none;font-size:24px;cursor:pointer;padding:8px;margin:-8px;" aria-label="Open menu">
+            <span style="display:block;width:24px;height:24px;line-height:24px;">☰</span>
+        </button>
+        <div style="font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px;">
+            <img src="manuals\logo (2).ico" alt="" style="height:28px;width:28px;"> Documents
+        </div>
         <div style="width:40px;"></div>
     </div>
 
@@ -348,12 +492,12 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
-    <img src="manuals\logo (2).ico" alt="Logo"> Document Portal
-</div>
+                <img src="manuals\logo (2).ico" alt="Logo"> Document Portal
+            </div>
         </div>
         
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search documents..." onkeyup="renderDocs()">
+            <input type="text" id="searchInput" placeholder="Search documents..." onkeyup="renderDocs()" autocomplete="off">
         </div>
 
         <!-- Filter Buttons Generated Here -->
@@ -367,7 +511,7 @@
         <div class="viewer-toolbar">
             <div class="doc-title-main" id="currentTitle">Select a document</div>
             <button class="btn" onclick="openInNewTab()" id="openBtn" style="display:none;">
-                ↗ Open in New Tab
+                <span>↗</span> <span class="btn-text">Open</span>
             </button>
         </div>
         
@@ -377,7 +521,7 @@
                 <div style="font-size:1.1rem;font-weight:500;margin-bottom:8px;">No Document Selected</div>
                 <div style="color:var(--text-secondary);">Choose a document from the sidebar to view</div>
             </div>
-            <iframe id="doc-frame" style="display:none;"></iframe>
+            <iframe id="doc-frame" style="display:none;" title="Document viewer"></iframe>
         </div>
     </main>
 
@@ -386,16 +530,13 @@
         // CONFIGURATION - ADD CATEGORIES HERE
         // ==========================================
         const categories = [
-            { name: 'All', color: '#64748b', showInList: false }, // Always first, hidden from tags
-            { name: 'Manual', color: '#10b981' },      // Green
-             { name: 'LDM', color: '#f59e0b' },   // Blue  
-             { name: 'OCEMS', color: '#3b82f6' },         // Orange
-            { name: 'Spare list all', color: '#8b5cf6' },      // Purple
+            { name: 'All', color: '#64748b', showInList: false },
+            { name: 'Manual', color: '#10b981' },
+            { name: 'LDM', color: '#f59e0b' },  
+            { name: 'OCEMS', color: '#3b82f6' },
+            { name: 'Spare list all', color: '#8b5cf6' },
             { name: 'Installation Requirements', color: '#ef4444' },
-            { name: 'Inst', color: '#ef4444' },
-            { name: 'Inst', color: '#ef4444' },
-                  // Red
-            // Add more: { name: 'YourName', color: '#hexcode' }
+            // Removed duplicate 'Inst' entries
         ];
 
         // Storage for documents
@@ -406,62 +547,51 @@
         // HELPER FUNCTION - EASY TO USE!
         // ==========================================
         
-        /**
-         * Add a document to the library
-         * @param {Object} config - Document config
-         * @param {string} config.title - Document title
-         * @param {string} config.file - URL or file path
-         * @param {string|string[]} config.category - Single category or array for multiple
-         * @param {string} config.size - File size/type label (optional)
-         * @param {string} config.icon - Emoji icon (optional, default 📄)
-         */
         function addDoc({ title, file, category, size = "PDF", icon = "📄" }) {
-            // Handle single category or array of categories
             const cats = Array.isArray(category) ? category : [category];
             
-            cats.forEach((cat, index) => {
+            cats.forEach((cat) => {
+                if (!cat) return; // Skip empty categories
                 documents.push({
-                    id: docIdCounter++,           // Auto-increment ID
+                    id: docIdCounter++,
                     title: title,
                     file: file,
-                    category: cat,                // Each category gets its own entry
+                    category: cat,
                     size: size,
                     icon: icon,
-                    isDuplicate: cats.length > 1  // Flag if multi-category
+                    isDuplicate: cats.length > 1
                 });
             });
         }
 
         // ==========================================
-        // ADD YOUR DOCUMENTS HERE - SUPER EASY!
+        // ADD YOUR DOCUMENTS HERE
         // ==========================================
 
-        // Example 1: Single category
         addDoc({
             title: "AAD-CEMS-200 User Manual",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/AAD-CEMS-200%20User%20Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0FBRC1DRU1TLTIwMCBVc2VyIE1hbnVhbC5wZGYiLCJpYXQiOjE3NzY1MjA5ODUsImV4cCI6MTgwODA1Njk4NX0.Kybqm5xyY17xwwc12QLOvv6RlUmI8Wdbf09X1KXlvjo",
-            category: "Manual",  // Just one category
+            category: "Manual",
             size: "PDF",
             icon: "📗"
         });
 
-        // Example 2: SAME FILE in MULTIPLE categories!
         addDoc({
             title: "AIT LM318 User Manual",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/AIT%20LM318-%20User%20Manual%20-%20REV2.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0FJVCBMTTMxOC0gVXNlciBNYW51YWwgLSBSRVYyLnBkZiIsImlhdCI6MTc3NjUyMTA0NSwiZXhwIjoxODA4MDU3MDQ1fQ.-YTrhpScvoYMBJaS2tCI0iicwRYigeoGGC3rBY4vaLQ",
-            category: ["Manual", "External", "LDM"],  // ← Array! Shows in all 3 tabs!
-            size: "PDF",
-            icon: "📘"
-        });
-        addDoc({
-            title: "Ducon-MIP-LM3189 Manual",
-            file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/Ducon-MIP-LM3189-Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0R1Y29uLU1JUC1MTTMxODktTWFudWFsLnBkZiIsImlhdCI6MTc3NjUyMTUxOCwiZXhwIjoxODA4MDU3NTE4fQ.s3CeRmWXXOHGoGQLgG1PFQAxpqdSVDJHI_x71FrEoxs",
-            category: ["Manual", "External", "LDM"],  // ← Array! Shows in all 3 tabs!
+            category: ["Manual", "LDM"],
             size: "PDF",
             icon: "📘"
         });
 
-        // Add more documents...
+        addDoc({
+            title: "Ducon-MIP-LM3189 Manual",
+            file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/Ducon-MIP-LM3189-Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0R1Y29uLU1JUC1MTTMxODktTWFudWFsLnBkZiIsImlhdCI6MTc3NjUyMTUxOCwiZXhwIjoxODA4MDU3NTE4fQ.s3CeRmWXXOHGoGQLgG1PFQAxpqdSVDJHI_x71FrEoxs",
+            category: ["Manual", "LDM"],
+            size: "PDF",
+            icon: "📘"
+        });
+
         addDoc({
             title: "AIT-COEMS L-800 Manual",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/AIT-COEMS_L-800%20usermanual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0FJVC1DT0VNU19MLTgwMCB1c2VybWFudWFsLnBkZiIsImlhdCI6MTc3NjUyMTM4MiwiZXhwIjoxODA4MDU3MzgyfQ.iveGYx6Zqs67OBEdVZOer7mGo3xQGKzCCKUaqfuBXMM",
@@ -471,64 +601,47 @@
         });
 
         addDoc({
-            title: "Ducon-MIP-LM3189",
-            file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/Ducon-MIP-LM3189-Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0R1Y29uLU1JUC1MTTMxODktTWFudWFsLnBkZiIsImlhdCI6MTc3NjUyMTUxOCwiZXhwIjoxODA4MDU3NTE4fQ.s3CeRmWXXOHGoGQLgG1PFQAxpqdSVDJHI_x71FrEoxs",
-            category: ["External", "Archive"],
-            size: "PDF"
-        });
-
-        addDoc({
             title: "Hemera L-800 User Manual",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/manuals/Hemera%20Manual_L-800_usermanual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtYW51YWxzL0hlbWVyYSBNYW51YWxfTC04MDBfdXNlcm1hbnVhbC5wZGYiLCJpYXQiOjE3NzY1MjE1OTcsImV4cCI6MTgwODA1NzU5N30.9MkwoaezYVtVtBYvoi_EPvkkJwFyafbSTwrXljbpjlE",
-            category: ["Manual", ""],
+            category: ["Manual", "OCEMS"],
             size: "PDF",
             icon: "📕"
         });
-        //    Spare list all
-
-
 
         addDoc({
-            title: "OCEMS L600 Spare list.pdf",
+            title: "OCEMS L600 Spare list",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/Spare%20list%20all/OCEMS%20L600%20Spare%20list.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJTcGFyZSBsaXN0IGFsbC9PQ0VNUyBMNjAwIFNwYXJlIGxpc3QucGRmIiwiaWF0IjoxNzc2NTI3NTY0LCJleHAiOjE4MDgwNjM1NjR9.tfkPFrKm0zcgDNRwCNosqRFLoOaZW4ygazdYOikSkqs",
             category: ["Spare list all", "OCEMS"],
-            size: "Local",
+            size: "PDF",
             icon: "📦"
         });
 
-          addDoc({
-            title: "OCEMS L800 Spare list.pdf",
+        addDoc({
+            title: "OCEMS L800 Spare list",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/Spare%20list%20all/OCEMS%20L800%20Spare%20list%20-2026.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJTcGFyZSBsaXN0IGFsbC9PQ0VNUyBMODAwIFNwYXJlIGxpc3QgLTIwMjYucGRmIiwiaWF0IjoxNzc2NTI3NjY1LCJleHAiOjE4MDgwNjM2NjV9.WtqyseLHxt5-FRInYCdGp_OBYhdEQ15AKteWhjr2GH0",
             category: ["Spare list all", "OCEMS"],
-            size: "Local",
+            size: "PDF",
             icon: "📦"
         });
 
-        // Local file example
         addDoc({
-            title: " VOC PID-A12 Spare list.pdf ",
+            title: "VOC PID-A12 Spare list",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/Spare%20list%20all/PID-A12%20Spare%20list.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJTcGFyZSBsaXN0IGFsbC9QSUQtQTEyIFNwYXJlIGxpc3QucGRmIiwiaWF0IjoxNzc2NTI3NzYxLCJleHAiOjE4MDgwNjM3NjF9.RLJWOIa8CmKHOGRDA1frpz9u4Lgp7gt9FdfT988bnKg",
             category: ["LDM", "Spare list all"],
-            size: "Local",
+            size: "PDF",
             icon: "📦"
         });
 
-        //Installation Requirements
-
-           addDoc({
-            title: " SPM Installation Requirements 1 ",
+        addDoc({
+            title: "SPM Installation Requirements",
             file: "https://jslokkvxxplqpwltbtmp.supabase.co/storage/v1/object/sign/Installation%20Requirements/Kamatchi%20SPM%20-%20Laser%20Dust%20Monitor%20utilities%20-%202026.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MjI4Zjk5Mi0zZmM2LTQ5MmEtYWY0YS00ZDM1MDk0MTAyOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJJbnN0YWxsYXRpb24gUmVxdWlyZW1lbnRzL0thbWF0Y2hpIFNQTSAtIExhc2VyIER1c3QgTW9uaXRvciB1dGlsaXRpZXMgLSAyMDI2LnBkZiIsImlhdCI6MTc3NjUyOTQwNCwiZXhwIjoxOTAyNjczNDA0fQ.cH0Fy2fvcrl_DsAru-K874V4mgUfdTwgOjuwjMxPlfw",
             category: ["LDM", "Installation Requirements"],
-            size: "Local",
+            size: "PDF",
             icon: "🛠️"
         });
 
-
-
-        
-
         // ==========================================
-        // APP LOGIC - No need to edit below
+        // APP LOGIC
         // ==========================================
 
         let currentFilter = 'All';
@@ -537,6 +650,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderFilters();
             renderDocs();
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('backdrop').classList.remove('active');
+                }
+            });
         });
 
         function renderFilters() {
@@ -548,7 +669,8 @@
                         onclick="setFilter('${cat.name}', this)"
                         style="background: ${cat.name === 'All' ? cat.color : cat.color + '20'}; 
                                color: ${cat.name === 'All' ? 'white' : cat.color};
-                               border-color: ${cat.color}40;">
+                               border-color: ${cat.color}40;"
+                        aria-pressed="${cat.name === 'All'}">
                     ${cat.name}
                 </button>
             `).join('');
@@ -557,22 +679,22 @@
         function setFilter(filterName, btn) {
             currentFilter = filterName;
             
-            // Update button styles
             document.querySelectorAll('.tag').forEach(b => {
-                const cat = categories.find(c => c.name === b.textContent);
+                const cat = categories.find(c => c.name === b.textContent.trim());
                 if (cat) {
                     b.style.background = cat.color + '20';
                     b.style.color = cat.color;
                     b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
                 }
             });
             
-            // Active style
             const activeCat = categories.find(c => c.name === filterName);
             if (activeCat) {
                 btn.style.background = activeCat.color;
                 btn.style.color = 'white';
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
             }
             
             renderDocs();
@@ -582,7 +704,6 @@
             const list = document.getElementById('docList');
             const search = document.getElementById('searchInput').value.toLowerCase();
             
-            // Filter documents
             let filtered = documents.filter(d => {
                 const matchesSearch = d.title.toLowerCase().includes(search);
                 const matchesCategory = currentFilter === 'All' || d.category === currentFilter;
@@ -594,7 +715,6 @@
                 return;
             }
 
-            // Group by category for display
             const grouped = filtered.reduce((acc, doc) => {
                 if (!acc[doc.category]) acc[doc.category] = [];
                 acc[doc.category].push(doc);
@@ -603,7 +723,6 @@
 
             let html = '';
             
-            // Sort categories by order defined in categories array
             const sortedCatNames = categories
                 .filter(c => grouped[c.name])
                 .map(c => c.name);
@@ -619,7 +738,7 @@
                             ${catName} <span style="opacity:0.6;margin-left:4px;">(${docs.length})</span>
                         </div>
                         ${docs.map(doc => `
-                            <div class="doc-item" onclick="loadDoc(${doc.id})" data-id="${doc.id}">
+                            <div class="doc-item" onclick="loadDoc(${doc.id})" data-id="${doc.id}" role="button" tabindex="0">
                                 <div class="doc-icon">${doc.icon}</div>
                                 <div class="doc-info">
                                     <div class="doc-title">${doc.title}</div>
@@ -646,22 +765,26 @@
             
             currentDocId = id;
             
-            // Visual selection
             document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
-            document.querySelector(`[data-id="${id}"]`)?.classList.add('active');
+            const activeEl = document.querySelector(`[data-id="${id}"]`);
+            if (activeEl) activeEl.classList.add('active');
             
-            // Update viewer
             document.getElementById('currentTitle').textContent = doc.title;
             document.getElementById('emptyState').style.display = 'none';
             document.getElementById('doc-frame').style.display = 'block';
             document.getElementById('openBtn').style.display = 'flex';
             
-            // Load content
-            document.getElementById('doc-frame').src = doc.file;
+            const frame = document.getElementById('doc-frame');
+            frame.src = doc.file;
             
-            // Mobile: close sidebar
+            // Mobile optimization: close sidebar after selection
             if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('open');
+                toggleSidebar();
+            }
+            
+            // Scroll to top of viewer on mobile
+            if (window.innerWidth <= 768) {
+                document.querySelector('.viewer').scrollTop = 0;
             }
         }
 
@@ -673,17 +796,40 @@
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('backdrop');
+            
+            sidebar.classList.toggle('open');
+            
+            if (sidebar.classList.contains('open')) {
+                backdrop.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            } else {
+                backdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         }
 
-        // Close sidebar when clicking outside on mobile
+        // Close sidebar when clicking outside
         document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('backdrop');
+            
             if (window.innerWidth <= 768 && 
                 sidebar.classList.contains('open') &&
                 !sidebar.contains(e.target) &&
                 !e.target.closest('.mobile-header')) {
-                sidebar.classList.remove('open');
+                toggleSidebar();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
             }
         });
     </script>
