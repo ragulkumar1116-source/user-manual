@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Access</title>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<style>
+body {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    font-family:sans-serif;
+    background:#0f172a;
+    color:white;
+}
+.box {
+    text-align:center;
+    background:#1e293b;
+    padding:40px;
+    border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>🔐 Secure Access</h2>
+    <p>Please verify to continue</p>
+
+    <div id="cf-turnstile"></div>
+</div>
+
+<script>
+function handleSuccess(token) {
+    // Save verification (temporary)
+    sessionStorage.setItem("verified", "true");
+
+    // Redirect to dashboard
+    window.location.href = "dashboard.html";
+}
+
+window.onload = function () {
+    turnstile.render("#cf-turnstile", {
+        sitekey: "0x4AAAAAAC_oIfs4NGupxZya",
+        callback: handleSuccess
+    });
+};
+</script>
+
+</body>
+</html>
