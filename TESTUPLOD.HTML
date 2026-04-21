@@ -2,20 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Upload Document - Enterprise Portal</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f1f5f9;
             padding: 20px;
             min-height: 100vh;
-            min-height: 100dvh;
         }
-        
         .container {
             max-width: 640px;
             margin: 0 auto;
@@ -24,33 +20,13 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             overflow: hidden;
         }
-        
         .header {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             padding: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
-        
-        .header-icon {
-            font-size: 24px;
-        }
-        
-        .header h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        
-        .form-container {
-            padding: 24px;
-        }
-        
-        .form-group {
-            margin-bottom: 24px;
-        }
-        
+        .form-container { padding: 24px; }
+        .form-group { margin-bottom: 20px; }
         label {
             display: block;
             font-size: 0.875rem;
@@ -58,103 +34,45 @@
             color: #374151;
             margin-bottom: 8px;
         }
-        
-        input[type="text"],
-        select,
-        input[type="file"] {
+        input[type="text"], select {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             font-size: 16px;
-            font-family: inherit;
-            background: white;
-            transition: all 0.2s;
             -webkit-appearance: none;
         }
-        
-        input[type="text"]:focus,
-        select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 12px center;
-            background-repeat: no-repeat;
-            background-size: 20px;
-            padding-right: 40px;
-        }
-        
         select[multiple] {
+            height: 140px;
             background-image: none;
-            height: 160px;
-            padding: 8px;
         }
-        
-        select[multiple] option {
-            padding: 10px;
-            margin: 2px 0;
-            border-radius: 6px;
-        }
-        
         select[multiple] option:checked {
-            background: #3b82f6 linear-gradient(0deg, #3b82f6 0%, #3b82f6 100%);
+            background: #3b82f6;
             color: white;
         }
-        
-        .hint {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-top: 6px;
-            display: block;
-        }
-        
         .file-input-wrapper {
             position: relative;
             border: 2px dashed #cbd5e1;
             border-radius: 10px;
-            padding: 32px 24px;
+            padding: 32px;
             text-align: center;
-            transition: all 0.2s;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        
-        .file-input-wrapper:hover {
-            border-color: #3b82f6;
-            background: #f8fafc;
-        }
-        
+        .file-input-wrapper:hover { border-color: #3b82f6; background: #f8fafc; }
         .file-input-wrapper.has-file {
             border-color: #10b981;
             background: #f0fdf4;
         }
-        
         input[type="file"] {
             position: absolute;
             inset: 0;
             opacity: 0;
             cursor: pointer;
         }
-        
-        .file-label-text {
-            color: #64748b;
-            font-size: 0.9rem;
-            pointer-events: none;
-        }
-        
-        .file-label-text strong {
-            color: #3b82f6;
-            display: block;
-            margin-bottom: 4px;
-            font-size: 1rem;
-        }
-        
-        button[type="submit"] {
+        button {
             width: 100%;
-            padding: 14px 24px;
+            padding: 14px;
             background: #3b82f6;
             color: white;
             border: none;
@@ -162,107 +80,59 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            touch-action: manipulation;
         }
-        
-        button[type="submit"]:active {
-            transform: scale(0.98);
-        }
-        
-        button[type="submit"]:disabled {
+        button:disabled {
             background: #93c5fd;
             cursor: not-allowed;
-            transform: none;
         }
-        
         .status {
-            margin-top: 20px;
+            margin-top: 16px;
             padding: 16px;
             border-radius: 10px;
             display: none;
             font-size: 0.9rem;
-            line-height: 1.5;
         }
-        
-        .status.show {
-            display: block;
-        }
-        
-        .status.success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-        }
-        
-        .status.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-        
+        .status.show { display: block; }
+        .status.success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .status.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .status.info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
         .back-link {
             display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            margin-bottom: 20px;
             color: #3b82f6;
             text-decoration: none;
             font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            padding: 8px 0;
         }
-        
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .preview-icon {
-            font-size: 48px;
-            margin: 16px 0;
-        }
-        
-        @media (max-width: 640px) {
-            body { padding: 0; }
-            .container { border-radius: 0; min-height: 100dvh; }
+        .debug-info {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-family: monospace;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div style="max-width:640px;margin:0 auto;">
-        <a href="DASTEAT.HTML" class="back-link">← Back to Portal</a>
-    </div>
-    
     <div class="container">
         <div class="header">
-            <span class="header-icon">📤</span>
-            <h1>Upload Document</h1>
+            <h1>📤 Upload Document</h1>
         </div>
         
         <div class="form-container">
+            <a href="index.html" class="back-link">← Back to Portal</a>
+            
             <form id="uploadForm">
                 <div class="form-group">
-                    <label for="title">Document Title *</label>
-                    <input type="text" id="title" required placeholder="e.g., AAD-CEMS-200 User Manual">
+                    <label>Document Title *</label>
+                    <input type="text" id="title" required placeholder="Enter document title">
                 </div>
                 
                 <div class="form-group">
-                    <label for="category">Category *</label>
+                    <label>Category *</label>
                     <select id="category" multiple required>
                         <option value="Manual">Manual</option>
                         <option value="LDM">LDM</option>
@@ -270,25 +140,24 @@
                         <option value="Spare list all">Spare list all</option>
                         <option value="Installation Requirements">Installation Requirements</option>
                     </select>
-                    <span class="hint">Hold Ctrl/Cmd to select multiple categories</span>
+                    <small style="color:#64748b">Hold Ctrl/Cmd to select multiple</small>
                 </div>
                 
                 <div class="form-group">
                     <label>PDF File *</label>
                     <div class="file-input-wrapper" id="dropZone">
                         <input type="file" id="file" accept=".pdf" required>
-                        <div class="file-label-text" id="fileLabel">
-                            <strong>Click to upload PDF</strong>
-                            <span>or drag and drop here</span>
+                        <div id="fileLabel">
+                            <strong style="color:#3b82f6">Click to upload PDF</strong><br>
+                            <span style="color:#64748b">or drag and drop here</span>
                         </div>
                     </div>
                 </div>
                 
-                <button type="submit" id="submitBtn">
-                    <span>Upload to Portal</span>
-                </button>
+                <button type="submit" id="submitBtn">Upload to Portal</button>
                 
                 <div id="status" class="status"></div>
+                <div id="debug" class="debug-info"></div>
             </form>
         </div>
     </div>
@@ -296,62 +165,63 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script>
         // ==========================================
-        // CONFIGURATION - REPLACE THESE VALUES
+        // REPLACE WITH YOUR CREDENTIALS
         // ==========================================
         const SUPABASE_URL = 'https://idfvlhncutvjzzkmsyhk.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_secret_YLwf-CohJEb2WkF2cdv_nA__G4gVx3W';
-        const BUCKET_NAME = 'documents'; // Must match your storage bucket name
+        const BUCKET_NAME = 'documents'; // Your bucket name
         
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let uploadCounter = 0;
         
         const form = document.getElementById('uploadForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const status = document.getElementById('status');
         const fileInput = document.getElementById('file');
         const dropZone = document.getElementById('dropZone');
         const fileLabel = document.getElementById('fileLabel');
+        const status = document.getElementById('status');
+        const debug = document.getElementById('debug');
+        const submitBtn = document.getElementById('submitBtn');
         
-        // File selection feedback
+        // File selection handler
         fileInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
                 dropZone.classList.add('has-file');
                 fileLabel.innerHTML = `
-                    <div class="preview-icon">📄</div>
-                    <strong>${file.name}</strong>
-                    <span>${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                    <strong style="color:#10b981">📄 ${file.name}</strong><br>
+                    <span style="color:#64748b">${(file.size/1024/1024).toFixed(2)} MB</span>
                 `;
+                hideStatus();
             }
         });
         
-        // Drag and drop support
+        // Drag & drop
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.style.borderColor = '#3b82f6';
         });
-        
         dropZone.addEventListener('dragleave', () => {
-            dropZone.style.borderColor = '';
+            dropZone.style.borderColor = '#cbd5e1';
         });
-        
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropZone.style.borderColor = '';
+            dropZone.style.borderColor = '#cbd5e1';
             const files = e.dataTransfer.files;
             if (files.length && files[0].type === 'application/pdf') {
                 fileInput.files = files;
                 const file = files[0];
                 dropZone.classList.add('has-file');
                 fileLabel.innerHTML = `
-                    <div class="preview-icon">📄</div>
-                    <strong>${file.name}</strong>
-                    <span>${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                    <strong style="color:#10b981">📄 ${file.name}</strong><br>
+                    <span style="color:#64748b">${(file.size/1024/1024).toFixed(2)} MB</span>
                 `;
             }
         });
         
+        // Upload handler
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            uploadCounter++;
             
             const title = document.getElementById('title').value.trim();
             const categorySelect = document.getElementById('category');
@@ -363,12 +233,6 @@ const SUPABASE_ANON_KEY = 'sb_secret_YLwf-CohJEb2WkF2cdv_nA__G4gVx3W';
                 return;
             }
             
-            if (file.type !== 'application/pdf') {
-                showStatus('Only PDF files are allowed', 'error');
-                return;
-            }
-            
-            // Get selected categories
             const selectedOptions = Array.from(categorySelect.selectedOptions);
             if (selectedOptions.length === 0) {
                 showStatus('Please select at least one category', 'error');
@@ -377,92 +241,116 @@ const SUPABASE_ANON_KEY = 'sb_secret_YLwf-CohJEb2WkF2cdv_nA__G4gVx3W';
             
             const categories = selectedOptions.map(opt => opt.value);
             
-            // UI Loading state
+            // UI Loading
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Uploading...';
+            submitBtn.textContent = 'Uploading...';
             hideStatus();
+            debug.style.display = 'none';
             
             try {
-                // Generate unique filename
+                // Generate TRULY unique filename
                 const timestamp = Date.now();
-                const randomStr = Math.random().toString(36).substring(2, 10);
-                const fileExt = file.name.split('.').pop();
-                const filePath = `uploads/${timestamp}_${randomStr}.${fileExt}`;
+                const random = Math.random().toString(36).substring(2, 15);
+                const counter = uploadCounter;
+                const safeTitle = title.replace(/[^a-z0-9]/gi, '_').substring(0, 20);
+                const filePath = `uploads/${timestamp}_${counter}_${random}_${safeTitle}.pdf`;
                 
                 console.log('Uploading to:', filePath);
                 
-                // Upload to Supabase Storage
+                // 1. Upload to Storage
                 const { data: uploadData, error: uploadError } = await supabase
                     .storage
                     .from(BUCKET_NAME)
                     .upload(filePath, file, {
                         contentType: 'application/pdf',
-                        cacheControl: '3600'
+                        upsert: false // Prevent overwriting
                     });
                 
                 if (uploadError) {
-                    console.error('Upload error:', uploadError);
-                    throw new Error('Failed to upload file: ' + uploadError.message);
+                    throw new Error(`Storage error: ${uploadError.message}`);
                 }
                 
-                // Get public URL
+                // 2. Get URL
                 const { data: { publicUrl } } = supabase
                     .storage
                     .from(BUCKET_NAME)
                     .getPublicUrl(filePath);
                 
-                console.log('File URL:', publicUrl);
+                console.log('Public URL:', publicUrl);
                 
-                // Insert metadata into documents table
+                // 3. Insert to Database
+                // IMPORTANT: If your category column is TEXT (not array), change 'categories' to 'categories.join(", ")'
+                const insertData = {
+                    title: title,
+                    file: publicUrl,
+                    category: categories, // Use categories.join(", ") if column is TEXT
+                    size: (file.size / (1024*1024)).toFixed(2) + ' MB',
+                    icon: '📄',
+                    created_at: new Date().toISOString()
+                };
+                
+                console.log('Inserting:', insertData);
+                
                 const { error: dbError } = await supabase
                     .from('documents')
-                    .insert([
-                        {
-                            title: title,
-                            file: publicUrl,
-                            category: categories, // For TEXT[] column
-                            size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
-                            icon: '📄',
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
+                    .insert([insertData]);
                 
                 if (dbError) {
-                    console.error('Database error:', dbError);
-                    throw new Error('Failed to save document info: ' + dbError.message);
+                    // If DB fails, try to delete the uploaded file (cleanup)
+                    await supabase.storage.from(BUCKET_NAME).remove([filePath]);
+                    throw new Error(`Database error: ${dbError.message}`);
                 }
                 
                 // Success
-                showStatus('✅ Document uploaded successfully! It will appear in the portal immediately.', 'success');
+                showStatus('✅ Upload successful! Document will appear in portal immediately.', 'success');
+                
+                // Reset form properly
                 form.reset();
                 dropZone.classList.remove('has-file');
                 fileLabel.innerHTML = `
-                    <strong>Click to upload PDF</strong>
-                    <span>or drag and drop here</span>
+                    <strong style="color:#3b82f6">Click to upload PDF</strong><br>
+                    <span style="color:#64748b">or drag and drop here</span>
                 `;
                 
+                // Clear file input completely (important!)
+                fileInput.value = '';
+                
             } catch (err) {
-                console.error('Upload error:', err);
-                showStatus('❌ Error: ' + (err.message || 'Upload failed'), 'error');
+                console.error('Full error:', err);
+                showStatus('❌ ' + err.message, 'error');
+                
+                // Show debug info
+                debug.style.display = 'block';
+                debug.innerHTML = `
+                    Error: ${err.message}<br>
+                    Time: ${new Date().toLocaleTimeString()}<br>
+                    Check browser console (F12) for details
+                `;
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>Upload to Portal</span>';
+                submitBtn.textContent = 'Upload to Portal';
             }
         });
         
-        function showStatus(message, type) {
-            status.textContent = message;
+        function showStatus(msg, type) {
+            status.textContent = msg;
             status.className = 'status ' + type + ' show';
         }
-        
         function hideStatus() {
             status.className = 'status';
         }
         
-        // Optional: Security check (uncomment to enforce login)
-        // if (sessionStorage.getItem("verified") !== "true") {
-        //     window.location.href = "DASTEAT.HTML";
-        // }
+        // Check connection on load
+        async function checkConnection() {
+            const { error } = await supabase.from('documents').select('count', { count: 'exact', head: true });
+            if (error) {
+                console.error('Connection error:', error);
+                showStatus('⚠️ Database connection issue. Check RLS policies.', 'error');
+            } else {
+                console.log('Connected to Supabase');
+            }
+        }
+        checkConnection();
     </script>
 </body>
 </html>
