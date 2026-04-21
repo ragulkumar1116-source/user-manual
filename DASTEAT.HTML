@@ -931,19 +931,6 @@ const SUPABASE_ANON_KEY = 'sb_secret_YLwf-CohJEb2WkF2cdv_nA__G4gVx3W';
         setTimeout(loadDocumentsFromSupabase, 500);
     </script>
 
-    <!-- Security Check (Keep at end) -->
-    <script>
-        // 🚨 Block direct access
-        if (sessionStorage.getItem("verified") !== "true") {
-            window.location.href = "index.html";
-        }
-
-        // Extra protection on reload/back
-        window.addEventListener("pageshow", function () {
-            if (sessionStorage.getItem("verified") !== "true") {
-                window.location.href = "index.html";
-            }
-        });
-    </script>
+  
 </body>
 </html>
