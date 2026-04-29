@@ -525,58 +525,48 @@
         </div>
     </main>
 
-    <script>
-        // ==========================================
-        // CONFIGURATION - ADD CATEGORIES HERE
-        // ==========================================
-        const categories = [
-            { name: 'All', color: '#64748b', showInList: false },
-            { name: 'Manual', color: '#10b981' },
-            { name: 'LDM', color: '#f59e0b' },  
-            { name: 'OCEMS', color: '#3b82f6' },
-            { name: 'Spare list all', color: '#8b5cf6' },
-            { name: 'Installation Requirements', color: '#ef4444' },
-            // Removed duplicate 'Inst' entries
-        ];
+   <script>
+    // ==========================================
+    // CONFIGURATION - ADD CATEGORIES HERE
+    // ==========================================
+    const categories = [
+        { name: 'All', color: '#64748b', showInList: false },
+        { name: 'Manual', color: '#10b981' },
+        { name: 'LDM', color: '#f59e0b' },  
+        { name: 'OCEMS', color: '#3b82f6' },
+        { name: 'Spare list all', color: '#8b5cf6' },
+        { name: 'Installation Requirements', color: '#ef4444' },
+    ];
 
-        // Storage for documents
-        let documents = [];
-        let docIdCounter = 1;
+    let documents = [];
+    let docIdCounter = 1;
 
-        // ==========================================
-        // HELPER FUNCTION - EASY TO USE!
-        // ==========================================
-        
-        function addDoc({ title, file, category, size = "PDF", icon = "📄" }) {
-            const cats = Array.isArray(category) ? category : [category];
-            
-            cats.forEach((cat) => {
-                if (!cat) return; // Skip empty categories
-                documents.push({
-                    id: docIdCounter++,
-                    title: title,
-                    file: file,
-                    category: cat,
-                    size: size,
-                    icon: icon,
-                    isDuplicate: cats.length > 1
-                });
+    function addDoc({ title, file, category, size = "PDF", icon = "📄" }) {
+        const cats = Array.isArray(category) ? category : [category];
+        cats.forEach((cat) => {
+            if (!cat) return;
+            documents.push({
+                id: docIdCounter++,
+                title: title,
+                file: file,
+                category: cat,
+                size: size,
+                icon: icon,
+                isDuplicate: cats.length > 1
             });
-        }
-
-        // ==========================================
-        // ADD YOUR DOCUMENTS HERE
-        // ==========================================
-
-        addDoc({
-            title: "AAD-CEMS-200 User Manual",
-            file: "https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/sign/Ragul/AAD-CEMS-200%20User%20Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MjFkMmMzOC05ZTI5LTRlYjEtODU2NS04M2ViODlhNzgzMjAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJSYWd1bC9BQUQtQ0VNUy0yMDAgVXNlciBNYW51YWwucGRmIiwiaWF0IjoxNzc2Nzg3ODQzLCJleHAiOjE5MDI5MzE4NDN9.GSP0ION3HMwTfvrep7i2Xs9GMFOjH04LzolgqAM5yKE",
-            category: "Manual",
-            size: "PDF",
-            icon: "📗"
         });
+    }
 
-        addDoc({
+    // ADD YOUR DOCUMENTS HERE
+    addDoc({
+        title: "AAD-CEMS-200 User Manual",
+        file: "https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/sign/Ragul/AAD-CEMS-200%20User%20Manual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MjFkMmMzOC05ZTI5LTRlYjEtODU2NS04M2ViODlhNzgzMjAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJSYWd1bC9BQUQtQ0VNUy0yMDAgVXNlciBNYW51YWwucGRmIiwiaWF0IjoxNzc2Nzg3ODQzLCJleHAiOjE5MDI5MzE4NDN9.GSP0ION3HMwTfvrep7i2Xs9GMFOjH04LzolgqAM5yKE",
+        category: "Manual",
+        size: "PDF",
+        icon: "📗"
+    });
+
+       addDoc({
             title: "AIT LM318 User Manual",
             file: "https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/sign/Ragul/AIT%20LM318-%20User%20Manual%20-%20REV2.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MjFkMmMzOC05ZTI5LTRlYjEtODU2NS04M2ViODlhNzgzMjAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJSYWd1bC9BSVQgTE0zMTgtIFVzZXIgTWFudWFsIC0gUkVWMi5wZGYiLCJpYXQiOjE3NzY3ODc5NzYsImV4cCI6MTkwMjkzMTk3Nn0.s3ZyjzLlJBg0RLuD46XN2NWbWtytHoymMBik-O7lSRE",
             category: ["Manual", "LDM"],
@@ -594,7 +584,7 @@
 
         addDoc({
             title: "AIT-COEMS L-800 Manual",
-            file: "Phttps://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/sign/Ragul/AIT-COEMS_L-800%20usermanual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MjFkMmMzOC05ZTI5LTRlYjEtODU2NS04M2ViODlhNzgzMjAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJSYWd1bC9BSVQtQ09FTVNfTC04MDAgdXNlcm1hbnVhbC5wZGYiLCJpYXQiOjE3NzY3ODgxODAsImV4cCI6MTkwMjkzMjE4MH0.QjEPbhrr2M9BhtK0fgmII9OLa5m4Y7vQYP7HwjGMv-8DF",
+            file: "https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/sign/Ragul/AIT-COEMS_L-800%20usermanual.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MjFkMmMzOC05ZTI5LTRlYjEtODU2NS04M2ViODlhNzgzMjAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJSYWd1bC9BSVQtQ09FTVNfTC04MDAgdXNlcm1hbnVhbC5wZGYiLCJpYXQiOjE3Nzc0MzgxMTIsImV4cCI6MTkwMzU4MjExMn0.-Rz3Gxrtuj8tsRQFnLHo9akUhHNDzUfgqR2wwcp4zVk",
             category: ["Manual", "OCEMS"],
             size: "PDF",
             icon: "📙"
@@ -640,202 +630,160 @@
             icon: "🛠️"
         });
 
-        // ==========================================
-        // APP LOGIC
-        // ==========================================
+    // APP LOGIC
+    let currentFilter = 'All';
+    let currentDocId = null;
 
-        let currentFilter = 'All';
-        let currentDocId = null;
+    document.addEventListener('DOMContentLoaded', () => {
+        renderFilters();
+        renderDocs();
+        
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('backdrop').classList.remove('active');
+            }
+        });
+    });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderFilters();
-            renderDocs();
-            
-            // Handle resize
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 768) {
-                    document.getElementById('sidebar').classList.remove('open');
-                    document.getElementById('backdrop').classList.remove('active');
-                }
-            });
+    function renderFilters() {
+        const container = document.getElementById('filterContainer');
+        const visibleCategories = categories.filter(c => c.showInList !== false);
+        
+        container.innerHTML = visibleCategories.map(cat => `
+            <button class="tag ${cat.name === 'All' ? 'active' : ''}" 
+                    onclick="setFilter('${cat.name}', this)"
+                    style="background: ${cat.name === 'All' ? cat.color : cat.color + '20'}; 
+                           color: ${cat.name === 'All' ? 'white' : cat.color};
+                           border-color: ${cat.color}40;"
+                    aria-pressed="${cat.name === 'All'}">
+                ${cat.name}
+            </button>
+        `).join('');
+    }
+
+    function setFilter(filterName, btn) {
+        currentFilter = filterName;
+        document.querySelectorAll('.tag').forEach(b => {
+            const cat = categories.find(c => c.name === b.textContent.trim());
+            if (cat) {
+                b.style.background = cat.color + '20';
+                b.style.color = cat.color;
+                b.classList.remove('active');
+            }
+        });
+        
+        const activeCat = categories.find(c => c.name === filterName);
+        if (activeCat) {
+            btn.style.background = activeCat.color;
+            btn.style.color = 'white';
+            btn.classList.add('active');
+        }
+        renderDocs();
+    }
+
+    function renderDocs() {
+        const list = document.getElementById('docList');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        
+        let filtered = documents.filter(d => {
+            const matchesSearch = d.title.toLowerCase().includes(search);
+            const matchesCategory = currentFilter === 'All' || d.category === currentFilter;
+            return matchesSearch && matchesCategory;
         });
 
-        function renderFilters() {
-            const container = document.getElementById('filterContainer');
-            const visibleCategories = categories.filter(c => c.showInList !== false);
-            
-            container.innerHTML = visibleCategories.map(cat => `
-                <button class="tag ${cat.name === 'All' ? 'active' : ''}" 
-                        onclick="setFilter('${cat.name}', this)"
-                        style="background: ${cat.name === 'All' ? cat.color : cat.color + '20'}; 
-                               color: ${cat.name === 'All' ? 'white' : cat.color};
-                               border-color: ${cat.color}40;"
-                        aria-pressed="${cat.name === 'All'}">
-                    ${cat.name}
-                </button>
-            `).join('');
+        if (filtered.length === 0) {
+            list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No documents found</div>';
+            return;
         }
 
-        function setFilter(filterName, btn) {
-            currentFilter = filterName;
-            
-            document.querySelectorAll('.tag').forEach(b => {
-                const cat = categories.find(c => c.name === b.textContent.trim());
-                if (cat) {
-                    b.style.background = cat.color + '20';
-                    b.style.color = cat.color;
-                    b.classList.remove('active');
-                    b.setAttribute('aria-pressed', 'false');
-                }
-            });
-            
-            const activeCat = categories.find(c => c.name === filterName);
-            if (activeCat) {
-                btn.style.background = activeCat.color;
-                btn.style.color = 'white';
-                btn.classList.add('active');
-                btn.setAttribute('aria-pressed', 'true');
-            }
-            
-            renderDocs();
-        }
+        const grouped = filtered.reduce((acc, doc) => {
+            if (!acc[doc.category]) acc[doc.category] = [];
+            acc[doc.category].push(doc);
+            return acc;
+        }, {});
 
-        function renderDocs() {
-            const list = document.getElementById('docList');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            
-            let filtered = documents.filter(d => {
-                const matchesSearch = d.title.toLowerCase().includes(search);
-                const matchesCategory = currentFilter === 'All' || d.category === currentFilter;
-                return matchesSearch && matchesCategory;
-            });
-
-            if (filtered.length === 0) {
-                list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;">No documents found</div>';
-                return;
-            }
-
-            const grouped = filtered.reduce((acc, doc) => {
-                if (!acc[doc.category]) acc[doc.category] = [];
-                acc[doc.category].push(doc);
-                return acc;
-            }, {});
-
-            let html = '';
-            
-            const sortedCatNames = categories
-                .filter(c => grouped[c.name])
-                .map(c => c.name);
-
-            sortedCatNames.forEach(catName => {
-                const docs = grouped[catName];
-                const catConfig = categories.find(c => c.name === catName) || { color: '#64748b' };
-                
-                html += `
-                    <div class="category-group">
-                        <div class="category-header" style="color: ${catConfig.color};">
-                            <div class="category-dot" style="background: ${catConfig.color};"></div>
-                            ${catName} <span style="opacity:0.6;margin-left:4px;">(${docs.length})</span>
-                        </div>
-                        ${docs.map(doc => `
-                            <div class="doc-item" onclick="loadDoc(${doc.id})" data-id="${doc.id}" role="button" tabindex="0">
-                                <div class="doc-icon">${doc.icon}</div>
-                                <div class="doc-info">
-                                    <div class="doc-title">${doc.title}</div>
-                                    <div class="doc-meta">
-                                        <span class="badge" style="background: ${catConfig.color}15; color: ${catConfig.color};">
-                                            ${doc.category}
-                                        </span>
-                                        ${doc.isDuplicate ? '<span style="opacity:0.5;">• Multi</span>' : ''}
-                                        <span>${doc.size}</span>
-                                    </div>
+        let html = '';
+        categories.filter(c => grouped[c.name]).forEach(catConfig => {
+            const docs = grouped[catConfig.name];
+            html += `
+                <div class="category-group">
+                    <div class="category-header" style="color: ${catConfig.color};">
+                        <div class="category-dot" style="background: ${catConfig.color};"></div>
+                        ${catConfig.name} <span style="opacity:0.6;margin-left:4px;">(${docs.length})</span>
+                    </div>
+                    ${docs.map(doc => `
+                        <div class="doc-item" onclick="loadDoc(${doc.id})" data-id="${doc.id}">
+                            <div class="doc-icon">${doc.icon}</div>
+                            <div class="doc-info">
+                                <div class="doc-title">${doc.title}</div>
+                                <div class="doc-meta">
+                                    <span class="badge" style="background: ${catConfig.color}15; color: ${catConfig.color};">
+                                        ${doc.category}
+                                    </span>
+                                    <span>${doc.size}</span>
                                 </div>
                             </div>
-                        `).join('')}
-                    </div>
-                `;
-            });
-            
-            list.innerHTML = html;
-        }
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        });
+        list.innerHTML = html;
+    }
 
-        function loadDoc(id) {
-            const doc = documents.find(d => d.id === id);
-            if (!doc) return;
-            
-            currentDocId = id;
-            
-            document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
-            const activeEl = document.querySelector(`[data-id="${id}"]`);
-            if (activeEl) activeEl.classList.add('active');
-            
-            document.getElementById('currentTitle').textContent = doc.title;
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('doc-frame').style.display = 'block';
-            document.getElementById('openBtn').style.display = 'flex';
-            
-            const frame = document.getElementById('doc-frame');
+    function loadDoc(id) {
+        const doc = documents.find(d => d.id === id);
+        if (!doc) return;
+        
+        currentDocId = id;
+        document.querySelectorAll('.doc-item').forEach(el => el.classList.remove('active'));
+        const activeEl = document.querySelector(`[data-id="${id}"]`);
+        if (activeEl) activeEl.classList.add('active');
+        
+        document.getElementById('currentTitle').textContent = doc.title;
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('doc-frame').style.display = 'block';
+        document.getElementById('openBtn').style.display = 'flex';
+        
+        const frame = document.getElementById('doc-frame');
+
+        // CHECK IF MOBILE
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            // Use Google Viewer for mobile to fix the "Server not found" issue in iFrames
+            frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(doc.file)}&embedded=true`;
+        } else {
+            // Standard loading for desktop
             frame.src = doc.file;
-            
-            // Mobile optimization: close sidebar after selection
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
-            
-            // Scroll to top of viewer on mobile
-            if (window.innerWidth <= 768) {
-                document.querySelector('.viewer').scrollTop = 0;
-            }
         }
+        
+        if (window.innerWidth <= 768) toggleSidebar();
+    }
 
-        function openInNewTab() {
-            if (currentDocId) {
-                const doc = documents.find(d => d.id === currentDocId);
-                if (doc) window.open(doc.file, '_blank');
-            }
+    function openInNewTab() {
+        if (currentDocId) {
+            const doc = documents.find(d => d.id === currentDocId);
+            if (doc) window.open(doc.file, '_blank');
         }
+    }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('backdrop');
-            
-            sidebar.classList.toggle('open');
-            
-            if (sidebar.classList.contains('open')) {
-                backdrop.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-            } else {
-                backdrop.classList.remove('active');
-                document.body.style.overflow = '';
-            }
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        sidebar.classList.toggle('open');
+        if (sidebar.classList.contains('open')) {
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
         }
-
-        // Close sidebar when clicking outside
-        document.addEventListener('click', (e) => {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('backdrop');
-            
-            if (window.innerWidth <= 768 && 
-                sidebar.classList.contains('open') &&
-                !sidebar.contains(e.target) &&
-                !e.target.closest('.mobile-header')) {
-                toggleSidebar();
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar.classList.contains('open')) {
-                    toggleSidebar();
-                }
-            }
-        });
-    </script>
+    }
+</script>
 
 
-<script>
 // 🚨 Block direct access
 if (sessionStorage.getItem("verified") !== "true") {
     window.location.href = "index.html";
@@ -849,7 +797,24 @@ window.addEventListener("pageshow", function () {
 });
 </script>
 
-<script src="license.js"></script>
+    </script>
+
+
+// 🚨 Block direct access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.href = "index.html";
+}
+
+// Extra protection on reload/back
+window.addEventListener("pageshow", function () {
+    if (sessionStorage.getItem("verified") !== "true") {
+        window.location.href = "index.html";
+    }
+});
+</script>
+
+    
+
     
 </body>
 </html>
