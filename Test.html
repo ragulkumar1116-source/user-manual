@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -390,10 +391,8 @@
 </head>
 <body>
 
-    <!-- Mobile Backdrop -->
     <div class="sidebar-backdrop" id="backdrop" onclick="toggleSidebar()"></div>
 
-    <!-- Mobile Top Bar -->
     <div class="mobile-header">
         <button onclick="toggleSidebar()" aria-label="Open menu"
                 style="background:none;border:none;font-size:26px;cursor:pointer;padding:6px;line-height:1;">☰</button>
@@ -406,7 +405,6 @@
         <div id="mobileOpenPlaceholder" style="width:70px;"></div>
     </div>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
@@ -422,7 +420,6 @@
         <div class="doc-list" id="docList"></div>
     </aside>
 
-    <!-- Viewer -->
     <main class="viewer">
         <div class="viewer-toolbar">
             <div class="doc-title-main" id="currentTitle">Select a document</div>
@@ -443,7 +440,7 @@
 
     <script>
         // ─────────────────────────────────────────
-        // CATEGORIES  (add / edit as needed)
+        // CATEGORIES
         // ─────────────────────────────────────────
         const categories = [
             { name: 'All',                      color: '#64748b' },
@@ -457,7 +454,7 @@
         ];
 
         // ─────────────────────────────────────────
-        // DOCUMENTS  (add / edit as needed)
+        // DOCUMENTS
         // ─────────────────────────────────────────
         const documents = [];
         let _idCounter = 1;
@@ -487,8 +484,6 @@
             icon: '🎬'
         });
 
-        /* ── ADD MORE DOCUMENTS ABOVE THIS LINE ── */
-
         // ─────────────────────────────────────────
         // STATE
         // ─────────────────────────────────────────
@@ -496,7 +491,7 @@
         let currentDocId  = null;
 
         // ─────────────────────────────────────────
-        // RENDER FILTERS
+        // FUNCTIONS
         // ─────────────────────────────────────────
         function renderFilters() {
             const container = document.getElementById('filterContainer');
@@ -516,32 +511,10 @@
 
         function setFilter(name, btn) {
             currentFilter = name;
-
-            // Reset all tags
-            document.querySelectorAll('.tag').forEach(b => {
-                const txt  = b.textContent.trim();
-                const cat  = categories.find(c => c.name === txt);
-                if (!cat) return;
-                b.style.background  = cat.color + '20';
-                b.style.color       = cat.color;
-                b.classList.remove('active');
-                b.setAttribute('aria-pressed', 'false');
-            });
-
-            // Activate clicked tag
-            const activeCat = categories.find(c => c.name === name);
-            if (activeCat && btn) {
-                btn.style.background = activeCat.color;
-                btn.style.color      = 'white';
-                btn.classList.add('active');
-                btn.setAttribute('aria-pressed', 'true');
-            }
+            renderFilters();
             renderDocs();
         }
 
-        // ─────────────────────────────────────────
-        // RENDER DOCUMENT LIST
-        // ─────────────────────────────────────────
         function renderDocs() {
             const list   = document.getElementById('docList');
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -557,7 +530,6 @@
                 return;
             }
 
-            // Group by category in the order defined in `categories`
             const grouped = filtered.reduce((acc, doc) => {
                 if (!acc[doc.category]) acc[doc.category] = [];
                 acc[doc.category].push(doc);
@@ -571,15 +543,69 @@
                     <div class="category-group">
                         <div class="category-header" style="color:${catConfig.color};">
                             <div class="category-dot" style="background:${catConfig.color};"></div>
-                            ${catConfig.name}
-                            <span style="opacity:0.5;font-weight:500;">(${docs.length})</span>
+                            ${catConfig.name} (${docs.length})
                         </div>
                         ${docs.map(doc => `
                             <div class="doc-item ${doc.id === currentDocId ? 'active' : ''}"
-                                 onclick="loadDoc(${doc.id})" data-id="${doc.id}">
+                                 onclick="loadDoc(${doc.id})">
                                 <div class="doc-icon">${doc.icon}</div>
                                 <div class="doc-info">
                                     <div class="doc-title">${doc.title}</div>
                                     <div class="doc-meta">
                                         <span class="badge" style="background:${catConfig.color}18;color:${catConfig.color};">
-                                  
+                                            ${doc.size}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            });
+            list.innerHTML = html;
+        }
+
+        function loadDoc(id) {
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+
+            currentDocId = id;
+            
+            // UI Updates
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('doc-frame').style.display = 'block';
+            document.getElementById('doc-frame').src = doc.file;
+            document.getElementById('currentTitle').textContent = doc.title;
+            
+            // Buttons
+            document.getElementById('openBtn').style.display = 'flex';
+            document.getElementById('mobileOpenBtn').style.display = 'block';
+            document.getElementById('mobileOpenPlaceholder').style.display = 'none';
+
+            // Mobile sidebar behavior
+            if (window.innerWidth <= 768) toggleSidebar(false);
+            
+            renderDocs();
+        }
+
+        function openInNewTab() {
+            const doc = documents.find(d => d.id === currentDocId);
+            if (doc) window.open(doc.file, '_blank');
+        }
+
+        function toggleSidebar(force) {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('backdrop');
+            const isOpen = force !== undefined ? force : !sidebar.classList.contains('open');
+            
+            sidebar.classList.toggle('open', isOpen);
+            backdrop.classList.toggle('active', isOpen);
+        }
+
+        // Initialize
+        renderFilters();
+        renderDocs();
+    </script>
+</body>
+</html>
+
+```
