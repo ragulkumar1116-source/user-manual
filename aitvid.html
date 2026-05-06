@@ -9,7 +9,7 @@
     <style>
         :root {
             --primary: #0f172a;
-            --accent: #f59e0b; /* Amber/Orange for Video Theme */
+            --accent: #f59e0b; 
             --sidebar-bg: #f8fafc;
             --content-bg: #ffffff;
             --text-primary: #1e293b;
@@ -32,7 +32,7 @@
             grid-template-columns: 360px 1fr;
         }
 
-        /* ── Sidebar ── */
+        /* ── Sidebar (Your Original Style) ── */
         .sidebar {
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
@@ -51,142 +51,31 @@
 
         .logo {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary);
-            white-space: nowrap;
+            align-items: center; gap: 8px; font-size: 20px; font-weight: 700; color: var(--primary);
         }
 
         .logo img { height: 35px; width: 35px; }
 
-        .search-box {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
-            background: white;
-        }
-
+        .search-box { padding: 16px 20px; border-bottom: 1px solid var(--border); background: white; }
         .search-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; outline: none;
         }
 
-        .search-box input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(245,158,11,0.1);
-        }
-
-        /* ── Category Filter Chips ── */
-        .filter-tags {
-            display: flex;
-            gap: 8px;
-            padding: 16px 20px;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border);
-            background: white;
-            scrollbar-width: none;
-        }
-
-        .filter-tags::-webkit-scrollbar { display: none; }
-
-        .tag {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-        }
-
+        .filter-tags { display: flex; gap: 8px; padding: 16px 20px; overflow-x: auto; border-bottom: 1px solid var(--border); background: white; scrollbar-width: none; }
+        .tag { padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; border: 2px solid transparent; }
         .tag.active { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
-        /* ── List ── */
-        .doc-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f8fafc;
-        }
-
-        .category-group { margin-bottom: 24px; }
-
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 12px;
-            padding: 8px 8px;
-            position: sticky;
-            top: 0;
-            background: #f8fafc;
-            z-index: 5;
-        }
-
+        .doc-list { flex: 1; overflow-y: auto; padding: 20px; background: #f8fafc; }
+        .category-header { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
         .category-dot { width: 8px; height: 8px; border-radius: 50%; }
 
         .doc-item {
-            padding: 16px;
-            margin: 8px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            background: white;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 16px; margin: 8px 0; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 14px; background: white; border: 1px solid var(--border); transition: all 0.2s;
         }
+        .doc-item.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .doc-item:hover { transform: translateX(6px); border-color: var(--accent); }
-
-        .doc-item.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .doc-item.active .badge { background: rgba(255,255,255,0.2) !important; color: white !important; }
-
-        .doc-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.04);
-            font-size: 20px;
-        }
-
-        .doc-item.active .doc-icon { background: rgba(255,255,255,0.2); }
-
-        .doc-info { flex: 1; min-width: 0; }
-        .doc-title { font-weight: 600; font-size: 0.93rem; margin-bottom: 6px; }
-
-        .badge {
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.68rem;
-            font-weight: 700;
-        }
-
-        /* ── Viewer ── */
-        .viewer { display: flex; flex-direction: column; background: #1e293b; height: 100vh; }
+        /* ── UPGRADED VIDEO PLAYER AREA ── */
+        .viewer { display: flex; flex-direction: column; background: #0f172a; height: 100vh; }
 
         .viewer-toolbar {
             height: var(--header-height);
@@ -196,32 +85,46 @@
             justify-content: space-between;
             padding: 0 24px;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .frame-container {
             flex: 1;
-            position: relative;
-            margin: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
+        }
+
+        .video-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
             background: #000;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
         }
 
         iframe { width: 100%; height: 100%; border: none; }
+
+        .empty-state {
+            position: absolute;
+            text-align: center;
+            color: #64748b;
+        }
 
         /* ── Mobile ── */
         @media (max-width: 768px) {
             body { grid-template-columns: 1fr; }
             .sidebar { position: fixed; left: -100%; width: 85%; z-index: 100; transition: 0.3s; }
             .sidebar.open { left: 0; }
-            .mobile-header {
-                display: flex; position: fixed; top: 0; width: 100%;
-                height: var(--header-height); background: white; border-bottom: 1px solid var(--border);
-                z-index: 50; padding: 0 20px; align-items: center; justify-content: space-between;
-            }
+            .mobile-header { display: flex; position: fixed; top: 0; width: 100%; height: var(--header-height); background: white; border-bottom: 1px solid var(--border); z-index: 50; padding: 0 20px; align-items: center; justify-content: space-between; }
             .viewer { margin-top: var(--header-height); height: calc(100dvh - var(--header-height)); }
-            .viewer-toolbar { display: none; }
+            .frame-container { padding: 15px; }
             .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
             .sidebar-backdrop.active { display: block; }
         }
@@ -239,31 +142,28 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo">
-                <img src="manuals/logo (2).ico" alt=""> AIT Video Portal
-            </div>
+            <div class="logo"><img src="manuals/logo (2).ico" alt=""> AIT Video</div>
         </div>
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search training videos..." onkeyup="renderVideos()">
-        </div>
-
+        <div class="search-box"><input type="text" id="searchInput" placeholder="Search videos..." onkeyup="renderVideos()"></div>
         <div class="filter-tags" id="filterContainer"></div>
         <div class="doc-list" id="videoList"></div>
     </aside>
 
     <main class="viewer">
-        <div class="viewer-toolbar">
-            <div class="doc-title-main" id="currentTitle" style="font-weight:600;">Select a Training Video</div>
+        <div class="viewer-toolbar" id="vToolbar" style="visibility: hidden;">
+            <div id="currentTitle" style="font-weight:700; color:var(--primary); font-size:1.1rem;">Video Title</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;" id="vDuration">HQ Video</div>
         </div>
 
         <div class="frame-container">
-            <div class="empty-state" id="emptyState" style="color:white; text-align:center; padding-top:20%;">
-                <div style="font-size:64px;">🎬</div>
-                <h2>No Video Selected</h2>
-                <p>Select a tutorial from the left to begin.</p>
+            <div class="empty-state" id="emptyState">
+                <div style="font-size:64px;">📽️</div>
+                <h2 style="color: white; margin-top:10px;">Select a Video</h2>
+                <p>Pick a tutorial from the list to start training</p>
             </div>
-            <iframe id="video-frame" style="display:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <div class="video-wrapper" id="videoWrapper" style="display:none;">
+                <iframe id="video-frame" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            </div>
         </div>
     </main>
 
@@ -271,28 +171,12 @@
         const categories = [
             { name: 'All', color: '#64748b' },
             { name: 'Installation', color: '#ef4444' },
-            { name: 'Maintenance', color: '#10b981' },
-            { name: 'Software', color: '#3b82f6' },
-            { name: 'Safety', color: '#f59e0b' }
+            { name: 'Software', color: '#3b82f6' }
         ];
 
         const videos = [
-            {
-                id: 1,
-                title: 'System Installation Guide',
-                file: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Use /embed/ for YouTube
-                category: 'Installation',
-                duration: '12:45',
-                icon: '🛠️'
-            },
-            {
-                id: 2,
-                title: 'Monthly Maintenance Routine',
-                file: 'https://www.youtube.com/embed/example2',
-                category: 'Maintenance',
-                duration: '08:20',
-                icon: '🧹'
-            }
+            { id: 1, title: 'System Installation Guide', file: 'https://www.youtube.com/embed/dQw4w9WgXcQ', category: 'Installation', duration: '12:45', icon: '🛠️' },
+            { id: 2, title: 'Software Calibration', file: 'https://www.youtube.com/embed/3JZ_D3ELwOQ', category: 'Software', duration: '05:30', icon: '💻' }
         ];
 
         let currentFilter = 'All';
@@ -311,59 +195,36 @@
             `).join('');
         }
 
-        function setFilter(name) {
-            currentFilter = name;
-            renderFilters();
-            renderVideos();
-        }
+        function setFilter(name) { currentFilter = name; renderFilters(); renderVideos(); }
 
         function renderVideos() {
             const list = document.getElementById('videoList');
             const search = document.getElementById('searchInput').value.toLowerCase();
-
-            const filtered = videos.filter(v => {
-                const matchSearch = v.title.toLowerCase().includes(search);
-                const matchCat = currentFilter === 'All' || v.category === currentFilter;
-                return matchSearch && matchCat;
-            });
-
-            const grouped = filtered.reduce((acc, v) => {
-                if (!acc[v.category]) acc[v.category] = [];
-                acc[v.category].push(v);
-                return acc;
-            }, {});
-
-            let html = '';
-            categories.filter(c => grouped[c.name]).forEach(cat => {
-                html += `
-                    <div class="category-group">
-                        <div class="category-header" style="color:${cat.color}">
-                            <div class="category-dot" style="background:${cat.color}"></div>
-                            ${cat.name}
-                        </div>
-                        ${grouped[cat.name].map(v => `
-                            <div class="doc-item ${v.id === currentVideoId ? 'active' : ''}" onclick="loadVideo(${v.id})">
-                                <div class="doc-icon">${v.icon}</div>
-                                <div class="doc-info">
-                                    <div class="doc-title">${v.title}</div>
-                                    <div class="badge" style="background:rgba(0,0,0,0.05)">${v.duration}</div>
-                                </div>
-                            </div>
-                        `).join('')}
+            const filtered = videos.filter(v => (currentFilter === 'All' || v.category === currentFilter) && v.title.toLowerCase().includes(search));
+            
+            list.innerHTML = filtered.map(v => `
+                <div class="doc-item ${v.id === currentVideoId ? 'active' : ''}" onclick="loadVideo(${v.id})">
+                    <div class="doc-icon">${v.icon}</div>
+                    <div class="doc-info">
+                        <div class="doc-title">${v.title}</div>
+                        <div style="font-size:0.75rem; opacity:0.8;">${v.duration}</div>
                     </div>
-                `;
-            });
-            list.innerHTML = html || '<div style="text-align:center;padding:20px;">No videos found</div>';
+                </div>
+            `).join('');
         }
 
         function loadVideo(id) {
             const video = videos.find(v => v.id === id);
             currentVideoId = id;
             document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('videoWrapper').style.display = 'block';
+            document.getElementById('vToolbar').style.visibility = 'visible';
+            
             const frame = document.getElementById('video-frame');
-            frame.style.display = 'block';
-            frame.src = video.file;
+            frame.src = video.file + "?autoplay=1&rel=0";
             document.getElementById('currentTitle').textContent = video.title;
+            document.getElementById('vDuration').textContent = video.category + " • " + video.duration;
+            
             if(window.innerWidth <= 768) toggleSidebar(false);
             renderVideos();
         }
