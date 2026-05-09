@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enterprise Login | Liquid UI</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
+
+        :root {
+            --primary: #4a6616;
+            --accent: #a3e635;
+            --bg: #030712;
+            --error: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* FLUID BACKGROUND */
+        .gradient-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            filter: blur(80px);
+        }
+
+        .blob {
+            position: absolute;
+            background: var(--primary);
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: move 20s infinite alternate ease-in-out;
+        }
+
+        .blob-2 {
+            background: #1e3a0a;
+            width: 40vw;
+            height: 40vw;
+            right: 10%;
+            top: 10%;
+            animation: move2 18s infinite alternate ease-in-out;
+        }
+
+        @keyframes move {
+            from { transform: translate(-10%, -10%) scale(1); }
+            to { transform: translate(20%, 20%) scale(1.2); }
+        }
+
+        @keyframes move2 {
+            from { transform: translate(10%, 10%) scale(1); }
+            to { transform: translate(-20%, -15%) scale(1.1); }
+        }
+
+        /* LOGIN CARD */
+        .signin {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 50px 35px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .content { position: relative; z-index: 2; }
+
+        /* LOGO STYLING */
+        .company-logo {
+            width: 90px;
+            height: auto;
+            margin-bottom: 25px;
+            /* Creates the brand glow effect */
+            filter: drop-shadow(0 0 15px var(--accent));
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        /* FORM ELEMENTS */
+        .form { display: flex; flex-direction: column; gap: 20px; }
+
+        .inputBox input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .inputBox input:focus {
+            border-color: var(--accent);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px rgba(163, 230, 53, 0.2);
+        }
+
+        .inputBox { position: relative; }
+
+        /* FORGOT PASSWORD STYLING */
+        .forgot-link {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+            z-index: 3; /* Ensures it stays above the input highlight */
+        }
+
+        .forgot-link:hover { color: var(--accent); text-decoration: underline; }
+
+        .btn-login {
+            margin-top: 10px;
+            padding: 16px;
+            background: linear-gradient(135deg, #ffffff, #d9f99d);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(163, 230, 53, 0.4);
+        }
+
+        /* STATUS & TOGGLE */
+        .status {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            min-height: 20px;
+            transition: 0.3s;
+            line-height: 1.4;
+        }
+
+        .toggle-auth {
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        .toggle-auth span {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 480px) {
+            .signin {
+                padding: 40px 20px;
+                border-radius: 24px;
+            }
+            h2 { font-size: 1.4rem; letter-spacing: 2px; }
+            .company-logo { width: 70px; }
+            .blob { width: 80vw; height: 80vw; }
+            .forgot-link { font-size: 0.75rem; right: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="gradient-bg">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="signin">
+        <div class="content">
+            <!-- 1. COMPANY LOGO -->
+            <img src="logo.png" alt="Company Logo" class="company-logo">
+
+            <h2 id="formTitle">Sign In</h2>
+
+            <form class="form" id="authForm">
+                <div class="inputBox">
+                    <input type="email" id="email" placeholder="Email Address" required>
+                </div>
+                <div class="inputBox">
+                    <input type="password" id="password" placeholder="Password" required>
+                    <!-- 2. FORGOT PASSWORD LINK (Positioned inside input) -->
+                    <a class="forgot-link" id="forgotPassword">Forgot?</a>
+                </div>
+                <button type="submit" class="btn-login" id="submitBtn">Continue</button>
+            </form>
+
+            <div class="status" id="status"></div>
+
+            <div class="toggle-auth">
+                <p id="toggleText">Don't have an account? <span id="switchMode">Sign Up</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. IMPORT FIREBASE
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword,
+            sendPasswordResetEmail // New import for reset logic
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // 2. CONFIGURATION (Replace with your actual keys)
+        const firebaseConfig = {
+              apiKey: "AIzaSyAdWdihzNcva6QugwcJ5onhVv25bRzGOQI",
+  authDomain: "aiterp-254c6.firebaseapp.com",
+  databaseURL: "https://aiterp-254c6-default-rtdb.firebaseio.com",
+  projectId: "aiterp-254c6",
+  storageBucket: "aiterp-254c6.firebasestorage.app",
+  messagingSenderId: "141769590506",
+  appId: "1:141769590506:web:434df19c89511914657993",
+  measurementId: "G-B4H74W4KCV"
+        };
+
+        // 3. INITIALIZE
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // CORS CHECK FOR PASSWORD RESET
+        if (window.location.protocol === 'file:') {
+            console.warn("CORS NOTICE: Password reset will NOT work while testing locally (file://). You must host this file on a server (e.g., Live Server extension in VS Code) for Firebase to accept the request.");
+        }
+
+        // 4. DOM ELEMENTS
+        const authForm = document.getElementById("authForm");
+        const status = document.getElementById("status");
+        const formTitle = document.getElementById("formTitle");
+        const submitBtn = document.getElementById("submitBtn");
+        const switchMode = document.getElementById("switchMode");
+        const toggleText = document.getElementById("toggleText");
+        const forgotPasswordLink = document.getElementById("forgotPassword");
+
+        let isLoginMode = true;
+
+        // 5. TOGGLE BETWEEN LOGIN & SIGNUP
+        switchMode.addEventListener("click", () => {
+            isLoginMode = !isLoginMode;
+            formTitle.innerText = isLoginMode ? "Sign In" : "Sign Up";
+            submitBtn.innerText = isLoginMode ? "Continue" : "Create Account";
+            
+            // Hide forgot password link when signing up
+            forgotPasswordLink.style.display = isLoginMode ? 'block' : 'none';
+
+            toggleText.innerHTML = isLoginMode 
+                ? 'Don\'t have an account? <span id="switchMode">Sign Up</span>' 
+                : 'Already have an account? <span id="switchMode">Sign In</span>';
+            
+            // Re-attach listener because innerHTML wipes it
+            document.getElementById("switchMode").addEventListener("click", arguments.callee);
+        });
+
+        // 6. FORGOT PASSWORD LOGIC
+        forgotPasswordLink.addEventListener("click", async () => {
+            const email = document.getElementById("email").value;
+
+            // Pre-validation: Require an email first
+            if (!email) {
+                status.style.color = "var(--error)";
+                status.innerHTML = "Please enter your email address first, then click 'Forgot?'.";
+                return;
+            }
+
+            // Real CORS error occurs when running via file:// protocol
+            if (window.location.protocol === 'file:') {
+                status.style.color = "var(--error)";
+                status.innerHTML = "Password reset cannot run while testing locally (file://). Please host the file on a web server.";
+                return;
+            }
+
+            status.style.color = "#ffffff";
+            status.innerHTML = "Sending reset email...";
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                status.style.color = "var(--accent)";
+                status.innerHTML = "Reset link sent! Check your email.";
+            } catch (error) {
+                console.error("Reset error:", error);
+                status.style.color = "var(--error)";
+                // Clean up error messages
+                let message = error.code.replace('auth/', '').replaceAll('-', ' ');
+                status.innerHTML = message.charAt(0).toUpperCase() + message.slice(1);
+            }
+        });
+
+        // 7. FORM SUBMISSION (LOGIN/SIGNUP)
+        authForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            status.style.color = "#ffffff";
+            status.innerHTML = isLoginMode ? "Authenticating..." : "Creating Account...";
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    status.style.color = "var(--accent)";
+                    status.innerHTML = "Success! Redirecting...";
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    status.style.color = "var(--accent)";
+                    status.innerHTML = "Account Created! Logging in...";
+                }
+
+                setTimeout(() => {
+                    // Make sure you create dashboard.html
+                    window.location.href = "dashboard.html"; 
+                }, 1500);
+
+            } catch (error) {
+                status.style.color = "var(--error)";
+                // Friendly error messages
+                let message = error.code.replace('auth/', '').replaceAll('-', ' ');
+                status.innerHTML = message.charAt(0).toUpperCase() + message.slice(1);
+            }
+        });
+    </script>
+</body>
+</html>
