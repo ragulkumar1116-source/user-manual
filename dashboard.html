@@ -978,6 +978,26 @@ window.addEventListener("pageshow", function () {
 });
 </script>
 
+
+
+	    <script>
+
+// Block direct dashboard access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.replace("index.html");
+}
+
+// Block refresh/back cache access
+window.addEventListener("pageshow", function () {
+
+    if (sessionStorage.getItem("verified") !== "true") {
+
+        window.location.replace("index.html");
+    }
+});
+
+</script>
+
    
     
 
