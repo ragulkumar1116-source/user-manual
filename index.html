@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SECURITY CACHE BLOCK -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>Enterprise Login | Liquid UI</title>
 
     <style>
@@ -33,10 +39,11 @@
             padding: 20px;
         }
 
-        /* FLUID BACKGROUND */
+        /* BACKGROUND */
         .gradient-bg {
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
@@ -63,13 +70,23 @@
         }
 
         @keyframes move {
-            from { transform: translate(-10%, -10%) scale(1); }
-            to { transform: translate(20%, 20%) scale(1.2); }
+            from {
+                transform: translate(-10%, -10%) scale(1);
+            }
+
+            to {
+                transform: translate(20%, 20%) scale(1.2);
+            }
         }
 
         @keyframes move2 {
-            from { transform: translate(10%, 10%) scale(1); }
-            to { transform: translate(-20%, -15%) scale(1.1); }
+            from {
+                transform: translate(10%, 10%) scale(1);
+            }
+
+            to {
+                transform: translate(-20%, -15%) scale(1.1);
+            }
         }
 
         /* LOGIN CARD */
@@ -81,21 +98,15 @@
             padding: 50px 35px;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 32px;
             box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
             text-align: center;
         }
 
-        .content { position: relative; z-index: 2; }
-
-        /* LOGO STYLING */
         .company-logo {
             width: 90px;
-            height: auto;
             margin-bottom: 25px;
-            /* Creates the brand glow effect */
             filter: drop-shadow(0 0 15px var(--accent));
         }
 
@@ -108,8 +119,15 @@
             margin-bottom: 35px;
         }
 
-        /* FORM ELEMENTS */
-        .form { display: flex; flex-direction: column; gap: 20px; }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .inputBox {
+            position: relative;
+        }
 
         .inputBox input {
             width: 100%;
@@ -129,9 +147,6 @@
             box-shadow: 0 0 15px rgba(163, 230, 53, 0.2);
         }
 
-        .inputBox { position: relative; }
-
-        /* FORGOT PASSWORD STYLING */
         .forgot-link {
             position: absolute;
             right: 20px;
@@ -141,11 +156,11 @@
             font-size: 0.8rem;
             cursor: pointer;
             text-decoration: none;
-            transition: 0.3s;
-            z-index: 3; /* Ensures it stays above the input highlight */
         }
 
-        .forgot-link:hover { color: var(--accent); text-decoration: underline; }
+        .forgot-link:hover {
+            color: var(--accent);
+        }
 
         .btn-login {
             margin-top: 10px;
@@ -157,7 +172,7 @@
             border-radius: 16px;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.3s;
         }
 
         .btn-login:hover {
@@ -165,12 +180,10 @@
             box-shadow: 0 8px 25px rgba(163, 230, 53, 0.4);
         }
 
-        /* STATUS & TOGGLE */
         .status {
             margin-top: 20px;
             font-size: 0.9rem;
             min-height: 20px;
-            transition: 0.3s;
             line-height: 1.4;
         }
 
@@ -186,16 +199,18 @@
             text-decoration: underline;
         }
 
-        /* MOBILE OPTIMIZATION */
         @media (max-width: 480px) {
             .signin {
                 padding: 40px 20px;
-                border-radius: 24px;
             }
-            h2 { font-size: 1.4rem; letter-spacing: 2px; }
-            .company-logo { width: 70px; }
-            .blob { width: 80vw; height: 80vw; }
-            .forgot-link { font-size: 0.75rem; right: 15px; }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .company-logo {
+                width: 70px;
+            }
         }
     </style>
 </head>
@@ -209,63 +224,78 @@
 
     <div class="signin">
         <div class="content">
-            <!-- 1. COMPANY LOGO -->
+
             <img src="logo.png" alt="Company Logo" class="company-logo">
 
             <h2 id="formTitle">Sign In</h2>
 
             <form class="form" id="authForm">
+
                 <div class="inputBox">
                     <input type="email" id="email" placeholder="Email Address" required>
                 </div>
+
                 <div class="inputBox">
                     <input type="password" id="password" placeholder="Password" required>
-                    <!-- 2. FORGOT PASSWORD LINK (Positioned inside input) -->
                     <a class="forgot-link" id="forgotPassword">Forgot?</a>
                 </div>
-                <button type="submit" class="btn-login" id="submitBtn">Continue</button>
+
+                <button type="submit" class="btn-login" id="submitBtn">
+                    Continue
+                </button>
+
             </form>
 
             <div class="status" id="status"></div>
 
             <div class="toggle-auth">
-                <p id="toggleText">Don't have an account? <span id="switchMode">Sign Up</span></p>
+                <p id="toggleText">
+                    Don't have an account?
+                    <span id="switchMode">Sign Up</span>
+                </p>
             </div>
+
         </div>
     </div>
 
     <script type="module">
-        // 1. IMPORT FIREBASE
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword,
-            sendPasswordResetEmail // New import for reset logic
-        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // 2. CONFIGURATION (Replace with your actual keys)
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            sendPasswordResetEmail,
+            setPersistence,
+            browserSessionPersistence
+        }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // FIREBASE CONFIG
+
         const firebaseConfig = {
-              apiKey: "AIzaSyAdWdihzNcva6QugwcJ5onhVv25bRzGOQI",
-  authDomain: "aiterp-254c6.firebaseapp.com",
-  databaseURL: "https://aiterp-254c6-default-rtdb.firebaseio.com",
-  projectId: "aiterp-254c6",
-  storageBucket: "aiterp-254c6.firebasestorage.app",
-  messagingSenderId: "141769590506",
-  appId: "1:141769590506:web:434df19c89511914657993",
-  measurementId: "G-B4H74W4KCV"
+            apiKey: "AIzaSyAdWdihzNcva6QugwcJ5onhVv25bRzGOQI",
+            authDomain: "aiterp-254c6.firebaseapp.com",
+            databaseURL: "https://aiterp-254c6-default-rtdb.firebaseio.com",
+            projectId: "aiterp-254c6",
+            storageBucket: "aiterp-254c6.firebasestorage.app",
+            messagingSenderId: "141769590506",
+            appId: "1:141769590506:web:434df19c89511914657993",
+            measurementId: "G-B4H74W4KCV"
         };
 
-        // 3. INITIALIZE
+        // INITIALIZE FIREBASE
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // CORS CHECK FOR PASSWORD RESET
-        if (window.location.protocol === 'file:') {
-            console.warn("CORS NOTICE: Password reset will NOT work while testing locally (file://). You must host this file on a server (e.g., Live Server extension in VS Code) for Firebase to accept the request.");
-        }
+        // SESSION ONLY LOGIN
+        await setPersistence(auth, browserSessionPersistence);
 
-        // 4. DOM ELEMENTS
+        // DOM ELEMENTS
+
         const authForm = document.getElementById("authForm");
         const status = document.getElementById("status");
         const formTitle = document.getElementById("formTitle");
@@ -276,89 +306,147 @@
 
         let isLoginMode = true;
 
-        // 5. TOGGLE BETWEEN LOGIN & SIGNUP
-        switchMode.addEventListener("click", () => {
+        // TOGGLE LOGIN/SIGNUP
+
+        switchMode.addEventListener("click", toggleMode);
+
+        function toggleMode() {
+
             isLoginMode = !isLoginMode;
-            formTitle.innerText = isLoginMode ? "Sign In" : "Sign Up";
-            submitBtn.innerText = isLoginMode ? "Continue" : "Create Account";
-            
-            // Hide forgot password link when signing up
-            forgotPasswordLink.style.display = isLoginMode ? 'block' : 'none';
 
-            toggleText.innerHTML = isLoginMode 
-                ? 'Don\'t have an account? <span id="switchMode">Sign Up</span>' 
-                : 'Already have an account? <span id="switchMode">Sign In</span>';
-            
-            // Re-attach listener because innerHTML wipes it
-            document.getElementById("switchMode").addEventListener("click", arguments.callee);
-        });
+            formTitle.innerText =
+                isLoginMode ? "Sign In" : "Sign Up";
 
-        // 6. FORGOT PASSWORD LOGIC
+            submitBtn.innerText =
+                isLoginMode ? "Continue" : "Create Account";
+
+            forgotPasswordLink.style.display =
+                isLoginMode ? "block" : "none";
+
+            toggleText.innerHTML = isLoginMode
+                ? `Don't have an account?
+                   <span id="switchMode">Sign Up</span>`
+                : `Already have an account?
+                   <span id="switchMode">Sign In</span>`;
+
+            document
+                .getElementById("switchMode")
+                .addEventListener("click", toggleMode);
+        }
+
+        // FORGOT PASSWORD
+
         forgotPasswordLink.addEventListener("click", async () => {
-            const email = document.getElementById("email").value;
 
-            // Pre-validation: Require an email first
+            const email = document
+                .getElementById("email").value;
+
             if (!email) {
+
                 status.style.color = "var(--error)";
-                status.innerHTML = "Please enter your email address first, then click 'Forgot?'.";
+                status.innerHTML =
+                    "Enter your email first.";
+
                 return;
             }
-
-            // Real CORS error occurs when running via file:// protocol
-            if (window.location.protocol === 'file:') {
-                status.style.color = "var(--error)";
-                status.innerHTML = "Password reset cannot run while testing locally (file://). Please host the file on a web server.";
-                return;
-            }
-
-            status.style.color = "#ffffff";
-            status.innerHTML = "Sending reset email...";
 
             try {
+
                 await sendPasswordResetEmail(auth, email);
+
                 status.style.color = "var(--accent)";
-                status.innerHTML = "Reset link sent! Check your email.";
+                status.innerHTML =
+                    "Reset email sent successfully.";
+
             } catch (error) {
-                console.error("Reset error:", error);
+
                 status.style.color = "var(--error)";
-                // Clean up error messages
-                let message = error.code.replace('auth/', '').replaceAll('-', ' ');
-                status.innerHTML = message.charAt(0).toUpperCase() + message.slice(1);
+                status.innerHTML = error.message;
             }
         });
 
-        // 7. FORM SUBMISSION (LOGIN/SIGNUP)
-        authForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+        // LOGIN / SIGNUP
 
-            status.style.color = "#ffffff";
-            status.innerHTML = isLoginMode ? "Authenticating..." : "Creating Account...";
+        authForm.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const email =
+                document.getElementById("email").value;
+
+            const password =
+                document.getElementById("password").value;
 
             try {
+
+                status.style.color = "#fff";
+
+                status.innerHTML =
+                    isLoginMode
+                    ? "Authenticating..."
+                    : "Creating account...";
+
                 if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    status.style.color = "var(--accent)";
-                    status.innerHTML = "Success! Redirecting...";
+
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
                 } else {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    status.style.color = "var(--accent)";
-                    status.innerHTML = "Account Created! Logging in...";
+
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
                 }
 
+                // VERIFY SESSION
+
+                sessionStorage.setItem(
+                    "verified",
+                    "true"
+                );
+
+                status.style.color = "var(--accent)";
+                status.innerHTML =
+                    "Login successful. Redirecting...";
+
                 setTimeout(() => {
-                    // Make sure you create dashboard.html
-                    window.location.href = "dashboard.html"; 
-                }, 1500);
+
+                    window.location.replace(
+                        "dashboard.html"
+                    );
+
+                }, 1200);
 
             } catch (error) {
+
+                console.error(error);
+
                 status.style.color = "var(--error)";
-                // Friendly error messages
-                let message = error.code.replace('auth/', '').replaceAll('-', ' ');
-                status.innerHTML = message.charAt(0).toUpperCase() + message.slice(1);
+
+                let msg = error.code
+                    .replace("auth/", "")
+                    .replaceAll("-", " ");
+
+                status.innerHTML =
+                    msg.charAt(0).toUpperCase() +
+                    msg.slice(1);
             }
         });
+
+        // BLOCK BACK BUTTON
+
+        history.pushState(null, null, location.href);
+
+        window.onpopstate = function () {
+            history.go(1);
+        };
+
     </script>
+
 </body>
 </html>
