@@ -6,6 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AIT Video Training Portal</title>
 
+
+
+
+<script>
+
+// Block direct dashboard access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.replace("index.html");
+}
+
+// Block refresh/back cache access
+window.addEventListener("pageshow", function () {
+
+    if (sessionStorage.getItem("verified") !== "true") {
+
+        window.location.replace("index.html");
+    }
+});
+
+</script>
+
+
+
+
+
+
+    
     <style>
         :root {
             --primary: #0f172a;
