@@ -6,20 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AIT Video Training Portal</title>
 
-    <script>
-    // Block direct dashboard access
-    if (sessionStorage.getItem("verified") !== "true") {
-        window.location.replace("index.html");
-    }
-
-    // Block refresh/back cache access
-    window.addEventListener("pageshow", function () {
-        if (sessionStorage.getItem("verified") !== "true") {
-            window.location.replace("index.html");
-        }
-    });
-    </script>
-    
     <style>
         :root {
             --primary: #0f172a;
@@ -46,7 +32,7 @@
             grid-template-columns: 360px 1fr;
         }
 
-        /* ── Sidebar ── */
+        /* ── Sidebar (Your Original Style) ── */
         .sidebar {
             background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
@@ -80,13 +66,13 @@
         .tag.active { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
         .doc-list { flex: 1; overflow-y: auto; padding: 20px; background: #f8fafc; }
+        .category-header { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+        .category-dot { width: 8px; height: 8px; border-radius: 50%; }
 
         .doc-item {
             padding: 16px; margin: 8px 0; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 14px; background: white; border: 1px solid var(--border); transition: all 0.2s;
-            color: var(--text-primary);
         }
         .doc-item.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .doc-title { font-weight: 600; font-size: 0.95rem; }
 
         /* ── UPGRADED VIDEO PLAYER AREA ── */
         .viewer { display: flex; flex-direction: column; background: #0f172a; height: 100vh; }
@@ -109,7 +95,6 @@
             justify-content: center;
             padding: 40px;
             background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
-            position: relative;
         }
 
         .video-wrapper {
@@ -142,9 +127,6 @@
             .frame-container { padding: 15px; }
             .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
             .sidebar-backdrop.active { display: block; }
-        }
-        @media (min-width: 769px) {
-            .mobile-header { display: none; }
         }
     </style>
 </head>
@@ -186,17 +168,15 @@
     </main>
 
     <script>
-        // Cleaned and aligned category list
         const categories = [
-            { name: 'All', color: '#64748b' },
+             { name: 'All', color: '#64748b' },
             { name: 'CCTV Port Forwarding', color: '#ef4444' },
             { name: 'TNPCB Data Download', color: '#3b82f6' },
             { name: 'RS 485', color: '#10b981' }
         ];
 
-        // Safe dataset collection with syntax tracking fixed
         const videos = [
-            { id: 1, title: 'System Installation Guide', file: 'https://www.youtube.com/embed/l5tLQJJTlNQ', category: 'CCTV Port Forwarding', duration: '12:45', icon: '🛠️' },
+           { id: 1, title: 'System Installation Guide', file: 'https://www.youtube.com/embed/l5tLQJJTlNQ', category: 'CCTV Port Forwarding', duration: '12:45', icon: '🛠️' },
             { id: 2, title: 'TNPCB Data Download', file: 'https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/public/documents/Screen%20Recording%202026-04-17%20171350.mp4', category: 'TNPCB Data Download', duration: '05:30', icon: '💻' },
             { id: 3, title: 'RLM-2 Flow Meter', file: 'https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/public/documents/km_20260515-1_540p_50f_20260515_212901.mp4', category: 'RS 485', duration: '12:45', icon: '🛠️' },
             { id: 4, title: 'Konsiq', file: 'https://idfvlhncutvjzzkmsyhk.supabase.co/storage/v1/object/public/documents/km_20260515_540p_60f_20260515_212659.mp4', category: 'RS 485', duration: '05:30', icon: '💻' }
@@ -223,12 +203,7 @@
         function renderVideos() {
             const list = document.getElementById('videoList');
             const search = document.getElementById('searchInput').value.toLowerCase();
-            
-            const filtered = videos.filter(v => {
-                const matchesFilter = (currentFilter === 'All' || v.category.toLowerCase() === currentFilter.toLowerCase());
-                const matchesSearch = v.title.toLowerCase().includes(search);
-                return matchesFilter && matchesSearch;
-            });
+            const filtered = videos.filter(v => (currentFilter === 'All' || v.category === currentFilter) && v.title.toLowerCase().includes(search));
             
             list.innerHTML = filtered.map(v => `
                 <div class="doc-item ${v.id === currentVideoId ? 'active' : ''}" onclick="loadVideo(${v.id})">
@@ -249,15 +224,7 @@
             document.getElementById('vToolbar').style.visibility = 'visible';
             
             const frame = document.getElementById('video-frame');
-            
-            if (video.file.includes('youtube.com')) {
-                // Extracts the current window domain to present a valid authorized security origin to YouTube API
-                const currentOrigin = window.location.origin;
-                frame.src = video.file + `?autoplay=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(currentOrigin)}`;
-            } else {
-                frame.src = video.file;
-            }
-            
+            frame.src = video.file + "?autoplay=1&rel=0";
             document.getElementById('currentTitle').textContent = video.title;
             document.getElementById('vDuration').textContent = video.category + " • " + video.duration;
             
