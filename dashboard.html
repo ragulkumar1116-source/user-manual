@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -502,6 +503,32 @@
 
   <div 
   onclick="window.open('https://aitusermanual.vercel.app/video1.html', '_blank')" 
+  style="
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Size math: ~1.5cm is roughly 56px */
+    width: 56px; 
+    height: 24px; 
+    
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: white;
+    background-color: #1DB954; /* Music-style green */
+    
+    cursor: pointer;
+    border-radius: 12px;      /* Rounded pill shape */
+    user-select: none;
+    transition: transform 0.1s;"
+  onmousedown="this.style.transform='scale(0.95)'"
+  onmouseup="this.style.transform='scale(1)'">
+  Video 
+</div>
+
+  <div 
+  onclick="window.open('scan/index2.html', '_blank')" 
   style="
     display: inline-flex;
     align-items: center;
