@@ -87,5 +87,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/app.js"></script>
     <script type="module" src="js/dashboard.js"></script>
+
+
+
+
+    // 🚨 Block direct access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.href = "index.html";
+}
+
+// Extra protection on reload/back
+window.addEventListener("pageshow", function () {
+    if (sessionStorage.getItem("verified") !== "true") {
+        window.location.href = "https://aitusermanual.vercel.app/index.html";
+    }
+});
+</script>
+
+
+
+	    <script>
+
+// Block direct dashboard access
+if (sessionStorage.getItem("verified") !== "true") {
+    window.location.replace("index.html");
+}
+
+// Block refresh/back cache access
+window.addEventListener("pageshow", function () {
+
+    if (sessionStorage.getItem("verified") !== "true") {
+
+        window.location.replace("https://aitusermanual.vercel.app/index.html");
+    }
+});
+
+</script>
+
+
+    
+
+    
 </body>
 </html>
+
+
+
