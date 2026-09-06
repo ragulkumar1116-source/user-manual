@@ -1666,4 +1666,602 @@ function()
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+c code
+
+
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <DHT.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// =====================================================
+// WIFI
+// =====================================================
+#define WIFI_SSID      "admin"
+#define WIFI_PASSWORD  "00000009"
+
+// =====================================================
+// FIREBASE
+// =====================================================
+const char* firebaseBaseURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001";
+
+// Sensor paths
+const char* sensorURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/sensor.json";
+
+// OLED message path
+const char* oledMessageURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/oled_message.json";
+
+// OLED ON/OFF path
+const char* oledPowerURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/oled_power.json";
+
+// =====================================================
+// DHT11
+// =====================================================
+#define DHT_PIN 4
+#define DHT_TYPE DHT11
+
+DHT dht(DHT_PIN, DHT_TYPE);
+
+// =====================================================
+// OLED SSD1306
+// =====================================================
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+
+#define OLED_SDA 21
+#define OLED_SCL 22
+
+Adafruit_SSD1306 display(
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+  &Wire,
+  OLED_RESET
+);
+
+// =====================================================
+// TIMER
+// =====================================================
+unsigned long previousMillis = 0;
+const unsigned long sensorInterval = 5000;
+
+unsigned long oledPreviousMillis = 0;
+const unsigned long oledInterval = 1000;
+
+// =====================================================
+// VARIABLES
+// =====================================================
+String lastOLEDMessage = "";
+
+bool oledPower = true;
+
+
+// =====================================================
+// SETUP
+// =====================================================
+void setup()
+{
+  Serial.begin(115200);
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.println("ESP32 DHT11 + OLED + Firebase");
+  Serial.println("================================");
+
+  // ---------------------------------------------------
+  // DHT
+  // ---------------------------------------------------
+  dht.begin();
+
+  // ---------------------------------------------------
+  // OLED
+  // ---------------------------------------------------
+  Wire.begin(OLED_SDA, OLED_SCL);
+
+  if (!display.begin(
+        SSD1306_SWITCHCAPVCC,
+        0x3C))
+  {
+    Serial.println("OLED ERROR!");
+
+    while (true)
+    {
+      delay(1000);
+    }
+  }
+
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+
+  display.setCursor(0, 0);
+  display.println("ESP32 Starting...");
+
+  display.display();
+
+  // ---------------------------------------------------
+  // WIFI
+  // ---------------------------------------------------
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  Serial.print("Connecting WiFi");
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+
+  Serial.println("WiFi Connected");
+
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+
+  // ---------------------------------------------------
+  // START SCREEN
+  // ---------------------------------------------------
+  display.clearDisplay();
+
+  display.setCursor(0, 0);
+  display.println("WiFi Connected");
+
+  display.setCursor(0, 15);
+  display.println("ESP32_001");
+
+  display.setCursor(0, 30);
+  display.println("Firebase Ready");
+
+  display.display();
+
+  delay(2000);
+
+  showOLEDMessage("Waiting...");
+}
+
+
+// =====================================================
+// LOOP
+// =====================================================
+void loop()
+{
+  // ---------------------------------------------------
+  // SENSOR
+  // ---------------------------------------------------
+  if (millis() - previousMillis >= sensorInterval)
+  {
+    previousMillis = millis();
+
+    sendSensorData();
+  }
+
+  // ---------------------------------------------------
+  // OLED CONTROL
+  // ---------------------------------------------------
+  if (millis() - oledPreviousMillis >= oledInterval)
+  {
+    oledPreviousMillis = millis();
+
+    readOLEDPower();
+
+    if (oledPower)
+    {
+      readOLEDMessage();
+    }
+  }
+}
+
+
+// =====================================================
+// SEND SENSOR DATA
+// =====================================================
+void sendSensorData()
+{
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  if (isnan(temperature) || isnan(humidity))
+  {
+    Serial.println("DHT11 ERROR");
+
+    return;
+  }
+
+  Serial.println();
+  Serial.println("-------------------------");
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" C");
+
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // ---------------------------------------------------
+  // WIFI CHECK
+  // ---------------------------------------------------
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("WiFi disconnected!");
+
+    return;
+  }
+
+  // ---------------------------------------------------
+  // SENSOR JSON
+  // ---------------------------------------------------
+  String json = "{";
+
+  json += "\"temperature\":";
+  json += String(temperature, 1);
+
+  json += ",\"humidity\":";
+  json += String(humidity, 1);
+
+  json += ",\"status\":\"ONLINE\"";
+
+  json += ",\"timestamp\":";
+  json += String(millis());
+
+  json += "}";
+
+  Serial.println("Sending Sensor Data:");
+
+  Serial.println(json);
+
+  // ---------------------------------------------------
+  // FIREBASE
+  // ---------------------------------------------------
+  HTTPClient http;
+
+  http.begin(sensorURL);
+
+  http.addHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  int httpCode = http.PUT(json);
+
+  Serial.print("HTTP Code: ");
+  Serial.println(httpCode);
+
+  if (httpCode > 0)
+  {
+    String response = http.getString();
+
+    Serial.println("Firebase Response:");
+    Serial.println(response);
+  }
+  else
+  {
+    Serial.print("HTTP Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+
+  Serial.println("-------------------------");
+}
+
+
+// =====================================================
+// READ OLED ON/OFF
+// =====================================================
+void readOLEDPower()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    return;
+  }
+
+  HTTPClient http;
+
+  http.begin(oledPowerURL);
+
+  int httpCode = http.GET();
+
+  if (httpCode > 0)
+  {
+    String value = http.getString();
+
+    Serial.print("OLED Power Firebase: ");
+    Serial.println(value);
+
+    bool newPower = true;
+
+    // Firebase REST boolean returns:
+    // true
+    // false
+
+    if (value == "false")
+    {
+      newPower = false;
+    }
+    else
+    {
+      newPower = true;
+    }
+
+    // -------------------------------------------------
+    // POWER CHANGED
+    // -------------------------------------------------
+    if (newPower != oledPower)
+    {
+      oledPower = newPower;
+
+      if (oledPower)
+      {
+        Serial.println("OLED ON");
+
+        display.ssd1306_command(
+          SSD1306_DISPLAYON
+        );
+
+        showOLEDMessage(lastOLEDMessage);
+      }
+      else
+      {
+        Serial.println("OLED OFF");
+
+        display.clearDisplay();
+
+        display.display();
+
+        display.ssd1306_command(
+          SSD1306_DISPLAYOFF
+        );
+      }
+    }
+  }
+  else
+  {
+    Serial.print("OLED Power Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+}
+
+
+// =====================================================
+// READ OLED MESSAGE
+// =====================================================
+void readOLEDMessage()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    return;
+  }
+
+  if (!oledPower)
+  {
+    return;
+  }
+
+  HTTPClient http;
+
+  http.begin(oledMessageURL);
+
+  int httpCode = http.GET();
+
+  if (httpCode > 0)
+  {
+    String message = http.getString();
+
+    Serial.print("OLED Message: ");
+    Serial.println(message);
+
+    // -------------------------------------------------
+    // Firebase returns:
+    // "HELLO ESP32"
+    // -------------------------------------------------
+
+    if (message == "null")
+    {
+      http.end();
+
+      return;
+    }
+
+    // Remove JSON quotes
+    if (
+      message.startsWith("\"") &&
+      message.endsWith("\"")
+    )
+    {
+      message =
+        message.substring(
+          1,
+          message.length() - 1
+        );
+    }
+
+    // Handle escaped characters
+    message.replace("\\\"", "\"");
+
+    message.replace("\\n", "\n");
+
+    // -------------------------------------------------
+    // Update OLED only if changed
+    // -------------------------------------------------
+    if (message != lastOLEDMessage)
+    {
+      lastOLEDMessage = message;
+
+      showOLEDMessage(message);
+    }
+  }
+  else
+  {
+    Serial.print("OLED Message Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+}
+
+
+// =====================================================
+// SHOW MESSAGE
+// =====================================================
+void showOLEDMessage(String message)
+{
+  if (!oledPower)
+  {
+    return;
+  }
+
+  // Turn display ON
+  display.ssd1306_command(
+    SSD1306_DISPLAYON
+  );
+
+  display.clearDisplay();
+
+  display.setTextColor(
+    SSD1306_WHITE
+  );
+
+  // ---------------------------------------------------
+  // HEADER
+  // ---------------------------------------------------
+  display.setTextSize(1);
+
+  display.setCursor(0, 0);
+
+  display.println("ESP32_001");
+
+  display.drawLine(
+    0,
+    10,
+    127,
+    10,
+    SSD1306_WHITE
+  );
+
+  // ---------------------------------------------------
+  // MESSAGE
+  // ---------------------------------------------------
+  display.setTextSize(1);
+
+  int y = 16;
+
+  String line = "";
+
+  for (
+    int i = 0;
+    i < message.length();
+    i++
+  )
+  {
+    char c = message.charAt(i);
+
+    // New line
+    if (c == '\n')
+    {
+      display.setCursor(0, y);
+
+      display.println(line);
+
+      line = "";
+
+      y += 10;
+
+      if (y >= 64)
+      {
+        break;
+      }
+
+      continue;
+    }
+
+    line += c;
+
+    // 21 characters per line
+    if (line.length() >= 21)
+    {
+      display.setCursor(0, y);
+
+      display.println(line);
+
+      line = "";
+
+      y += 10;
+
+      if (y >= 64)
+      {
+        break;
+      }
+    }
+  }
+
+  // Remaining text
+  if (
+    line.length() > 0 &&
+    y < 64
+  )
+  {
+    display.setCursor(0, y);
+
+    display.println(line);
+  }
+
+  display.display();
+}
+
+
+
+
+
 ```
