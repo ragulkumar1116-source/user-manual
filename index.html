@@ -1,6 +1,7 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -8,341 +9,399 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>ESP32 Live Monitoring Dashboard</title>
+<title>ESP32 IoT Dashboard</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f9;
-    color: #222;
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #111827;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 header {
     background: #111827;
     color: white;
-    padding: 18px 25px;
-}
-
-.header-content {
-    max-width: 1400px;
-    margin: auto;
+    padding: 18px 30px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    gap: 20px;
 }
 
-.logo h1 {
+header h1 {
     font-size: 24px;
 }
 
-.logo p {
-    color: #cbd5e1;
-    font-size: 13px;
-    margin-top: 4px;
-}
-
-.connection {
-    padding: 9px 16px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.connection.connected {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.connection.disconnected {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.connection.waiting {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-/* =========================
-   CONTAINER
-========================= */
-
-.container {
-    max-width: 1400px;
-    margin: 25px auto;
-    padding: 0 20px;
-}
-
-/* =========================
-   DEVICE BAR
-========================= */
-
-.device-bar {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-
+.header-right {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    gap: 15px;
 }
 
 .device-name {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 14px;
+    opacity: .8;
 }
 
-.device-path {
-    color: #6b7280;
+.status {
+    padding: 7px 14px;
+    border-radius: 20px;
     font-size: 13px;
-    margin-top: 5px;
 }
 
-/* =========================
-   BUTTONS
-========================= */
-
-.buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-button {
-    border: none;
-    padding: 10px 15px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-weight: bold;
-    background: #2563eb;
-    color: white;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-
-button.clear {
-    background: #dc2626;
-}
-
-button.download {
+.online {
     background: #16a34a;
 }
 
-/* =========================
-   CARDS
-========================= */
+.offline {
+    background: #dc2626;
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+/* CARDS */
 
 .cards {
     display: grid;
-
-    grid-template-columns:
-    repeat(4, 1fr);
-
+    grid-template-columns: repeat(4,1fr);
     gap: 18px;
+    margin-bottom: 20px;
 }
 
 .card {
     background: white;
     padding: 22px;
-
-    border-radius: 12px;
+    border-radius: 14px;
 
     box-shadow:
-    0 2px 10px rgba(0,0,0,0.07);
+        0 4px 15px rgba(0,0,0,.06);
 }
 
-.card-title {
-    color: #6b7280;
+.sensor-title {
+    color: #64748b;
     font-size: 14px;
     margin-bottom: 10px;
 }
 
-.card-value {
-    font-size: 34px;
+.sensor-value {
+    font-size: 30px;
     font-weight: bold;
 }
 
-.card-unit {
-    font-size: 16px;
-    color: #6b7280;
-}
-
-.card-footer {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #6b7280;
-}
-
-/* =========================
-   STATUS
-========================= */
-
-.status-online {
-    color: #16a34a;
-}
-
-.status-offline {
+.temperature {
     color: #dc2626;
 }
 
-/* =========================
-   GRAPHS
-========================= */
+.humidity {
+    color: #2563eb;
+}
 
-.graph-grid {
+/* GRID */
+
+.grid {
     display: grid;
-
-    grid-template-columns:
-    repeat(2, 1fr);
-
+    grid-template-columns: repeat(2,1fr);
     gap: 20px;
-
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.graph-card {
-    background: white;
-    padding: 20px;
-
-    border-radius: 12px;
-
-    box-shadow:
-    0 2px 10px rgba(0,0,0,0.07);
+.full {
+    grid-column: 1 / -1;
 }
 
-.graph-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
+/* CHART */
 
 .chart-container {
     height: 350px;
 }
 
-/* =========================
-   INFORMATION
-========================= */
+/* OLED */
+
+.oled-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.oled-display {
+    background: #050505;
+    border: 4px solid #333;
+    border-radius: 12px;
+
+    min-height: 210px;
+
+    padding: 25px;
+
+    display: flex;
+    align-items: center;
+}
+
+.oled-screen {
+    color: #00ff66;
+
+    font-family: monospace;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+    width: 100%;
+}
+
+.oled-label {
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+/* INPUT */
+
+textarea {
+    width: 100%;
+
+    height: 130px;
+
+    resize: vertical;
+
+    padding: 15px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #2563eb;
+}
+
+/* BUTTON */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+button {
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+.send {
+    background: #2563eb;
+    color: white;
+}
+
+.clear {
+    background: #dc2626;
+    color: white;
+}
+
+.download {
+    background: #16a34a;
+    color: white;
+}
+
+/* ON OFF */
+
+.power-control {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #f8fafc;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 15px;
+}
+
+.power-text {
+    font-weight: bold;
+}
+
+.switch {
+    position: relative;
+
+    width: 62px;
+    height: 32px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+
+    cursor: pointer;
+
+    inset: 0;
+
+    background: #94a3b8;
+
+    border-radius: 30px;
+
+    transition: .3s;
+}
+
+.slider:before {
+    content: "";
+
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    left: 4px;
+    top: 4px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background: #16a34a;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* INFO */
 
 .info-grid {
     display: grid;
 
     grid-template-columns:
-    repeat(3, 1fr);
+        repeat(3,1fr);
 
-    gap: 18px;
-
-    margin-top: 20px;
+    gap: 15px;
 }
 
-.info-card {
-    background: white;
-    padding: 20px;
-
-    border-radius: 12px;
-
-    box-shadow:
-    0 2px 10px rgba(0,0,0,0.07);
-}
-
-.info-card h3 {
-    margin-bottom: 15px;
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-
-    padding: 8px 0;
-
-    border-bottom: 1px solid #eee;
-
-    font-size: 14px;
-}
-
-/* =========================
-   TABLE
-========================= */
-
-.table-card {
-    background: white;
-
-    margin-top: 20px;
-
-    padding: 20px;
-
-    border-radius: 12px;
-
-    box-shadow:
-    0 2px 10px rgba(0,0,0,0.07);
-
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-    font-size: 14px;
-}
-
-th {
+.info-box {
     background: #f8fafc;
+
+    padding: 15px;
+
+    border-radius: 10px;
 }
 
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-    text-align: center;
-    padding: 30px;
-
-    color: #6b7280;
+.info-label {
+    color: #64748b;
 
     font-size: 13px;
+
+    margin-bottom: 6px;
 }
 
-/* =========================
-   MOBILE
-========================= */
+.info-value {
+    font-size: 17px;
 
-@media(max-width: 1000px) {
+    font-weight: bold;
+}
+
+/* NOTIFICATION */
+
+#notification {
+    position: fixed;
+
+    bottom: 20px;
+    right: 20px;
+
+    background: #111827;
+
+    color: white;
+
+    padding: 14px 20px;
+
+    border-radius: 8px;
+
+    display: none;
+}
+
+/* MOBILE */
+
+@media(max-width:900px) {
 
     .cards {
         grid-template-columns:
-        repeat(2, 1fr);
+            repeat(2,1fr);
     }
 
-    .graph-grid {
+    .oled-section {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:600px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .grid {
         grid-template-columns: 1fr;
     }
 
@@ -352,483 +411,413 @@ footer {
 
 }
 
-@media(max-width: 600px) {
-
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .device-bar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
-
-    .buttons {
-        width: 100%;
-    }
-
-    button {
-        flex: 1;
-    }
-
-    .card-value {
-        font-size: 30px;
-    }
-
-}
-
 </style>
 
 </head>
 
+
 <body>
 
 
-<!-- =====================================================
+<!-- =================================================
      HEADER
-===================================================== -->
+================================================= -->
 
 <header>
 
-<div class="header-content">
+    <h1>
+        ESP32 IoT Dashboard
+    </h1>
 
-<div class="logo">
+    <div class="header-right">
 
-<h1>ESP32 Environmental Monitor</h1>
+        <span class="device-name">
+            ESP32_001
+        </span>
 
-<p>Firebase Realtime Monitoring Dashboard</p>
+        <span
+            id="connectionStatus"
+            class="status offline">
 
-</div>
+            OFFLINE
 
-<div id="firebaseConnection"
-     class="connection waiting">
+        </span>
 
-Connecting...
-
-</div>
-
-</div>
+    </div>
 
 </header>
 
 
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
 <div class="container">
 
 
-<!-- DEVICE BAR -->
-
-<div class="device-bar">
-
-<div>
-
-<div class="device-name">
-ESP32_001
-</div>
-
-<div class="device-path">
-Firebase: /devices/ESP32_001
-</div>
-
-</div>
-
-
-<div class="buttons">
-
-<button
-onclick="downloadCSV()"
-class="download">
-
-Download CSV
-
-</button>
-
-<button
-onclick="clearGraph()"
-class="clear">
-
-Clear Graph
-
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     LIVE VALUES
-===================================================== -->
+<!-- =================================================
+     SENSOR CARDS
+================================================= -->
 
 <div class="cards">
 
 
-<!-- Temperature -->
+    <div class="card">
+
+        <div class="sensor-title">
+            Temperature
+        </div>
+
+        <div
+            class="sensor-value temperature">
+
+            <span id="temperature">
+                --
+            </span>
+
+            °C
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            Humidity
+        </div>
+
+        <div
+            class="sensor-value humidity">
+
+            <span id="humidity">
+                --
+            </span>
+
+            %
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            Device
+        </div>
+
+        <div class="sensor-value">
+            ESP32_001
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            System Status
+        </div>
+
+        <div
+            id="systemStatus"
+            class="sensor-value">
+
+            --
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     GRAPH
+================================================= -->
+
+<div class="grid">
+
+    <div class="card full">
+
+        <h2>
+            Sensor Graph
+        </h2>
+
+        <br>
+
+        <div class="chart-container">
+
+            <canvas id="sensorChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     OLED CONTROL
+================================================= -->
 
 <div class="card">
 
-<div class="card-title">
-Temperature
-</div>
+    <h2>
+        OLED Display Control
+    </h2>
 
-<div>
-
-<span id="temperature"
-      class="card-value">
-
---
-
-</span>
-
-<span class="card-unit">
-°C
-</span>
-
-</div>
-
-<div class="card-footer">
-
-Min:
-<span id="minTemperature">--</span>
-
-°C
-
-&nbsp;&nbsp;
-
-Max:
-<span id="maxTemperature">--</span>
-
-°C
-
-</div>
-
-</div>
+    <br>
 
 
-<!-- Humidity -->
+    <!-- ON/OFF -->
 
-<div class="card">
+    <div class="power-control">
 
-<div class="card-title">
-Humidity
-</div>
+        <div>
 
-<div>
+            <div class="power-text">
+                OLED Power
+            </div>
 
-<span id="humidity"
-      class="card-value">
+            <small id="powerText">
+                OLED ON
+            </small>
 
---
-
-</span>
-
-<span class="card-unit">
-%
-</span>
-
-</div>
-
-<div class="card-footer">
-
-Min:
-<span id="minHumidity">--</span>
-
-%
-
-&nbsp;&nbsp;
-
-Max:
-<span id="maxHumidity">--</span>
-
-%
-
-</div>
-
-</div>
+        </div>
 
 
-<!-- Status -->
+        <label class="switch">
 
-<div class="card">
+            <input
+                type="checkbox"
+                id="oledPower"
+                checked>
 
-<div class="card-title">
-Device Status
-</div>
+            <span class="slider"></span>
 
-<div id="status"
-     class="card-value status-offline">
+        </label>
 
-OFFLINE
-
-</div>
-
-<div class="card-footer">
-
-Device: ESP32_001
-
-</div>
-
-</div>
+    </div>
 
 
-<!-- Last Update -->
+    <!-- OLED PREVIEW -->
 
-<div class="card">
+    <div class="oled-section">
 
-<div class="card-title">
-Last Update
-</div>
 
-<div id="lastUpdate"
-     class="card-value"
-     style="font-size:22px;">
+        <div>
 
---
+            <div class="oled-label">
+                OLED PREVIEW
+            </div>
 
-</div>
+            <div class="oled-display">
 
-<div class="card-footer">
+                <div
+                    class="oled-screen"
+                    id="oledPreview">
 
-Firebase server time
+                    Waiting...
 
-</div>
+                </div>
 
-</div>
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div>
+
+            <label>
+                Message to OLED
+            </label>
+
+            <br>
+
+            <textarea
+                id="message"
+                maxlength="100"
+                placeholder="Type message here..."></textarea>
+
+
+            <div style="
+                text-align:right;
+                color:#64748b;
+                font-size:13px;
+                margin-top:5px;">
+
+                <span id="charCount">
+                    0
+                </span>
+                / 100
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="send"
+                    onclick="sendMessage()">
+
+                    Send to OLED
+
+                </button>
+
+
+                <button
+                    class="clear"
+                    onclick="clearOLED()">
+
+                    Clear OLED
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
 
 </div>
 
 
-<!-- =====================================================
-     GRAPHS
-===================================================== -->
-
-<div class="graph-grid">
+<br>
 
 
-<!-- Temperature Graph -->
-
-<div class="graph-card">
-
-<div class="graph-title">
-Temperature Graph
-</div>
-
-<div class="chart-container">
-
-<canvas id="temperatureChart"></canvas>
-
-</div>
-
-</div>
-
-
-<!-- Humidity Graph -->
-
-<div class="graph-card">
-
-<div class="graph-title">
-Humidity Graph
-</div>
-
-<div class="chart-container">
-
-<canvas id="humidityChart"></canvas>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
+<!-- =================================================
      INFORMATION
-===================================================== -->
+================================================= -->
 
-<div class="info-grid">
+<div class="card">
 
+    <h2>
+        System Information
+    </h2>
 
-<div class="info-card">
+    <br>
 
-<h3>Device Information</h3>
 
-<div class="info-row">
+    <div class="info-grid">
 
-<span>Device ID</span>
 
-<strong>
-ESP32_001
-</strong>
+        <div class="info-box">
 
-</div>
+            <div class="info-label">
+                Last Sensor Update
+            </div>
 
-<div class="info-row">
+            <div
+                class="info-value"
+                id="lastUpdate">
 
-<span>Status</span>
+                --
 
-<strong id="infoStatus">
-Offline
-</strong>
+            </div>
 
-</div>
+        </div>
 
-<div class="info-row">
 
-<span>Firebase</span>
+        <div class="info-box">
 
-<strong id="infoFirebase">
-Disconnected
-</strong>
+            <div class="info-label">
+                Last OLED Update
+            </div>
 
-</div>
+            <div
+                class="info-value"
+                id="lastOLEDUpdate">
 
-</div>
+                --
 
+            </div>
 
-<div class="info-card">
+        </div>
 
-<h3>Temperature Statistics</h3>
 
-<div class="info-row">
+        <div class="info-box">
 
-<span>Current</span>
+            <div class="info-label">
+                OLED Status
+            </div>
 
-<strong>
-<span id="statTemp">
---
-</span>
-°C
-</strong>
+            <div
+                class="info-value"
+                id="oledStatus">
 
-</div>
+                ON
 
-<div class="info-row">
+            </div>
 
-<span>Minimum</span>
+        </div>
 
-<strong>
-<span id="statMinTemp">
---
-</span>
-°C
-</strong>
 
-</div>
+        <div class="info-box">
 
-<div class="info-row">
+            <div class="info-label">
+                Firebase
+            </div>
 
-<span>Maximum</span>
+            <div
+                class="info-value"
+                id="firebaseStatus">
 
-<strong>
-<span id="statMaxTemp">
---
-</span>
-°C
-</strong>
+                Connecting...
 
-</div>
+            </div>
 
-</div>
+        </div>
 
 
-<div class="info-card">
+        <div class="info-box">
 
-<h3>Humidity Statistics</h3>
+            <div class="info-label">
+                Temperature
+            </div>
 
-<div class="info-row">
+            <div
+                class="info-value"
+                id="currentTemp">
 
-<span>Current</span>
+                --
 
-<strong>
-<span id="statHumidity">
---
-</span>
-%
-</strong>
+            </div>
 
-</div>
+        </div>
 
-<div class="info-row">
 
-<span>Minimum</span>
+        <div class="info-box">
 
-<strong>
-<span id="statMinHumidity">
---
-</span>
-%
-</strong>
+            <div class="info-label">
+                Humidity
+            </div>
 
-</div>
+            <div
+                class="info-value"
+                id="currentHumidity">
 
-<div class="info-row">
+                --
 
-<span>Maximum</span>
+            </div>
 
-<strong>
-<span id="statMaxHumidity">
---
-</span>
-%
-</strong>
+        </div>
 
-</div>
 
-</div>
+    </div>
 
-</div>
 
+    <br>
 
-<!-- =====================================================
-     DATA TABLE
-===================================================== -->
 
-<div class="table-card">
+    <button
+        class="download"
+        onclick="downloadCSV()">
 
-<h3 style="margin-bottom:15px;">
-Recent Data
-</h3>
+        Download Sensor CSV
 
-<table>
-
-<thead>
-
-<tr>
-
-<th>
-Time
-</th>
-
-<th>
-Temperature
-</th>
-
-<th>
-Humidity
-</th>
-
-<th>
-Status
-</th>
-
-</tr>
-
-</thead>
-
-<tbody id="dataTable">
-
-</tbody>
-
-</table>
+    </button>
 
 </div>
 
@@ -836,27 +825,27 @@ Status
 </div>
 
 
-<!-- =====================================================
-     FOOTER
-===================================================== -->
+<footer style="
+    text-align:center;
+    padding:25px;
+    color:#64748b;">
 
-<footer>
-
-ESP32 + DHT11 + Firebase Realtime Database
+    ESP32 IoT Monitoring System
 
 </footer>
 
 
-<!-- =====================================================
-     FIREBASE JAVASCRIPT
-===================================================== -->
+<div id="notification">
+    Message sent
+</div>
+
+
+<!-- =================================================
+     FIREBASE
+================================================= -->
 
 <script type="module">
 
-
-// =====================================================
-// FIREBASE IMPORT
-// =====================================================
 
 import {
     initializeApp
@@ -868,456 +857,369 @@ from
 import {
     getDatabase,
     ref,
-    onValue
+    onValue,
+    set
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
 // =====================================================
-// FIREBASE CONFIGURATION
+// FIREBASE CONFIG
 // =====================================================
 
 const firebaseConfig = {
 
     apiKey:
-    "AIzaSyAG6SUjgU8Fw444Hp4cm99-Tgv_snPzjeg",
+        "YOUR_FIREBASE_API_KEY",
 
     authDomain:
-    "hotel-city-park.firebaseapp.com",
+        "hotel-city-park.firebaseapp.com",
 
     databaseURL:
-    "https://hotel-city-park-default-rtdb.firebaseio.com",
+        "https://hotel-city-park-default-rtdb.firebaseio.com",
 
     projectId:
-    "hotel-city-park",
+        "hotel-city-park",
 
     storageBucket:
-    "hotel-city-park.firebasestorage.app",
+        "hotel-city-park.appspot.com",
 
     messagingSenderId:
-    "229533997685",
+        "YOUR_SENDER_ID",
 
     appId:
-    "1:229533997685:web:be1d34c42f72e40616b63c",
-
-    measurementId:
-    "G-8KQMDT535G"
+        "YOUR_APP_ID"
 
 };
 
 
 // =====================================================
-// INITIALIZE
+// FIREBASE INIT
 // =====================================================
 
 const app =
-initializeApp(firebaseConfig);
-
+    initializeApp(firebaseConfig);
 
 const database =
-getDatabase(app);
+    getDatabase(app);
 
 
 // =====================================================
-// DEVICE REFERENCE
+// PATHS
 // =====================================================
 
 const deviceRef =
-ref(database, "devices/ESP32_001");
+    ref(
+        database,
+        "devices/ESP32_001/sensor"
+    );
+
+
+const oledMessageRef =
+    ref(
+        database,
+        "devices/ESP32_001/oled_message"
+    );
+
+
+const oledPowerRef =
+    ref(
+        database,
+        "devices/ESP32_001/oled_power"
+    );
 
 
 // =====================================================
-// ARRAYS FOR GRAPH
+// VARIABLES
 // =====================================================
 
-let temperatureData = [];
+let sensorHistory = [];
 
-let humidityData = [];
+let temperatures = [];
 
-let timeData = [];
+let humidities = [];
 
-let tableData = [];
+let labels = [];
 
 
 // =====================================================
-// TEMPERATURE CHART
+// CHART
 // =====================================================
 
-const temperatureChart =
-new Chart(
-
+const ctx =
     document
-    .getElementById("temperatureChart"),
+    .getElementById("sensorChart")
+    .getContext("2d");
 
-    {
 
-        type: "line",
+const sensorChart =
+    new Chart(
+        ctx,
+        {
 
-        data: {
+            type: "line",
 
-            labels: timeData,
+            data: {
 
-            datasets: [
+                labels: labels,
 
-                {
+                datasets: [
 
-                    label:
-                    "Temperature °C",
+                    {
+                        label:
+                            "Temperature °C",
 
-                    data:
-                    temperatureData,
+                        data:
+                            temperatures,
 
-                    tension: 0.3,
+                        borderWidth: 2,
 
-                    borderWidth: 2,
+                        tension: .3,
 
-                    fill: false
+                        fill: false
+                    },
 
-                }
+                    {
+                        label:
+                            "Humidity %",
 
-            ]
+                        data:
+                            humidities,
 
-        },
+                        borderWidth: 2,
 
-        options: {
+                        tension: .3,
 
-            responsive: true,
+                        fill: false
+                    }
 
-            maintainAspectRatio: false,
+                ]
 
-            animation: false,
+            },
 
-            scales: {
+            options: {
 
-                y: {
+                responsive: true,
 
-                    beginAtZero: false
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+                        beginAtZero: false
+                    }
 
                 }
 
             }
 
         }
-
-    }
-
-);
+    );
 
 
 // =====================================================
-// HUMIDITY CHART
-// =====================================================
-
-const humidityChart =
-new Chart(
-
-    document
-    .getElementById("humidityChart"),
-
-    {
-
-        type: "line",
-
-        data: {
-
-            labels: timeData,
-
-            datasets: [
-
-                {
-
-                    label:
-                    "Humidity %",
-
-                    data:
-                    humidityData,
-
-                    tension: 0.3,
-
-                    borderWidth: 2,
-
-                    fill: false
-
-                }
-
-            ]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            animation: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    max: 100
-
-                }
-
-            }
-
-        }
-
-    }
-
-);
-
-
-// =====================================================
-// FIREBASE REALTIME LISTENER
+// SENSOR REAL-TIME
 // =====================================================
 
 onValue(
-
     deviceRef,
 
     (snapshot) => {
 
         const data =
-        snapshot.val();
+            snapshot.val();
 
 
-        if (!data) {
-
-            setFirebaseStatus(
-                false,
-                "No data"
-            );
-
+        if (!data)
+        {
             return;
-
         }
 
 
-        // =================================================
         // TEMPERATURE
-        // =================================================
 
         if (
             data.temperature !== undefined
-        ) {
+        )
+        {
 
             const temp =
-            Number(data.temperature);
+                Number(
+                    data.temperature
+                );
 
 
-            document
-            .getElementById("temperature")
-            .textContent =
-            temp.toFixed(1);
+            document.getElementById(
+                "temperature"
+            ).textContent =
+                temp.toFixed(1);
 
 
-            document
-            .getElementById("statTemp")
-            .textContent =
-            temp.toFixed(1);
+            document.getElementById(
+                "currentTemp"
+            ).textContent =
+                temp.toFixed(1) +
+                " °C";
 
 
-            updateTemperatureStats(temp);
+            temperatures.push(temp);
 
         }
 
 
-        // =================================================
         // HUMIDITY
-        // =================================================
 
         if (
             data.humidity !== undefined
-        ) {
+        )
+        {
 
             const humidity =
-            Number(data.humidity);
+                Number(
+                    data.humidity
+                );
 
 
-            document
-            .getElementById("humidity")
-            .textContent =
-            humidity.toFixed(1);
+            document.getElementById(
+                "humidity"
+            ).textContent =
+                humidity.toFixed(1);
 
 
-            document
-            .getElementById("statHumidity")
-            .textContent =
-            humidity.toFixed(1);
+            document.getElementById(
+                "currentHumidity"
+            ).textContent =
+                humidity.toFixed(1) +
+                " %";
 
 
-            updateHumidityStats(humidity);
-
-        }
-
-
-        // =================================================
-        // STATUS
-        // =================================================
-
-        if (data.status) {
-
-            const status =
-            String(data.status);
-
-
-            const statusElement =
-            document.getElementById("status");
-
-
-            const infoStatus =
-            document.getElementById("infoStatus");
-
-
-            if (
-                status.toUpperCase()
-                === "ONLINE"
-            ) {
-
-                statusElement
-                .textContent =
-                "ONLINE";
-
-
-                statusElement
-                .className =
-                "card-value status-online";
-
-
-                infoStatus
-                .textContent =
-                "Online";
-
-            }
-            else {
-
-                statusElement
-                .textContent =
-                "OFFLINE";
-
-
-                statusElement
-                .className =
-                "card-value status-offline";
-
-
-                infoStatus
-                .textContent =
-                "Offline";
-
-            }
-
-        }
-
-
-        // =================================================
-        // TIMESTAMP
-        // =================================================
-
-        let date;
-
-
-        if (data.timestamp) {
-
-            let timestamp =
-            Number(data.timestamp);
-
-
-            // Firebase timestamp is milliseconds
-            if (timestamp < 10000000000) {
-
-                timestamp =
-                timestamp * 1000;
-
-            }
-
-
-            date =
-            new Date(timestamp);
-
-        }
-        else {
-
-            date =
-            new Date();
-
-        }
-
-
-        document
-        .getElementById("lastUpdate")
-        .textContent =
-        date.toLocaleTimeString();
-
-
-        // =================================================
-        // GRAPH
-        // =================================================
-
-        if (
-            data.temperature !== undefined &&
-            data.humidity !== undefined
-        ) {
-
-            addGraphData(
-
-                Number(data.temperature),
-
-                Number(data.humidity),
-
-                date
-
+            humidities.push(
+                humidity
             );
 
         }
 
 
-        // =================================================
-        // TABLE
-        // =================================================
+        // STATUS
 
-        addTableData(
+        const status =
+            data.status ||
+            "UNKNOWN";
 
-            date,
 
-            Number(data.temperature),
+        document.getElementById(
+            "systemStatus"
+        ).textContent =
+            status;
 
-            Number(data.humidity),
 
-            data.status || "UNKNOWN"
+        if (
+            status === "ONLINE"
+        )
+        {
 
+            document.getElementById(
+                "connectionStatus"
+            ).textContent =
+                "ONLINE";
+
+
+            document.getElementById(
+                "connectionStatus"
+            ).className =
+                "status online";
+
+        }
+
+
+        // TIME
+
+        document.getElementById(
+            "lastUpdate"
+        ).textContent =
+            new Date()
+            .toLocaleTimeString();
+
+
+        labels.push(
+            new Date()
+            .toLocaleTimeString()
         );
 
 
-        // =================================================
-        // CONNECTION
-        // =================================================
+        // Keep last 20
 
-        setFirebaseStatus(
-            true,
-            "Firebase Live"
-        );
+        if (
+            temperatures.length > 20
+        )
+        {
+            temperatures.shift();
+        }
+
+
+        if (
+            humidities.length > 20
+        )
+        {
+            humidities.shift();
+        }
+
+
+        if (
+            labels.length > 20
+        )
+        {
+            labels.shift();
+        }
+
+
+        sensorChart.update();
+
+
+        // HISTORY
+
+        sensorHistory.push({
+
+            time:
+                new Date()
+                .toLocaleString(),
+
+            temperature:
+                data.temperature ?? "",
+
+            humidity:
+                data.humidity ?? "",
+
+            status:
+                data.status ?? ""
+
+        });
+
+
+        if (
+            sensorHistory.length > 500
+        )
+        {
+            sensorHistory.shift();
+        }
+
+
+        document.getElementById(
+            "firebaseStatus"
+        ).textContent =
+            "Connected";
 
     },
 
-
     (error) => {
 
-        console.error(
-            "Firebase Error:",
-            error
-        );
+        console.error(error);
 
-
-        setFirebaseStatus(
-            false,
-            "Firebase Error"
-        );
+        document.getElementById(
+            "firebaseStatus"
+        ).textContent =
+            "ERROR";
 
     }
 
@@ -1325,400 +1227,365 @@ onValue(
 
 
 // =====================================================
-// FIREBASE STATUS
+// OLED MESSAGE REAL-TIME
 // =====================================================
 
-function setFirebaseStatus(
-    connected,
-    message
-) {
+onValue(
+    oledMessageRef,
 
-    const element =
-    document.getElementById(
-        "firebaseConnection"
-    );
+    (snapshot) => {
+
+        let message =
+            snapshot.val();
 
 
-    const info =
-    document.getElementById(
-        "infoFirebase"
-    );
+        if (
+            message === null ||
+            message === undefined
+        )
+        {
+            message = "";
+        }
 
 
-    if (connected) {
-
-        element
-        .textContent =
-        "● " + message;
+        message =
+            String(message);
 
 
-        element
-        .className =
-        "connection connected";
+        document.getElementById(
+            "oledPreview"
+        ).textContent =
+            message ||
+            "OLED cleared";
 
 
-        info
-        .textContent =
-        "Connected";
-
-    }
-    else {
-
-        element
-        .textContent =
-        "● " + message;
+        document.getElementById(
+            "message"
+        ).value =
+            message;
 
 
-        element
-        .className =
-        "connection disconnected";
+        document.getElementById(
+            "charCount"
+        ).textContent =
+            message.length;
 
 
-        info
-        .textContent =
-        "Disconnected";
+        document.getElementById(
+            "lastOLEDUpdate"
+        ).textContent =
+            new Date()
+            .toLocaleTimeString();
 
     }
 
-}
+);
 
 
 // =====================================================
-// ADD GRAPH DATA
+// OLED POWER REAL-TIME
 // =====================================================
 
-function addGraphData(
-    temperature,
-    humidity,
-    date
-) {
+onValue(
+    oledPowerRef,
 
-    const time =
-    date.toLocaleTimeString();
+    (snapshot) => {
 
-
-    timeData.push(time);
-
-    temperatureData.push(
-        temperature
-    );
-
-    humidityData.push(
-        humidity
-    );
+        let power =
+            snapshot.val();
 
 
-    // Keep last 50 readings
+        // Default ON
 
-    if (timeData.length > 50) {
+        if (power === null)
+        {
+            power = true;
+        }
 
-        timeData.shift();
 
-        temperatureData.shift();
+        power =
+            Boolean(power);
 
-        humidityData.shift();
+
+        const checkbox =
+            document.getElementById(
+                "oledPower"
+            );
+
+
+        checkbox.checked =
+            power;
+
+
+        updatePowerUI(power);
 
     }
 
-
-    temperatureChart.update();
-
-    humidityChart.update();
-
-}
+);
 
 
 // =====================================================
-// TEMPERATURE STATISTICS
+// ON/OFF SWITCH
 // =====================================================
 
-let temperatureValues = [];
+document
+.getElementById("oledPower")
+.addEventListener(
+    "change",
+    async function()
+    {
 
-let humidityValues = [];
+        const power =
+            this.checked;
 
 
-function updateTemperatureStats(
-    value
-) {
+        try
+        {
 
-    temperatureValues.push(value);
+            await set(
+                oledPowerRef,
+                power
+            );
 
 
-    if (
-        temperatureValues.length > 100
-    ) {
+            updatePowerUI(
+                power
+            );
 
-        temperatureValues.shift();
 
-    }
+            if (power)
+            {
 
+                showNotification(
+                    "OLED turned ON"
+                );
 
-    const min =
-    Math.min(
-        ...temperatureValues
-    );
+            }
+            else
+            {
 
+                showNotification(
+                    "OLED turned OFF"
+                );
 
-    const max =
-    Math.max(
-        ...temperatureValues
-    );
-
-
-    document
-    .getElementById("minTemperature")
-    .textContent =
-    min.toFixed(1);
-
-
-    document
-    .getElementById("maxTemperature")
-    .textContent =
-    max.toFixed(1);
-
-
-    document
-    .getElementById("statMinTemp")
-    .textContent =
-    min.toFixed(1);
-
-
-    document
-    .getElementById("statMaxTemp")
-    .textContent =
-    max.toFixed(1);
-
-}
-
-
-// =====================================================
-// HUMIDITY STATISTICS
-// =====================================================
-
-function updateHumidityStats(
-    value
-) {
-
-    humidityValues.push(value);
-
-
-    if (
-        humidityValues.length > 100
-    ) {
-
-        humidityValues.shift();
-
-    }
-
-
-    const min =
-    Math.min(
-        ...humidityValues
-    );
-
-
-    const max =
-    Math.max(
-        ...humidityValues
-    );
-
-
-    document
-    .getElementById("minHumidity")
-    .textContent =
-    min.toFixed(1);
-
-
-    document
-    .getElementById("maxHumidity")
-    .textContent =
-    max.toFixed(1);
-
-
-    document
-    .getElementById("statMinHumidity")
-    .textContent =
-    min.toFixed(1);
-
-
-    document
-    .getElementById("statMaxHumidity")
-    .textContent =
-    max.toFixed(1);
-
-}
-
-
-// =====================================================
-// TABLE
-// =====================================================
-
-function addTableData(
-    date,
-    temperature,
-    humidity,
-    status
-) {
-
-    const row = {
-
-        time:
-        date.toLocaleString(),
-
-        temperature:
-        temperature,
-
-        humidity:
-        humidity,
-
-        status:
-        status
-
-    };
-
-
-    tableData.unshift(row);
-
-
-    if (tableData.length > 50) {
-
-        tableData.pop();
-
-    }
-
-
-    renderTable();
-
-}
-
-
-// =====================================================
-// RENDER TABLE
-// =====================================================
-
-function renderTable()
-{
-
-    const table =
-    document.getElementById(
-        "dataTable"
-    );
-
-
-    table.innerHTML = "";
-
-
-    tableData.forEach(
-        item => {
-
-            const row =
-            document.createElement("tr");
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${item.time}
-                </td>
-
-                <td>
-                    ${item.temperature.toFixed(1)}
-                    °C
-                </td>
-
-                <td>
-                    ${item.humidity.toFixed(1)}
-                    %
-                </td>
-
-                <td>
-                    ${item.status}
-                </td>
-
-            `;
-
-
-            table.appendChild(row);
+            }
 
         }
-    );
+        catch(error)
+        {
+
+            console.error(error);
+
+            showNotification(
+                "Firebase error"
+            );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// POWER UI
+// =====================================================
+
+function updatePowerUI(power)
+{
+
+    document.getElementById(
+        "powerText"
+    ).textContent =
+        power
+        ? "OLED ON"
+        : "OLED OFF";
+
+
+    document.getElementById(
+        "oledStatus"
+    ).textContent =
+        power
+        ? "ON"
+        : "OFF";
+
+
+    if (!power)
+    {
+
+        document.getElementById(
+            "oledPreview"
+        ).textContent =
+            "OLED OFF";
+
+    }
 
 }
 
 
 // =====================================================
-// CLEAR GRAPH
+// SEND MESSAGE
 // =====================================================
 
-window.clearGraph =
-function()
+window.sendMessage =
+async function()
 {
 
-    timeData.length = 0;
-
-    temperatureData.length = 0;
-
-    humidityData.length = 0;
-
-
-    temperatureValues.length = 0;
-
-    humidityValues.length = 0;
+    const message =
+        document
+        .getElementById("message")
+        .value
+        .trim();
 
 
-    temperatureChart.update();
+    if (
+        message.length === 0
+    )
+    {
 
-    humidityChart.update();
+        showNotification(
+            "Type a message first"
+        );
 
+        return;
 
-    document
-    .getElementById("minTemperature")
-    .textContent =
-    "--";
-
-
-    document
-    .getElementById("maxTemperature")
-    .textContent =
-    "--";
+    }
 
 
-    document
-    .getElementById("minHumidity")
-    .textContent =
-    "--";
+    const power =
+        document
+        .getElementById("oledPower")
+        .checked;
 
 
-    document
-    .getElementById("maxHumidity")
-    .textContent =
-    "--";
+    if (!power)
+    {
+
+        showNotification(
+            "Turn OLED ON first"
+        );
+
+        return;
+
+    }
 
 
-    document
-    .getElementById("statMinTemp")
-    .textContent =
-    "--";
+    try
+    {
+
+        await set(
+            oledMessageRef,
+            message
+        );
 
 
-    document
-    .getElementById("statMaxTemp")
-    .textContent =
-    "--";
+        showNotification(
+            "Message sent to OLED"
+        );
 
+    }
+    catch(error)
+    {
 
-    document
-    .getElementById("statMinHumidity")
-    .textContent =
-    "--";
+        console.error(error);
 
+        showNotification(
+            "Firebase error"
+        );
 
-    document
-    .getElementById("statMaxHumidity")
-    .textContent =
-    "--";
+    }
 
 };
+
+
+// =====================================================
+// CLEAR OLED
+// =====================================================
+
+window.clearOLED =
+async function()
+{
+
+    try
+    {
+
+        await set(
+            oledMessageRef,
+            ""
+        );
+
+
+        showNotification(
+            "OLED message cleared"
+        );
+
+    }
+    catch(error)
+    {
+
+        console.error(error);
+
+        showNotification(
+            "Firebase error"
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// CHARACTER COUNT
+// =====================================================
+
+document
+.getElementById("message")
+.addEventListener(
+    "input",
+    function()
+    {
+
+        document.getElementById(
+            "charCount"
+        ).textContent =
+            this.value.length;
+
+    }
+);
+
+
+// =====================================================
+// NOTIFICATION
+// =====================================================
+
+function showNotification(text)
+{
+
+    const box =
+        document.getElementById(
+            "notification"
+        );
+
+
+    box.textContent =
+        text;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        function()
+        {
+
+            box.style.display =
+                "none";
+
+        },
+        2500
+    );
+
+}
 
 
 // =====================================================
@@ -1730,11 +1597,12 @@ function()
 {
 
     if (
-        tableData.length === 0
-    ) {
+        sensorHistory.length === 0
+    )
+    {
 
         alert(
-            "No data available to download."
+            "No sensor data available"
         );
 
         return;
@@ -1743,60 +1611,50 @@ function()
 
 
     let csv =
-    "Time,Temperature (C),Humidity (%),Status\n";
+        "Time,Temperature,Humidity,Status\n";
 
 
-    tableData
-    .slice()
-    .reverse()
-    .forEach(
-        item => {
+    sensorHistory.forEach(
+        row =>
+        {
 
             csv +=
-            `"${item.time}",` +
-            `${item.temperature},` +
-            `${item.humidity},` +
-            `"${item.status}"\n`;
+                `"${row.time}",` +
+                `"${row.temperature}",` +
+                `"${row.humidity}",` +
+                `"${row.status}"\n`;
 
         }
     );
 
 
     const blob =
-    new Blob(
-        [csv],
-        {
-            type:
-            "text/csv;charset=utf-8;"
-        }
-    );
+        new Blob(
+            [csv],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
 
 
     const url =
-    URL.createObjectURL(blob);
+        URL.createObjectURL(blob);
 
 
     const link =
-    document.createElement("a");
+        document.createElement("a");
 
 
-    link.href = url;
+    link.href =
+        url;
+
 
     link.download =
-    "ESP32_001_data.csv";
-
-
-    document
-    .body
-    .appendChild(link);
+        "ESP32_001_sensor_data.csv";
 
 
     link.click();
-
-
-    document
-    .body
-    .removeChild(link);
 
 
     URL.revokeObjectURL(url);
@@ -1806,5 +1664,6 @@ function()
 </script>
 
 </body>
+
 </html>
 ```
