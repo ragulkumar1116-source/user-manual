@@ -1,305 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="shortcut icon" href="manuals/logo (2).ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Aadhav Intech - Enterprise Document Portal Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-<title>AIT Document Portal</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg: #0b0f19;
+            --surface: rgba(19, 27, 46, 0.75);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #f87171;
+            --success: #34d399;
+        }
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-:root {
-    --primary: #4a6616;
-    --accent: #a3e635;
-    --bg: #030712;
-    --error: #ff6b6b;
-}
+        body {
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-main);
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Quicksand', sans-serif;
-}
+        /* Ambient Glowing Background Blobs */
+        .ambient-glow-container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-body {
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+        .ambient-blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0) 70%);
+            filter: blur(60px);
+            animation: float-1 18s ease-in-out infinite alternate;
+        }
 
-/* BACKGROUND */
-.gradient-bg {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    filter: blur(80px);
-    z-index: 1;
-}
+        .ambient-blob-2 {
+            position: absolute;
+            right: 5%;
+            top: 10%;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0) 70%);
+            filter: blur(60px);
+            animation: float-2 22s ease-in-out infinite alternate;
+        }
 
-.blob {
-    position: absolute;
-    width: 50vw;
-    height: 50vw;
-    border-radius: 50%;
-    background: var(--primary);
-    opacity: 0.4;
-    animation: move 20s infinite alternate;
-}
+        @keyframes float-1 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.15); }
+        }
 
-.blob-2 {
-    background: #1e3a0a;
-    right: 10%;
-    top: 10%;
-}
+        @keyframes float-2 {
+            0%   { transform: translate(0, 0) scale(1.1); }
+            100% { transform: translate(-80px, -50px) scale(0.9); }
+        }
 
-@keyframes move {
-    from { transform: translate(-10%, -10%) scale(1); }
-    to { transform: translate(20%, 20%) scale(1.2); }
-}
+        /* Modern Glassmorphism Login Card */
+        .auth-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            padding: 44px 38px;
+            background: var(--surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
 
-/* CARD */
-.signin {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 420px;
-    padding: 50px 35px;
-    background: rgba(255,255,255,0.03);
-    backdrop-filter: blur(25px);
-    border-radius: 32px;
-    border: 1px solid rgba(255,255,255,0.1);
-    text-align: center;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
-}
+        .brand-icon-box {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.2);
+        }
 
-.company-logo {
-    width: 80px;
-    margin-bottom: 20px;
-}
+        .brand-icon-box img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
 
-h2 {
-    color: white;
-    font-weight: 300;
-    letter-spacing: 4px;
-    margin-bottom: 25px;
-}
+        .auth-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+        .auth-subtitle {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
 
-.inputBox input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(0,0,0,0.4);
-    color: white;
-}
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+        }
 
-.btn-login {
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg,#fff,#d9f99d);
-    font-weight: bold;
-    cursor: pointer;
-}
+        .input-group-custom {
+            position: relative;
+        }
 
-.status {
-    margin-top: 15px;
-    color: white;
-    font-size: 0.9rem;
-}
+        .input-group-custom i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
 
-/* =========================
-   MOBILE RESPONSIVE FIX
-   ========================= */
+        .input-group-custom input {
+            width: 100%;
+            padding: 13px 16px 13px 42px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
 
-@media (max-width: 768px) {
+        .input-group-custom input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+            background: rgba(15, 23, 42, 0.85);
+        }
 
-    body {
-        padding: 15px;
-    }
+        .input-group-custom input:focus + i {
+            color: var(--accent);
+        }
 
-    .signin {
-        max-width: 100%;
-        padding: 35px 20px;
-        border-radius: 24px;
-    }
+        .input-group-custom input::placeholder {
+            color: #64748b;
+        }
 
-    .company-logo {
-        width: 65px;
-        margin-bottom: 15px;
-    }
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
 
-    h2 {
-        font-size: 1.2rem;
-        letter-spacing: 2px;
-        margin-bottom: 20px;
-    }
+        .btn-submit:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+            transform: translateY(-1px);
+        }
 
-    .form {
-        gap: 12px;
-    }
+        .btn-submit:active {
+            transform: translateY(0);
+        }
 
-    .inputBox input {
-        padding: 12px;
-        font-size: 0.95rem;
-    }
+        .status-badge {
+            margin-top: 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-height: 22px;
+            transition: all 0.2s ease;
+        }
 
-    .btn-login {
-        padding: 12px;
-        font-size: 0.95rem;
-    }
+        .footer-note {
+            margin-top: 24px;
+            font-size: 0.76rem;
+            color: #64748b;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+        }
 
-    .status {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .signin {
-        padding: 30px 15px;
-        border-radius: 20px;
-    }
-
-    .company-logo {
-        width: 55px;
-    }
-
-    h2 {
-        font-size: 1rem;
-        letter-spacing: 1.5px;
-    }
-
-    .inputBox input {
-        padding: 11px;
-        border-radius: 12px;
-    }
-
-    .btn-login {
-        border-radius: 12px;
-    }
-}
-
-@media (max-width: 360px) {
-
-    h2 {
-        font-size: 0.95rem;
-    }
-
-    .signin {
-        padding: 25px 12px;
-    }
-}
-
-</style>
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 32px 22px;
+                border-radius: 16px;
+            }
+            .auth-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="ambient-glow-container">
+        <div class="ambient-blob"></div>
+        <div class="ambient-blob-2"></div>
+    </div>
 
-<div class="gradient-bg">
-    <div class="blob"></div>
-    <div class="blob blob-2"></div>
-</div>
-
-<div class="signin">
-    <img src="manuals/logo (2).ico" class="company-logo">
-    <h2 id="formTitle">Sign In</h2>
-
-    <form class="form" id="authForm">
-        <div class="inputBox">
-            <input type="email" id="email" placeholder="Email" required>
+    <div class="auth-card">
+        <div class="brand-icon-box">
+            <img src="manuals/logo (2).ico" alt="Aadhav Intech Logo">
         </div>
+        <h1 class="auth-title">Aadhav Intech Portal</h1>
+        <p class="auth-subtitle">Industrial Instrument & Manual Documentation Hub</p>
 
-        <div class="inputBox">
-            <input type="password" id="password" placeholder="Password" required>
+        <form class="auth-form" id="authForm">
+            <div class="input-group-custom">
+                <input type="email" id="email" placeholder="Corporate email address" required autocomplete="email">
+                <i class="fa-regular fa-envelope"></i>
+            </div>
+
+            <div class="input-group-custom">
+                <input type="password" id="password" placeholder="Account password" required autocomplete="current-password">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <button class="btn-submit" type="submit" id="submitBtn">
+                <span>Sign In to Portal</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="status-badge" id="status"></div>
+
+        <div class="footer-note">
+            Protected Enterprise System &bull; Instrument Library v3.0
         </div>
+    </div>
 
-        <button class="btn-login" type="submit" id="submitBtn">Continue</button>
-    </form>
+    <!-- Firebase Auth Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            setPersistence,
+            browserSessionPersistence
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    <div class="status" id="status"></div>
-</div>
+        // Load config from app.json
+        const res = await fetch("./app.json");
+        const data = await res.json();
+        const firebaseConfig = data.firebaseConfig;
 
-<script type="module">
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        await setPersistence(auth, browserSessionPersistence);
 
-import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-setPersistence,
-browserSessionPersistence
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        const form = document.getElementById("authForm");
+        const status = document.getElementById("status");
+        const submitBtn = document.getElementById("submitBtn");
 
+        let isLogin = true;
 
-// LOAD CONFIG FROM JSON
-const res = await fetch("./app.json");
-const data = await res.json();
-const firebaseConfig = data.firebaseConfig;
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
 
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+                status.style.color = "#94a3b8";
+                status.innerText = "Verifying credentials...";
 
-// INIT FIREBASE
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                }
 
-// SESSION ONLY
-await setPersistence(auth, browserSessionPersistence);
+                sessionStorage.setItem("verified", "true");
+                status.style.color = "var(--success)";
+                status.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i> Authentication successful! Redirecting...';
 
+                setTimeout(() => {
+                    window.location.href = "maindashbod.html";
+                }, 900);
 
-// DOM
-const form = document.getElementById("authForm");
-const status = document.getElementById("status");
-
-let isLogin = true;
-
-
-// SUBMIT
-form.addEventListener("submit", async (e) => {
-e.preventDefault();
-
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-try {
-
-status.innerText = "Processing...";
-
-if (isLogin) {
-await signInWithEmailAndPassword(auth, email, password);
-} else {
-await createUserWithEmailAndPassword(auth, email, password);
-}
-
-sessionStorage.setItem("verified", "true");
-
-status.innerText = "Success! Redirecting...";
-
-setTimeout(() => {
-window.location.href = "maindashbod.html";
-}, 1200);
-
-} catch (err) {
-status.innerText = err.message.replace("Firebase: ", "");
-}
-});
-
-</script>
-<script src="license.js"></script>
+            } catch (err) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Sign In to Portal</span> <i class="fa-solid fa-arrow-right"></i>';
+                status.style.color = "var(--danger)";
+                status.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-1"></i> ${err.message.replace("Firebase: ", "")}`;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,15 +1,16 @@
 // firebase.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
   getDatabase, 
   ref, 
   push, 
   update, 
   remove, 
-  onValue 
+  onValue,
+  get,
+  set
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// ⚠️ REPLACE THIS WITH YOUR FIREBASE CONFIGURATION OBJECT
 const firebaseConfig = {
   apiKey: "AIzaSyCfc7la06vL3yEN3vCZX5jctD4PjsEtK0g",
   authDomain: "aittest-9ec93.firebaseapp.com",
@@ -21,8 +22,8 @@ const firebaseConfig = {
   measurementId: "G-8QH3YFRCR0"
 };
 
-// Initialize Firebase App & Realtime Database
-const app = initializeApp(firebaseConfig);
+// Safe singleton Firebase initialization
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // 1. Add New Document
@@ -53,3 +54,5 @@ export function listenToDocuments(callback) {
     console.error("Firebase fetch error:", error);
   });
 }
+
+export { db, ref, onValue, set, get, remove, update };

@@ -7,7 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadLibrary();
     
     document.getElementById('searchInput')?.addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
+        const term = e.target.value.toLowerCase().trim();
+        if (!term) {
+            renderTable(allInstruments);
+            return;
+        }
         const filtered = allInstruments.filter(inst => {
             const str = JSON.stringify(inst).toLowerCase();
             return str.includes(term);
@@ -21,44 +25,72 @@ async function loadLibrary() {
         const snapshot = await get(ref(db, 'instruments'));
         if (snapshot.exists()) {
             allInstruments = Object.values(snapshot.val());
+            allInstruments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
             renderTable(allInstruments);
         } else {
             allInstruments = [];
             renderTable([]);
         }
     } catch (e) {
-        console.error(e);
-        document.getElementById('libraryTableBody').innerHTML = '<tr><td colspan="10" class="text-danger">Failed to load data.</td></tr>';
+        console.error("Error loading library:", e);
+        const tbody = document.getElementById('libraryTableBody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-danger py-4"><i class="fa-solid fa-triangle-exclamation me-2"></i>Failed to load database.</td></tr>';
+        }
     }
 }
 
 function renderTable(data) {
     const tbody = document.getElementById('libraryTableBody');
-    if(!tbody) return;
+    if (!tbody) return;
     tbody.innerHTML = '';
     
-    if(data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">No instruments found.</td></tr>';
+    if (data.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="text-center text-muted py-5">
+                    <i class="fa-regular fa-folder-open fs-2 d-block mb-2 text-secondary"></i>
+                    <div class="fw-semibold">No instruments found</div>
+                    <div class="small">Add a new instrument to populate your library</div>
+                </td>
+            </tr>
+        `;
         return;
     }
 
     data.forEach(inst => {
         const tr = document.createElement('tr');
+        const imgHtml = inst.media?.image 
+            ? `<img src="${inst.media.image}" class="table-thumbnail" alt="${inst.general?.name || 'Image'}">`
+            : `<div class="table-thumbnail-placeholder"><i class="fa-solid fa-microchip"></i></div>`;
+            
+        const dateStr = inst.updated_at ? new Date(inst.updated_at).toLocaleDateString() : '-';
+
         tr.innerHTML = `
-            <td>${inst.media?.image ? `<img src="${inst.media.image}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">` : `<div class="bg-light text-muted d-flex align-items-center justify-content-center" style="width:40px;height:40px;border-radius:4px;"><i class="fa-solid fa-image"></i></div>`}</td>
-            <td class="fw-bold">${inst.general?.name || ''}</td>
-            <td>${inst.general?.manufacturer || ''}</td>
-            <td>${inst.general?.model || ''}</td>
-            <td><span class="badge bg-primary text-white">${inst.general?.category || ''}</span></td>
-            <td>${inst.general?.inst_type || ''}</td>
-            <td>${inst.communication?.protocol || ''}</td>
-            <td>${inst.general?.project || ''}</td>
-            <td>${new Date(inst.updated_at).toLocaleDateString()}</td>
-            <td class="text-end px-3 text-nowrap">
-                <a href="details.html?id=${inst.id}" class="btn btn-sm btn-info text-white shadow-sm" title="View"><i class="fa-solid fa-eye"></i></a>
-                <a href="add.html?id=${inst.id}" class="btn btn-sm btn-primary shadow-sm" title="Edit"><i class="fa-solid fa-pen"></i></a>
-                <button class="btn btn-sm btn-warning text-white shadow-sm btn-duplicate" data-id="${inst.id}" title="Duplicate"><i class="fa-solid fa-copy"></i></button>
-                <button class="btn btn-sm btn-danger shadow-sm btn-delete" data-id="${inst.id}" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            <td>${imgHtml}</td>
+            <td class="fw-bold text-dark-emphasis">${inst.general?.name || 'Unnamed'}</td>
+            <td>${inst.general?.manufacturer || '-'}</td>
+            <td><span class="badge badge-soft-info">${inst.general?.model || '-'}</span></td>
+            <td><span class="badge badge-soft-primary">${inst.general?.category || 'General'}</span></td>
+            <td>${inst.general?.inst_type || '-'}</td>
+            <td><code>${inst.communication?.protocol || '-'}</code></td>
+            <td>${inst.general?.project || '-'}</td>
+            <td class="text-muted small">${dateStr}</td>
+            <td class="text-end px-4 text-nowrap">
+                <div class="d-inline-flex gap-1">
+                    <a href="details.html?id=${inst.id}" class="btn-sm-action" title="View Details">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a href="add.html?id=${inst.id}" class="btn-sm-action" title="Edit Instrument">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <button class="btn-sm-action btn-duplicate" data-id="${inst.id}" title="Duplicate Instrument">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                    <button class="btn-sm-action action-delete btn-delete" data-id="${inst.id}" title="Delete Instrument">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -73,40 +105,41 @@ function renderTable(data) {
 }
 
 async function deleteInstrument(id) {
-    if(confirm("Are you sure you want to delete this instrument?")) {
+    if (confirm("Are you sure you want to delete this instrument? This action cannot be undone.")) {
         try {
             await remove(ref(db, `instruments/${id}`));
             showToast("Instrument deleted successfully", "success");
             await loadLibrary();
-        } catch(e) {
+        } catch (e) {
             console.error(e);
-            showToast("Failed to delete.", "danger");
+            showToast("Failed to delete instrument.", "danger");
         }
     }
 }
 
 async function duplicateInstrument(id) {
     const inst = allInstruments.find(i => i.id === id);
-    if(!inst) return;
+    if (!inst) return;
     
     let newInst = JSON.parse(JSON.stringify(inst));
-    const newId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    const newId = Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
     newInst.id = newId;
-    newInst.general.name = newInst.general.name + " (Copy)";
+    newInst.general.name = (newInst.general?.name || 'Instrument') + " (Copy)";
     newInst.created_at = new Date().toISOString();
     newInst.updated_at = new Date().toISOString();
     
     try {
         await set(ref(db, `instruments/${newId}`), newInst);
-        showToast("Instrument duplicated!", "success");
+        showToast("Instrument duplicated successfully!", "success");
         await loadLibrary();
-    } catch(e) {
+    } catch (e) {
         console.error(e);
+        showToast("Failed to duplicate instrument.", "danger");
     }
 }
 
-// Export logic
-    let csvData = allInstruments.map(inst => {
+function getExportData() {
+    return allInstruments.map(inst => {
         let row = {
             "Instrument Name": inst.general?.name || '',
             "Company": inst.general?.company || '',
@@ -117,10 +150,10 @@ async function duplicateInstrument(id) {
             "Firmware": inst.general?.firmware || '',
             "Protocol": inst.communication?.protocol || '',
             "Registers": inst.registers ? inst.registers.length : 0,
-            "Updated": new Date(inst.updated_at).toLocaleDateString()
+            "Updated": inst.updated_at ? new Date(inst.updated_at).toLocaleDateString() : ''
         };
 
-        if(inst.tcpip?.enabled) {
+        if (inst.tcpip?.enabled) {
             row["IP Address"] = inst.tcpip.ip || '';
             row["Subnet"] = inst.tcpip.subnet || '';
             row["Gateway"] = inst.tcpip.gateway || '';
@@ -132,34 +165,37 @@ async function duplicateInstrument(id) {
         }
         return row;
     });
+}
 
 window.exportCSV = function() {
-    if(!window.XLSX) return showToast("Export library not loaded.", "danger");
-    const ws = XLSX.utils.json_to_sheet(csvData);
+    if (!window.XLSX) return showToast("Export library not loaded.", "danger");
+    const data = getExportData();
+    const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Instruments");
-    XLSX.writeFile(wb, "instrument_library.csv", {bookType: "csv"});
+    XLSX.writeFile(wb, "instrument_library.csv", { bookType: "csv" });
 };
 
 window.exportExcel = function() {
-    if(!window.XLSX) return showToast("Excel library not loaded.", "danger");
-    const ws = XLSX.utils.json_to_sheet(csvData);
+    if (!window.XLSX) return showToast("Excel library not loaded.", "danger");
+    const data = getExportData();
+    const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Instruments");
     XLSX.writeFile(wb, "instrument_library.xlsx");
 };
 
 window.exportPDF = function() {
-    if(!window.jspdf) return showToast("PDF library not loaded.", "danger");
+    if (!window.jspdf) return showToast("PDF library not loaded.", "danger");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('landscape');
-    doc.text("Instrument Library", 14, 15);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Aadhav Intech - Industrial Instrument Library", 14, 15);
     
-    // Check if any has TCP to include headers
     const hasAnyTcp = allInstruments.some(i => i.tcpip?.enabled);
-    
     const headers = ['Name', 'Model', 'Category', 'Protocol'];
-    if(hasAnyTcp) headers.push('IP Address', 'Modbus Port');
+    if (hasAnyTcp) headers.push('IP Address', 'Modbus Port');
     headers.push('Registers');
 
     const tableData = allInstruments.map(inst => {
@@ -169,8 +205,8 @@ window.exportPDF = function() {
             inst.general?.category || '',
             inst.communication?.protocol || ''
         ];
-        if(hasAnyTcp) {
-            if(inst.tcpip?.enabled) {
+        if (hasAnyTcp) {
+            if (inst.tcpip?.enabled) {
                 row.push(inst.tcpip.ip || '', inst.tcpip.mod_port || '');
             } else {
                 row.push('-', '-');
@@ -183,7 +219,9 @@ window.exportPDF = function() {
     doc.autoTable({
         head: [headers],
         body: tableData,
-        startY: 20
+        startY: 22,
+        theme: 'striped',
+        headStyles: { fillColor: [37, 99, 235] }
     });
     doc.save('instrument_library.pdf');
 };

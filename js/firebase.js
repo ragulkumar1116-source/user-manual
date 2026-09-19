@@ -1,10 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, get, child, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, get, child, remove, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// REPLACE THIS CONFIG WITH YOUR ACTUAL FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCfc7la06vL3yEN3vCZX5jctD4PjsEtK0g",
   authDomain: "aittest-9ec93.firebaseapp.com",
+  databaseURL: "https://aittest-9ec93-default-rtdb.firebaseio.com",
   projectId: "aittest-9ec93",
   storageBucket: "aittest-9ec93.firebasestorage.app",
   messagingSenderId: "628576595149",
@@ -12,12 +12,8 @@ const firebaseConfig = {
   measurementId: "G-8QH3YFRCR0"
 };
 
-let app, db;
-try {
-    app = initializeApp(firebaseConfig);
-    db = getDatabase(app);
-} catch(e) {
-    console.error("Firebase initialization failed.", e);
-}
+// Safe singleton Firebase initialization
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-export { db, ref, onValue, set, get, child, remove, update };
+export { db, ref, onValue, set, get, child, remove, update, push };
