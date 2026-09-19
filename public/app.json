@@ -1,0 +1,12 @@
+{
+  "firebaseConfig": {
+    "apiKey": "AIzaSyAdWdihzNcva6QugwcJ5onhVv25bRzGOQI",
+    "authDomain": "aiterp-254c6.firebaseapp.com",
+    "databaseURL": "https://aiterp-254c6-default-rtdb.firebaseio.com",
+    "projectId": "aiterp-254c6",
+    "storageBucket": "aiterp-254c6.firebasestorage.app",
+    "messagingSenderId": "141769590506",
+    "appId": "1:141769590506:web:434df19c89511914657993",
+    "measurementId": "G-B4H74W4KCV"
+  }
+}
