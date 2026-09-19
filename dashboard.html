@@ -3,22 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="manuals/logo (2).ico"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>User Manuals Portal - Enterprise Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Enterprise Document Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* Document Portal Specialized Grid & Responsive Overrides */
-        body {
-            height: 100vh;
+        :root {
+            --header-h: 60px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
+            background-color: var(--ent-bg);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
         }
 
-        .portal-wrapper {
+        /* Top Header */
+        .portal-topbar {
+            height: var(--header-h);
+            background: var(--ent-surface);
+            border-bottom: 1px solid var(--ent-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            flex-shrink: 0;
+            z-index: 1030;
+            box-shadow: var(--ent-shadow-sm);
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--ent-text-main);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        .brand-link img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        /* Mobile View Segmented Switcher */
+        .mobile-tabs {
+            display: inline-flex;
+            background: var(--ent-surface-hover);
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius-pill);
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .mobile-tab-btn {
+            border: none;
+            background: transparent;
+            color: var(--ent-text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--ent-radius-pill);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .mobile-tab-btn.active {
+            background: var(--ent-accent);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Portal Layout Structure */
+        .portal-workspace {
             display: grid;
             grid-template-columns: 380px 1fr;
             flex: 1;
@@ -26,7 +99,8 @@
             position: relative;
         }
 
-        .portal-sidebar {
+        /* Left Master Sidebar */
+        .portal-sidebar-pane {
             background: var(--ent-surface);
             border-right: 1px solid var(--ent-border);
             display: flex;
@@ -36,31 +110,164 @@
             z-index: 20;
         }
 
-        .portal-search-container {
-            padding: 1rem 1.25rem;
+        .search-area {
+            padding: 0.85rem 1rem;
             border-bottom: 1px solid var(--ent-border);
             background: var(--ent-surface);
+            flex-shrink: 0;
         }
 
-        .portal-filter-container {
+        .search-area .input-group-text {
+            background: var(--ent-surface-hover);
+            border-color: var(--ent-border);
+            color: var(--ent-text-subtle);
+        }
+
+        .search-area .form-control {
+            background: var(--ent-surface-hover);
+            border-color: var(--ent-border);
+            font-size: 0.9rem;
+        }
+        .search-area .form-control:focus {
+            background: var(--ent-surface);
+            border-color: var(--ent-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Horizontal Tag Pills */
+        .category-filter-strip {
             display: flex;
             gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
+            padding: 0.7rem 1rem;
             overflow-x: auto;
             border-bottom: 1px solid var(--ent-border);
             background: var(--ent-bg);
             scrollbar-width: none;
+            -ms-overflow-style: none;
             flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
         }
-        .portal-filter-container::-webkit-scrollbar { display: none; }
+        .category-filter-strip::-webkit-scrollbar { display: none; }
 
-        .portal-doc-list {
+        .cat-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--ent-radius-pill);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            border: 1px solid transparent;
+            transition: all 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--ent-surface);
+            color: var(--ent-text-muted);
+            border-color: var(--ent-border);
+        }
+        .cat-pill:hover {
+            transform: translateY(-1px);
+            color: var(--ent-text-main);
+        }
+        .cat-pill.active {
+            transform: scale(1.02);
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-color: transparent !important;
+        }
+
+        /* Document List Pane */
+        .doc-scroll-pane {
             flex: 1;
             overflow-y: auto;
-            padding: 1.25rem;
+            padding: 0.85rem 1rem;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .viewer-container {
+        .cat-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .cat-group-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.4rem;
+            position: sticky;
+            top: 0;
+            background: var(--ent-surface);
+            border-radius: var(--ent-radius-sm);
+            z-index: 5;
+        }
+        .cat-group-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Document Item Cards */
+        .doc-item-card {
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--ent-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--ent-surface);
+            border: 1px solid var(--ent-border);
+            transition: all 0.2s ease;
+            box-shadow: var(--ent-shadow-sm);
+        }
+        .doc-item-card:hover {
+            transform: translateX(3px);
+            border-color: var(--ent-accent);
+            box-shadow: var(--ent-shadow);
+        }
+        .doc-item-card.active {
+            background: var(--ent-accent-light);
+            border-color: var(--ent-accent);
+            box-shadow: 0 3px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .doc-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: var(--ent-bg);
+            border: 1px solid var(--ent-border);
+            flex-shrink: 0;
+        }
+
+        .doc-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--ent-text-main);
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .doc-item-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--ent-text-muted);
+        }
+
+        /* Detail Viewer Pane */
+        .portal-viewer-pane {
             display: flex;
             flex-direction: column;
             background: var(--ent-bg);
@@ -68,28 +275,30 @@
             overflow: hidden;
         }
 
-        .viewer-header-bar {
-            height: 56px;
+        .viewer-action-bar {
+            height: 52px;
             background: var(--ent-surface);
             border-bottom: 1px solid var(--ent-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 1.5rem;
+            padding: 0 1.25rem;
             flex-shrink: 0;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
-        .viewer-content-area {
+        .viewer-box-outer {
             flex: 1;
-            padding: 1rem 1.25rem 1.25rem;
+            padding: 0.75rem 1rem 1rem;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .viewer-frame-box {
+        .viewer-box-inner {
             width: 100%;
-            height: 100%;
+            flex: 1;
             border-radius: var(--ent-radius-lg);
             border: 1px solid var(--ent-border);
             background: var(--ent-surface);
@@ -98,13 +307,13 @@
             position: relative;
         }
 
-        .viewer-frame-box iframe {
+        .viewer-box-inner iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        .empty-viewer-state {
+        .empty-placeholder {
             position: absolute;
             inset: 0;
             display: flex;
@@ -116,55 +325,86 @@
             text-align: center;
             padding: 2rem;
         }
-
-        .empty-state-icon-box {
-            width: 72px;
-            height: 72px;
+        .empty-icon-circle {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             background: var(--ent-accent-light);
             color: var(--ent-accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.75rem;
             margin-bottom: 1rem;
         }
 
+        /* Mobile Viewport Handling (max-width: 991.98px) */
         @media (max-width: 991.98px) {
-            .portal-wrapper {
-                grid-template-columns: 1fr;
+            .portal-topbar {
+                padding: 0 0.75rem;
+                height: 56px;
             }
-            .portal-sidebar {
-                position: fixed;
-                left: -100%;
-                top: 64px;
-                bottom: 0;
-                width: 85%;
-                max-width: 360px;
-                transition: left 0.3s ease;
-                box-shadow: var(--ent-shadow-lg);
+
+            .portal-workspace {
+                display: flex;
+                flex-direction: column;
+                height: calc(100dvh - 56px);
+                height: calc(100vh - 56px);
+                position: relative;
             }
-            .portal-sidebar.open {
-                left: 0;
+
+            .portal-sidebar-pane {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100% !important;
+                border-right: none;
+            }
+
+            .portal-viewer-pane {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .viewer-box-outer {
+                padding: 0.5rem 0.5rem calc(0.5rem + var(--safe-bottom));
+            }
+
+            .viewer-box-inner {
+                border-radius: var(--ent-radius);
+            }
+
+            /* Responsive class toggling */
+            .portal-sidebar-pane.mobile-hidden {
+                display: none !important;
+            }
+            .portal-viewer-pane.mobile-hidden {
+                display: none !important;
             }
         }
     </style>
 </head>
 <body>
     <!-- Top Global App Navbar -->
-    <header class="navbar d-flex justify-content-between align-items-center flex-shrink-0">
+    <header class="portal-topbar">
         <div class="d-flex align-items-center gap-2">
-            <button class="btn pill-nav-dark d-lg-none" onclick="toggleMobileSidebar()" aria-label="Toggle Documents Drawer">
-                <i class="fa-solid fa-folder-tree"></i>
-            </button>
-            <a href="maindashbod.html" class="d-flex align-items-center gap-2 text-decoration-none">
-                <img src="manuals/logo (2).ico" alt="Logo" style="height: 32px; width: 32px;">
-                <span class="fw-bold text-dark-emphasis d-none d-sm-inline">User Manuals Portal</span>
+            <a href="maindashbod.html" class="brand-link">
+                <img src="manuals/logo (2).ico" alt="Logo">
+                <span class="d-none d-sm-inline">User Manuals</span>
             </a>
+
+            <!-- Mobile View Switcher (Documents vs Viewer) -->
+            <div class="mobile-tabs d-flex d-lg-none ms-1">
+                <button class="mobile-tab-btn active" id="tabDocsBtn" onclick="switchMobileView('docs')">
+                    <i class="fa-solid fa-book-open me-1"></i> Documents
+                </button>
+                <button class="mobile-tab-btn" id="tabViewerBtn" onclick="switchMobileView('viewer')">
+                    <i class="fa-regular fa-file-pdf me-1"></i> Viewer
+                </button>
+            </div>
         </div>
 
-        <!-- Central Quick Navigation Switcher -->
-        <nav class="d-none d-md-flex align-items-center gap-2">
+        <!-- Central Quick Navigation Links (Desktop) -->
+        <nav class="d-none d-lg-flex align-items-center gap-2">
             <a href="maindashbod.html" class="pill-nav-soft"><i class="fa-solid fa-house"></i> Dashboard</a>
             <a href="library.html" class="pill-nav-soft"><i class="fa-solid fa-list-check"></i> Library</a>
             <a href="config.html" class="pill-nav-soft"><i class="fa-solid fa-sliders"></i> Config</a>
@@ -173,12 +413,13 @@
             <a href="online services report/index.html" class="pill-nav-soft"><i class="fa-solid fa-file-invoice"></i> Reports</a>
         </nav>
 
+        <!-- Right Utilities & Logout -->
         <div class="d-flex align-items-center gap-2">
-            <div class="pill-nav-white d-none d-lg-flex">
+            <div class="pill-nav-white d-none d-xl-flex">
                 <i class="fa-regular fa-clock text-primary"></i>
                 <span id="liveClock">Loading...</span>
             </div>
-            <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+            <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Dark/Light Mode">
                 <i class="fa-solid fa-moon"></i>
             </button>
             <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
@@ -188,17 +429,14 @@
         </div>
     </header>
 
-    <!-- Backdrop for mobile drawer -->
-    <div id="sidebar-backdrop" onclick="toggleMobileSidebar()"></div>
-
     <!-- Main Portal Workspace -->
-    <div class="portal-wrapper">
-        <!-- Documents Sidebar -->
-        <aside class="portal-sidebar" id="portalSidebar">
+    <div class="portal-workspace">
+        <!-- Documents Sidebar (Master View) -->
+        <aside class="portal-sidebar-pane" id="portalSidebar">
             <!-- Search Box -->
-            <div class="portal-search-container">
+            <div class="search-area">
                 <div class="input-group">
-                    <span class="input-group-text border-end-0 bg-transparent text-muted">
+                    <span class="input-group-text border-end-0">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
                     <input type="text" class="form-control border-start-0 ps-0" id="searchInput" 
@@ -206,11 +444,11 @@
                 </div>
             </div>
 
-            <!-- Category Filter Tags -->
-            <div class="portal-filter-container" id="filterContainer"></div>
+            <!-- Category Filter Strip -->
+            <div class="category-filter-strip" id="filterContainer"></div>
 
-            <!-- Documents List Group -->
-            <div class="portal-doc-list" id="docList">
+            <!-- Documents List Scroll Area -->
+            <div class="doc-scroll-pane" id="docList">
                 <div class="text-center py-5 text-muted">
                     <div class="spinner-border spinner-border-sm text-primary me-2"></div>
                     Loading documentation...
@@ -218,30 +456,36 @@
             </div>
         </aside>
 
-        <!-- Right Preview / PDF Viewer -->
-        <main class="viewer-container">
-            <!-- Viewer Header Toolbar -->
-            <div class="viewer-header-bar">
+        <!-- Right PDF Viewer Area (Detail View) -->
+        <main class="portal-viewer-pane mobile-hidden" id="viewerContainer">
+            <!-- Viewer Action Toolbar -->
+            <div class="viewer-action-bar">
                 <div class="d-flex align-items-center gap-2 overflow-hidden">
-                    <i class="fa-regular fa-file-pdf text-danger fs-5 flex-shrink-0"></i>
-                    <h6 class="mb-0 fw-bold text-truncate" id="currentTitle">Select a document from the left</h6>
+                    <button class="btn btn-sm btn-outline-secondary d-lg-none flex-shrink-0" onclick="switchMobileView('docs')">
+                        <i class="fa-solid fa-arrow-left me-1"></i> List
+                    </button>
+                    <i class="fa-regular fa-file-pdf text-danger fs-5 flex-shrink-0 d-none d-sm-inline"></i>
+                    <h6 class="mb-0 fw-bold text-truncate" id="currentTitle">Select a document</h6>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
                     <button class="btn btn-sm btn-primary" onclick="openInNewTab()" id="openBtn" style="display: none;">
-                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open Fullscreen
+                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> <span class="d-none d-sm-inline">Open </span>PDF
                     </button>
                 </div>
             </div>
 
-            <!-- Viewer Iframe Frame Box -->
-            <div class="viewer-content-area">
-                <div class="viewer-frame-box">
-                    <div class="empty-viewer-state" id="emptyState">
-                        <div class="empty-state-icon-box">
+            <!-- Viewer Frame Box -->
+            <div class="viewer-box-outer">
+                <div class="viewer-box-inner">
+                    <div class="empty-placeholder" id="emptyState">
+                        <div class="empty-icon-circle">
                             <i class="fa-solid fa-book-open-reader"></i>
                         </div>
                         <h5 class="fw-bold text-dark-emphasis mb-1">No Document Selected</h5>
-                        <p class="text-muted small mb-0">Browse categories and select any user manual or report to preview here</p>
+                        <p class="text-muted small mb-3">Browse categories and select any user manual or report to preview</p>
+                        <button class="btn btn-sm btn-outline-primary d-lg-none" onclick="switchMobileView('docs')">
+                            <i class="fa-solid fa-book-open me-1"></i> Browse Documents
+                        </button>
                     </div>
                     <iframe id="doc-frame" style="display: none;" title="Document viewer"></iframe>
                 </div>
@@ -249,7 +493,7 @@
         </main>
     </div>
 
-    <!-- Bootstrap & App Modules -->
+    <!-- Bootstrap & Global App Logic -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/app.js"></script>
 
@@ -305,19 +549,23 @@
             const container = document.getElementById('filterContainer');
             const visibleCategories = window.categories.filter(c => c.showInList !== false);
 
-            container.innerHTML = visibleCategories.map(cat => `
-                <button class="doc-tag ${cat.name === window.currentFilter ? 'active' : ''}" 
-                        onclick="setFilter('${cat.name}', this)">
-                    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${cat.color};"></span>
-                    ${cat.name}
-                </button>
-            `).join('');
+            container.innerHTML = visibleCategories.map(cat => {
+                const isActive = cat.name === window.currentFilter;
+                const bgStyle = isActive ? `background: ${cat.color}; color: #ffffff; border-color: ${cat.color};` : '';
+                return `
+                    <button class="cat-pill ${isActive ? 'active' : ''}" 
+                            style="${bgStyle}"
+                            onclick="setFilter('${cat.name}', this)">
+                        <span class="cat-group-dot" style="background:${isActive ? '#ffffff' : cat.color};"></span>
+                        ${cat.name}
+                    </button>
+                `;
+            }).join('');
         };
 
         window.setFilter = function(filterName, btn) {
             window.currentFilter = filterName;
-            document.querySelectorAll('.doc-tag').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+            renderFilters();
             renderDocs();
         };
 
@@ -326,7 +574,7 @@
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
 
             let filtered = window.documents.filter(d => {
-                const matchesSearch = d.title.toLowerCase().includes(search);
+                const matchesSearch = (d.title || '').toLowerCase().includes(search);
                 const matchesCategory = window.currentFilter === 'All' || d.category === window.currentFilter;
                 return matchesSearch && matchesCategory;
             });
@@ -352,24 +600,27 @@
             window.categories.filter(c => grouped[c.name]).forEach(catConfig => {
                 const docs = grouped[catConfig.name];
                 html += `
-                    <div class="doc-category-group">
-                        <div class="doc-category-header">
-                            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${catConfig.color};"></span>
+                    <div class="cat-group">
+                        <div class="cat-group-header">
+                            <span class="cat-group-dot" style="background:${catConfig.color};"></span>
                             <span style="color:${catConfig.color};">${catConfig.name}</span>
                             <span class="badge badge-soft-primary ms-auto">${docs.length}</span>
                         </div>
                         ${docs.map(doc => `
-                            <div class="doc-card-item ${window.currentDocId === doc.id ? 'active' : ''}" 
+                            <div class="doc-item-card ${window.currentDocId === doc.id ? 'active' : ''}" 
                                  onclick="loadDoc(${doc.id})" data-id="${doc.id}">
-                                <div class="doc-card-icon">
+                                <div class="doc-icon-box">
                                     <i class="fa-regular fa-file-pdf text-danger"></i>
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">
-                                    <div class="doc-card-title" title="${doc.title}">${doc.title}</div>
-                                    <div class="doc-card-meta">
+                                    <div class="doc-item-title" title="${doc.title}">${doc.title}</div>
+                                    <div class="doc-item-meta">
                                         <span class="badge badge-soft-info">${doc.category}</span>
                                         <span>${doc.size}</span>
                                     </div>
+                                </div>
+                                <div class="text-muted d-lg-none">
+                                    <i class="fa-solid fa-chevron-right small"></i>
                                 </div>
                             </div>
                         `).join('')}
@@ -384,8 +635,8 @@
             if (!doc) return;
 
             window.currentDocId = id;
-            document.querySelectorAll('.doc-card-item').forEach(el => el.classList.remove('active'));
-            const activeEl = document.querySelector(`.doc-card-item[data-id="${id}"]`);
+            document.querySelectorAll('.doc-item-card').forEach(el => el.classList.remove('active'));
+            const activeEl = document.querySelector(`.doc-item-card[data-id="${id}"]`);
             if (activeEl) activeEl.classList.add('active');
 
             document.getElementById('currentTitle').textContent = doc.title;
@@ -394,46 +645,56 @@
             document.getElementById('openBtn').style.display = 'inline-flex';
 
             const frame = document.getElementById('doc-frame');
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            frame.src = doc.file;
 
-            frame.src = isMobile 
-                ? `https://docs.google.com/viewer?url=${encodeURIComponent(doc.file)}&embedded=true` 
-                : doc.file;
-
+            // On mobile screen sizes, automatically switch to viewer
             if (window.innerWidth <= 991) {
-                toggleMobileSidebar();
+                switchMobileView('viewer');
             }
         };
 
         window.openInNewTab = function() {
             if (window.currentDocId) {
                 const doc = window.documents.find(d => d.id === window.currentDocId);
-                if (doc) window.open(doc.file, '_blank');
+                if (doc && doc.file) window.open(doc.file, '_blank');
             }
         };
 
-        window.toggleMobileSidebar = function() {
+        window.switchMobileView = function(view) {
             const sidebar = document.getElementById('portalSidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            sidebar.classList.toggle('open');
-            backdrop.classList.toggle('active', sidebar.classList.contains('open'));
+            const viewer = document.getElementById('viewerContainer');
+            const tabDocsBtn = document.getElementById('tabDocsBtn');
+            const tabViewerBtn = document.getElementById('tabViewerBtn');
+
+            if (view === 'docs') {
+                sidebar.classList.remove('mobile-hidden');
+                viewer.classList.add('mobile-hidden');
+                tabDocsBtn.classList.add('active');
+                tabViewerBtn.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                viewer.classList.remove('mobile-hidden');
+                tabDocsBtn.classList.remove('active');
+                tabViewerBtn.classList.add('active');
+            }
         };
+
+        // Window resize handler to ensure desktop side-by-side view is restored
+        window.addEventListener('resize', () => {
+            const sidebar = document.getElementById('portalSidebar');
+            const viewer = document.getElementById('viewerContainer');
+            if (window.innerWidth > 991) {
+                sidebar.classList.remove('mobile-hidden');
+                viewer.classList.remove('mobile-hidden');
+            } else {
+                const isViewer = document.getElementById('tabViewerBtn').classList.contains('active');
+                switchMobileView(isViewer ? 'viewer' : 'docs');
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             renderFilters();
             renderDocs();
-        });
-    </script>
-
-    <script>
-        // Access Protection
-        if (sessionStorage.getItem("verified") !== "true") {
-            window.location.replace("index.html");
-        }
-        window.addEventListener("pageshow", function () {
-            if (sessionStorage.getItem("verified") !== "true") {
-                window.location.replace("index.html");
-            }
         });
     </script>
 </body>
