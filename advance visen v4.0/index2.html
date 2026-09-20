@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>MODSCAN Master View - Instrument Library V3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item active"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content Wrapper -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-microchip text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; MODSCAN Protocol Explorer</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title">MODSCAN & Register Master View</h2>
+                        <p class="page-subtitle">Inspect live communication addresses and Modbus registers by instrument</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="library.html" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-list-check me-1"></i> Library
+                        </a>
+                        <a href="maindashbod.html" class="btn btn-primary">
+                            <i class="fa-solid fa-house me-1"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Instrument Selector Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label" for="category">Filter by Category</label>
+                                <select class="form-select" id="category">
+                                    <option value="">All Categories</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label" for="instrument">Select Instrument</label>
+                                <select class="form-select" id="instrument">
+                                    <option value="">Select Instrument...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary w-100" id="btnLoad">
+                                    <i class="fa-solid fa-arrows-rotate me-1"></i> Load Configuration
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instrument Overview Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-primary"></i>
+                        <span>Communication Specifications</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <span class="text-muted small d-block mb-1">Instrument Name</span>
+                                <span class="fw-bold fs-6" id="iname">-</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="text-muted small d-block mb-1">Hardware Interface</span>
+                                <span class="badge badge-soft-primary" id="comm">-</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="text-muted small d-block mb-1">Communication Protocol</span>
+                                <span class="badge badge-soft-info" id="protocol">-</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="text-muted small d-block mb-1">Configured Baud Rate</span>
+                                <span class="fw-bold" id="baud">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Mapping Table Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-table-list text-primary"></i>
+                        <span>Register Mapping & Modbus Addresses</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive border-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px;" class="text-center">#</th>
+                                        <th>Parameter (Register Name)</th>
+                                        <th>Address</th>
+                                        <th>Length</th>
+                                        <th>Data Type</th>
+                                        <th>Engineering Unit</th>
+                                        <th class="text-center">Access</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="fa-regular fa-hand-pointer fs-3 d-block mb-2 text-secondary"></i>
+                                            Select an instrument above and click "Load Configuration" to display its register mapping.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+
+    <script type="module">
+        import { db, ref, onValue } from './js/firebase.js';
+
+        let allInstruments = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            onValue(ref(db, 'instruments'), (snapshot) => {
+                allInstruments = [];
+                const data = snapshot.val();
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        allInstruments.push(data[key]);
+                    });
+                }
+                populateCategories();
+            });
+
+            document.getElementById('category').addEventListener('change', populateInstruments);
+            document.getElementById('btnLoad').addEventListener('click', loadInstrument);
+        });
+
+        function populateCategories() {
+            const catSelect = document.getElementById('category');
+            const currentVal = catSelect.value;
+            const categories = [...new Set(allInstruments.map(i => i.general?.category).filter(Boolean))];
+            
+            let html = '<option value="">All Categories</option>';
+            categories.forEach(cat => {
+                html += `<option value="${cat}">${cat}</option>`;
+            });
+            catSelect.innerHTML = html;
+            
+            if (categories.includes(currentVal)) {
+                catSelect.value = currentVal;
+            }
+            populateInstruments();
+        }
+
+        function populateInstruments() {
+            const instSelect = document.getElementById('instrument');
+            const selectedCat = document.getElementById('category').value;
+            
+            let html = '<option value="">Select Instrument...</option>';
+            let filtered = allInstruments;
+            if (selectedCat) {
+                filtered = allInstruments.filter(i => i.general?.category === selectedCat);
+            }
+            
+            filtered.forEach(inst => {
+                html += `<option value="${inst.id}">${inst.general?.name || 'Unnamed Instrument'}</option>`;
+            });
+            
+            instSelect.innerHTML = html;
+        }
+
+        function loadInstrument() {
+            const instId = document.getElementById('instrument').value;
+            if (!instId) {
+                alert("Please select an instrument from the dropdown first.");
+                return;
+            }
+            
+            const obj = allInstruments.find(i => i.id === instId);
+            if (!obj) return;
+            
+            document.getElementById('iname').textContent = obj.general?.name || '-';
+            document.getElementById('comm').textContent = obj.communication?.interface || '-';
+            document.getElementById('protocol').textContent = obj.communication?.protocol || '-';
+            document.getElementById('baud').textContent = obj.communication?.baud_rate ? `${obj.communication.baud_rate} bps` : '-';
+
+            let html = "";
+            if (obj.registers && obj.registers.length > 0) {
+                obj.registers.forEach((r, i) => {
+                    html += `
+                    <tr>
+                        <td class="text-center text-muted">${i + 1}</td>
+                        <td class="fw-bold text-dark-emphasis">${r.name || '-'}</td>
+                        <td><code>${r.address || '-'}</code></td>
+                        <td>${r.length || '1'}</td>
+                        <td><span class="badge badge-soft-info">${r.dtype || '-'}</span></td>
+                        <td>${r.unit || '-'}</td>
+                        <td class="text-center"><span class="badge badge-soft-primary">${r.rw || 'R'}</span></td>
+                    </tr>
+                    `;
+                });
+            } else {
+                html = `
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="fa-solid fa-circle-exclamation me-1 text-warning"></i>
+                            No registers configured for this instrument.
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            document.getElementById("tableBody").innerHTML = html;
+        }
+    </script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

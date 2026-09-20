@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Add Instrument - Instrument Library V3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .max-w-850 { max-width: 850px; }
+        .table-responsive { max-height: 520px; overflow-y: auto; }
+        .table-sm td { padding: 0.35rem 0.5rem; }
+        .nav-tabs .nav-link { font-weight: 600; color: var(--ent-text-muted); padding: 0.75rem 1.25rem; border: none; border-bottom: 2px solid transparent; }
+        .nav-tabs .nav-link.active { color: var(--ent-accent); border-bottom: 2px solid var(--ent-accent); background: transparent; }
+        .nav-tabs .nav-link:hover { color: var(--ent-text-main); }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item active"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content Wrapper -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-folder-open text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Instrument Configuration</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title" id="pageTitle">Add Instrument</h2>
+                        <p class="page-subtitle">Configure specifications, communication protocols, and register maps</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="library.html" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Back to Library
+                        </a>
+                        <button class="btn btn-primary" id="btnSaveInst">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Instrument
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Card with Tabs -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-bottom pt-3 px-4">
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#generalTab" type="button">
+                                    <i class="fa-solid fa-circle-info me-1"></i> General Details
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#commTab" type="button">
+                                    <i class="fa-solid fa-network-wired me-1"></i> Comm & TCP/IP
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#regTab" type="button">
+                                    <i class="fa-solid fa-table-list me-1"></i> Modbus Registers
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#mediaTab" type="button">
+                                    <i class="fa-solid fa-photo-film me-1"></i> Media & Docs
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="tab-content">
+                            <!-- 1. General Tab -->
+                            <div class="tab-pane fade show active" id="generalTab">
+                                <datalist id="categoryList">
+                                    <option value="CEMS">
+                                    <option value="AAQMS">
+                                    <option value="OCEMS">
+                                    <option value="FLOW METER">
+                                </datalist>
+                                <datalist id="typeList">
+                                    <option value="Sensor"><option value="Analyzer"><option value="Controller"><option value="Meter"><option value="Gateway">
+                                </datalist>
+                                <div class="row g-3 max-w-850">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Instrument Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="iName" placeholder="e.g. Model L-800 OCEMS Analyzer" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Company / Plant</label>
+                                        <input type="text" class="form-control" id="iCompany" placeholder="e.g. Aadhav Intech Client Site">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Manufacturer</label>
+                                        <input type="text" class="form-control" id="iManuf" placeholder="e.g. Aadhav Intech">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Model Number</label>
+                                        <input type="text" class="form-control" id="iModel" placeholder="e.g. AAD-CEMS-200">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Category</label>
+                                        <input type="text" list="categoryList" class="form-control" id="iCat" placeholder="Select or type category">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Instrument Type</label>
+                                        <input type="text" list="typeList" class="form-control" id="iType" placeholder="Select or type type">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Firmware Version</label>
+                                        <input type="text" class="form-control" id="iFirmware" placeholder="e.g. v2.4.1">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Description / Operating Notes</label>
+                                        <textarea class="form-control" id="iDesc" rows="3" placeholder="Additional specifications, notes, or sensor details..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2. Comm & TCP Tab -->
+                            <div class="tab-pane fade" id="commTab">
+                                <datalist id="protoList">
+                                    <option value="Modbus RTU">Modbus RTU</option>
+                                    <option value="Modbus TCP">Modbus TCP</option>
+                                    <option value="Ethernet/IP">Ethernet/IP</option>
+                                    <option value="PROFINET">PROFINET</option>
+                                    <option value="PROFIBUS">PROFIBUS</option>
+                                    <option value="CAN Bus">CAN Bus</option>
+                                    <option value="CANopen">CANopen</option>
+                                    <option value="HART">HART</option>
+                                    <option value="OPC UA">OPC UA</option>
+                                    <option value="MQTT">MQTT</option>
+                                    <option value="RS232">RS232</option>
+                                    <option value="RS485">RS485</option>
+                                    <option value="LAN">LAN</option>
+                                    <option value="Wi-Fi">Wi-Fi</option>
+                                </datalist>
+                                <div class="row g-3 max-w-850">
+                                    <div class="col-12">
+                                        <h6 class="fw-bold text-primary border-bottom pb-2">Serial & Hardware Communication</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Protocol</label>
+                                        <input type="text" list="protoList" class="form-control" id="cProto" placeholder="e.g. Modbus RTU">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Comm Interface</label>
+                                        <select class="form-select" id="cIface">
+                                            <option value="RS485" selected>RS 485</option>
+                                            <option value="RS232">RS 232</option>
+                                            <option value="LAN">LAN</option>
+                                            <option value="LAN TCPIP">LAN TCPIP</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Slave ID</label>
+                                        <input type="number" class="form-control" id="cSlave" placeholder="1">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Baud Rate</label>
+                                        <select class="form-select" id="cBaud">
+                                            <option value="2400">2400</option>
+                                            <option value="4800">4800</option>
+                                            <option value="9600" selected>9600</option>
+                                            <option value="19200">19200</option>
+                                            <option value="38400">38400</option>
+                                            <option value="57600">57600</option>
+                                            <option value="115200">115200</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Parity</label>
+                                        <select class="form-select" id="cParity">
+                                            <option value="None" selected>None</option>
+                                            <option value="Odd">Odd</option>
+                                            <option value="Even">Even</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Data Bits</label>
+                                        <select class="form-select" id="cData">
+                                            <option value="7">7</option>
+                                            <option value="8" selected>8</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Stop Bits</label>
+                                        <select class="form-select" id="cStop">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Timeout (ms)</label>
+                                        <input type="number" class="form-control" id="cTime" placeholder="1000">
+                                    </div>
+                                    
+                                    <!-- TCP/IP Section -->
+                                    <div class="col-12 mt-4">
+                                        <div class="p-3 rounded border bg-light">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="tcpEnabled">
+                                                <label class="form-check-label fw-bold" for="tcpEnabled">
+                                                    Enable TCP/IP Ethernet Configuration
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 max-w-850 mt-2" id="tcpFields" style="display: none;">
+                                    <div class="col-md-6">
+                                        <label class="form-label">IP Address</label>
+                                        <input type="text" class="form-control" id="tIp" placeholder="192.168.1.100">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Subnet Mask</label>
+                                        <input type="text" class="form-control" id="tSub" placeholder="255.255.255.0">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Gateway</label>
+                                        <input type="text" class="form-control" id="tGate" placeholder="192.168.1.1">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">DNS Server</label>
+                                        <input type="text" class="form-control" id="tDns" placeholder="8.8.8.8">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">MAC Address</label>
+                                        <input type="text" class="form-control" id="tMac" placeholder="00:1A:2B:3C:4D:5E">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Host Name</label>
+                                        <input type="text" class="form-control" id="tHost" placeholder="AIT-CEMS-01">
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label class="form-label">Device Port</label>
+                                        <input type="number" class="form-control" id="tDevPort" placeholder="4001">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Modbus TCP Port</label>
+                                        <input type="number" class="form-control" id="tModPort" placeholder="502">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">MQTT Port</label>
+                                        <input type="number" class="form-control" id="tMqttPort" placeholder="1883">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">TCP Port</label>
+                                        <input type="number" class="form-control" id="tTcpPort" placeholder="8080">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">HTTP Port</label>
+                                        <input type="number" class="form-control" id="tHttpPort" placeholder="80">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">HTTPS Port</label>
+                                        <input type="number" class="form-control" id="tHttpsPort" placeholder="443">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">UDP Port</label>
+                                        <input type="number" class="form-control" id="tUdpPort" placeholder="5000">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">FTP Port</label>
+                                        <input type="number" class="form-control" id="tFtpPort" placeholder="21">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">OPC UA Endpoint</label>
+                                        <input type="text" class="form-control" id="tOpc" placeholder="opc.tcp://...">
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">Connection Timeout (ms)</label>
+                                        <input type="number" class="form-control" id="tConnTime" placeholder="3000">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Retry Count</label>
+                                        <input type="number" class="form-control" id="tRetry" placeholder="3">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Polling Interval (ms)</label>
+                                        <input type="number" class="form-control" id="tPoll" placeholder="1000">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Keep Alive (ms)</label>
+                                        <input type="number" class="form-control" id="tKeep" placeholder="5000">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Socket Timeout (ms)</label>
+                                        <input type="number" class="form-control" id="tSockTime" placeholder="2000">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Registers Tab -->
+                            <div class="tab-pane fade" id="regTab">
+                                <datalist id="unitList">
+                                    <option value="%">%</option>
+                                    <option value="°C">°C</option>
+                                    <option value="°F">°F</option>
+                                    <option value="mg/m³">mg/m³</option>
+                                    <option value="mg/Nm³">mg/Nm³</option>
+                                    <option value="ppm">ppm</option>
+                                    <option value="ppb">ppb</option>
+                                    <option value="pH">pH</option>
+                                    <option value="m³/hr">m³/hr</option>
+                                    <option value="bar">bar</option>
+                                    <option value="Pa">Pa</option>
+                                    <option value="mbar">mbar</option>
+                                    <option value="NTU">NTU</option>
+                                    <option value="uS/cm">uS/cm</option>
+                                </datalist>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-primary">Modbus Parameter Register Map</h6>
+                                        <div class="text-muted small">Configure address mapping, register data types, engineering units, and permissions</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" id="btnAddRow" type="button">
+                                        <i class="fa-solid fa-plus me-1"></i> Add Row
+                                    </button>
+                                </div>
+                                <div class="table-responsive border rounded">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 20%; min-width: 140px;">Reg Name</th>
+                                                <th style="width: 10%; min-width: 90px;">Address</th>
+                                                <th style="width: 8%; min-width: 60px;">Length</th>
+                                                <th style="width: 12%; min-width: 100px;">Reg Type</th>
+                                                <th style="width: 15%; min-width: 120px;">Data Type</th>
+                                                <th style="width: 10%; min-width: 80px;">Unit</th>
+                                                <th style="width: 8%; min-width: 70px;">R/W</th>
+                                                <th style="width: 12%; min-width: 100px;">Notes</th>
+                                                <th style="width: 5%; min-width: 50px;" class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="registerTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 4. Media & Docs Tab -->
+                            <div class="tab-pane fade" id="mediaTab">
+                                <div class="row g-4 max-w-850" id="mediaContainer">
+                                    <script>
+                                        const mediaCategories = ['images', 'manuals', 'datasheets', 'wiring', 'certificates', 'calibration', 'firmware'];
+                                        const mediaContainer = document.getElementById('mediaContainer');
+                                        mediaCategories.forEach(cat => {
+                                            mediaContainer.innerHTML += `
+                                                <div class="col-12 border-bottom pb-3">
+                                                    <h6 class="fw-bold text-primary text-capitalize d-flex align-items-center gap-2">
+                                                        <i class="fa-solid fa-file-lines"></i>
+                                                        <span>${cat}</span>
+                                                    </h6>
+                                                    <div class="text-muted small mb-2">Attach direct web URLs or upload files for this instrument category.</div>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small">Upload File:</label>
+                                                            <input type="file" class="form-control form-control-sm media-file" id="mFile_${cat}" disabled>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label small">Or add Resource Web Link:</label>
+                                                            <input type="url" class="form-control form-control-sm media-url" id="mUrl_${cat}" placeholder="https://example.com/doc.pdf">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1060;">
+        <div id="appToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-medium" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/instrument.js"></script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

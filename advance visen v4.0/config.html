@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>User Manuals Config - Enterprise Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .doc-path-tag {
+            font-size: 0.76rem;
+            color: var(--ent-text-muted);
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background: var(--ent-surface-hover);
+            border: 1px solid var(--ent-border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1080;
+        }
+
+        .modal-card {
+            background: var(--ent-surface);
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius-lg);
+            padding: 1.75rem;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: var(--ent-shadow-lg);
+        }
+
+        .status-alert {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--ent-radius);
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item active"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Top Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-sliders text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Document Portal Administration</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title">User Manuals Configuration</h2>
+                        <p class="page-subtitle">Publish, synchronize, and maintain PDF user manuals and technical reports</p>
+                    </div>
+                    <div>
+                        <a href="dashboard.html" class="btn btn-primary">
+                            <i class="fa-solid fa-book-open me-1"></i> View Portal Library
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Add Document Form Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-plus text-primary"></i>
+                        <span>Upload or Register New Document</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="docForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="docTitle">Document Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="docTitle" placeholder="e.g. AAD-CEMS-200 User Manual" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="docFile">File Path or Direct URL <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="docFile" placeholder="e.g. aituser/AAD-CEMS-200 User Manual.pdf" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="docCategories">Target Categories (Ctrl/Cmd to multi-select)</label>
+                                    <select class="form-select" id="docCategories" multiple size="5" required>
+                                        <option value="Manual" selected>Manual</option>
+                                        <option value="SERVES REPORTS">SERVES REPORTS</option>
+                                        <option value="LDM">LDM</option>
+                                        <option value="CAAQMS">CAAQMS</option>
+                                        <option value="OCEMS">OCEMS</option>
+                                        <option value="Flow Meters">Flow Meters</option>
+                                        <option value="Spare list all">Spare list all</option>
+                                        <option value="Installation Requirements">Installation Requirements</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="docSize">Format / Document Type</label>
+                                        <select class="form-select" id="docSize">
+                                            <option value="PDF" selected>PDF Document</option>
+                                            <option value="WORD">Word (.docx)</option>
+                                            <option value="EXCEL">Excel (.xlsx)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" for="docIcon">Display Icon Emoji</label>
+                                        <input type="text" class="form-control" id="docIcon" value="📗" placeholder="📗">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 d-flex align-items-center gap-3">
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="fa-solid fa-cloud-arrow-up me-1"></i> Save to Database
+                                </button>
+                                <div id="statusMsg" class="status-alert"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Live Documents Table Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-list-check text-primary"></i>
+                            <span>Live Registered Documents</span>
+                        </div>
+                        <span class="badge badge-soft-primary" id="recordCount">0 Records</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive border-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px;" class="text-center">Icon</th>
+                                        <th>Document Title & File Path</th>
+                                        <th>Categories</th>
+                                        <th style="width: 110px;">Format</th>
+                                        <th style="width: 140px;" class="text-end px-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <div class="spinner-border text-primary" role="status"></div>
+                                            <div class="mt-2 small text-muted">Loading documentation registry...</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Edit Document Modal Overlay -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2 text-primary">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Edit Document</span>
+            </h5>
+            <form id="editForm">
+                <input type="hidden" id="editKey">
+                <div class="mb-3">
+                    <label class="form-label" for="editTitle">Document Title</label>
+                    <input type="text" class="form-control" id="editTitle" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="editFile">File Path or URL</label>
+                    <input type="text" class="form-control" id="editFile" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label" for="editIcon">Icon Emoji</label>
+                    <input type="text" class="form-control" id="editIcon" required>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+
+    <script type="module">
+        import { addDocument, updateDocument, deleteDocument, listenToDocuments } from './firebase.js';
+
+        let currentData = {};
+
+        // Form Submit: Add New Document
+        document.getElementById('docForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('docTitle').value.trim();
+            const file = document.getElementById('docFile').value.trim();
+            const categorySelect = document.getElementById('docCategories');
+            const selectedCategories = Array.from(categorySelect.selectedOptions).map(opt => opt.value);
+            const size = document.getElementById('docSize').value;
+            const icon = document.getElementById('docIcon').value.trim() || '📄';
+
+            addDocument({ title, file, category: selectedCategories, size, icon })
+                .then(() => {
+                    showStatus('Document registered successfully!', '#059669', '#ecfdf5');
+                    document.getElementById('docForm').reset();
+                    document.getElementById('docIcon').value = '📗';
+                })
+                .catch((error) => {
+                    showStatus('Error: ' + error.message, '#dc2626', '#fef2f2');
+                });
+        });
+
+        // Realtime Database Listener
+        listenToDocuments((data) => {
+            currentData = data || {};
+            const tbody = document.getElementById('tableBody');
+            const recordCount = document.getElementById('recordCount');
+            tbody.innerHTML = '';
+
+            if (!data) {
+                recordCount.textContent = '0 Records';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">No documents found in database.</td></tr>';
+                return;
+            }
+
+            const keys = Object.keys(data);
+            recordCount.textContent = `${keys.length} Record${keys.length === 1 ? '' : 's'}`;
+
+            keys.forEach((key) => {
+                const item = data[key];
+                const title = item.title || 'Untitled Document';
+                const file = item.file || item.path || 'No path specified';
+                const icon = item.icon || '📄';
+                const size = item.size || 'PDF';
+
+                let catBadges = '';
+                if (item.category) {
+                    const cats = Array.isArray(item.category) ? item.category : [item.category];
+                    catBadges = cats.map(c => `<span class="badge badge-soft-primary me-1">${c}</span>`).join('');
+                } else {
+                    catBadges = '<span class="text-muted small">None</span>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-center fs-4">${icon}</td>
+                    <td>
+                        <strong class="text-dark-emphasis">${title}</strong><br>
+                        <span class="doc-path-tag">${file}</span>
+                    </td>
+                    <td>${catBadges}</td>
+                    <td><span class="badge badge-soft-info">${size}</span></td>
+                    <td class="text-end px-4 text-nowrap">
+                        <div class="d-inline-flex gap-1">
+                            <button class="btn-sm-action" onclick="handleCopy('${key}')" title="Copy Path">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <button class="btn-sm-action" onclick="handleEdit('${key}')" title="Edit Entry">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn-sm-action action-delete" onclick="handleDelete('${key}')" title="Delete Entry">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        window.handleCopy = function(key) {
+            const item = currentData[key];
+            if (!item) return;
+            const textToCopy = item.file || item.path || item.title || '';
+            if (!textToCopy) return;
+
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => showStatus('File path copied to clipboard!', '#2563eb', '#eff6ff'))
+                .catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = textToCopy;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    showStatus('File path copied!', '#2563eb', '#eff6ff');
+                });
+        };
+
+        window.handleEdit = function(key) {
+            const item = currentData[key];
+            if (!item) return;
+
+            document.getElementById('editKey').value = key;
+            document.getElementById('editTitle').value = item.title || '';
+            document.getElementById('editFile').value = item.file || item.path || '';
+            document.getElementById('editIcon').value = item.icon || '📗';
+            document.getElementById('editModal').style.display = 'flex';
+        };
+
+        window.closeEditModal = function() {
+            document.getElementById('editModal').style.display = 'none';
+        };
+
+        document.getElementById('editForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const key = document.getElementById('editKey').value;
+            const updatedTitle = document.getElementById('editTitle').value.trim();
+            const updatedFile = document.getElementById('editFile').value.trim();
+            const updatedIcon = document.getElementById('editIcon').value.trim();
+
+            updateDocument(key, {
+                title: updatedTitle,
+                file: updatedFile,
+                icon: updatedIcon
+            }).then(() => {
+                closeEditModal();
+                showStatus('Document updated successfully!', '#059669', '#ecfdf5');
+            }).catch((err) => {
+                showStatus('Update failed: ' + err.message, '#dc2626', '#fef2f2');
+            });
+        });
+
+        window.handleDelete = function(key) {
+            if (confirm('Are you sure you want to delete this document entry?')) {
+                deleteDocument(key)
+                    .then(() => showStatus('Document deleted.', '#dc2626', '#fef2f2'))
+                    .catch((err) => showStatus('Delete failed: ' + err.message, '#dc2626', '#fef2f2'));
+            }
+        };
+
+        function showStatus(text, textColor, bgColor) {
+            const msg = document.getElementById('statusMsg');
+            msg.textContent = text;
+            msg.style.color = textColor;
+            msg.style.backgroundColor = bgColor;
+            msg.style.display = 'inline-block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+    </script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

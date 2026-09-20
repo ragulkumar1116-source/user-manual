@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Details - Instrument Library V3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .table-responsive { max-height: 550px; overflow-y: auto; }
+        .img-preview { max-width: 100%; max-height: 240px; object-fit: contain; background: var(--ent-surface); border: 1px solid var(--ent-border); border-radius: 8px; padding: 0.5rem; }
+        .nav-tabs .nav-link { font-weight: 600; color: var(--ent-text-muted); padding: 0.75rem 1.25rem; border: none; border-bottom: 2px solid transparent; }
+        .nav-tabs .nav-link.active { color: var(--ent-accent); border-bottom: 2px solid var(--ent-accent); background: transparent; }
+        .nav-tabs .nav-link:hover { color: var(--ent-text-main); }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item active"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-folder-open text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Specification Sheet</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title" id="dTitle">Loading Instrument...</h2>
+                        <p class="page-subtitle">Full technical specifications, register addresses, and documentation</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="library.html" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Library
+                        </a>
+                        <button class="btn btn-primary" id="btnEdit">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Edit Instrument
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instrument Summary Overview Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center gy-3">
+                            <div class="col-lg-3 text-center border-end">
+                                <div class="stat-card-icon stat-icon-blue mx-auto mb-2" style="width: 64px; height: 64px; font-size: 1.75rem;">
+                                    <i class="fa-solid fa-microchip"></i>
+                                </div>
+                                <h5 class="fw-bold mb-1" id="dSummaryManuf">-</h5>
+                                <p class="text-muted small mb-2" id="dSummaryType">-</p>
+                                <span class="badge badge-soft-primary" id="dSummaryCat">General</span>
+                            </div>
+                            <div class="col-lg-3 border-end px-4">
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Manufacturer</div>
+                                <div class="fs-6 fw-bold mb-3" id="dManuf">-</div>
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Operating Notes</div>
+                                <div class="text-muted small" id="dDesc">-</div>
+                            </div>
+                            <div class="col-lg-3 border-end px-4">
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Model Number</div>
+                                <div class="fs-6 fw-bold mb-3" id="dModel">-</div>
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Status</div>
+                                <div><span class="badge badge-soft-success">Configured & Active</span></div>
+                            </div>
+                            <div class="col-lg-3 px-4">
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Firmware Version</div>
+                                <div class="fs-6 fw-bold mb-3" id="dFirmware">-</div>
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Supported Protocols</div>
+                                <div><span class="badge badge-soft-info" id="dProtoBadge">Modbus</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Specifications Tabs Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-transparent border-bottom pt-3 px-4">
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#comm" type="button">
+                                    <i class="fa-solid fa-network-wired me-1"></i> Communication
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reg" type="button">
+                                    <i class="fa-solid fa-table-list me-1"></i> Modbus Registers
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#doc" type="button">
+                                    <i class="fa-solid fa-file-pdf me-1"></i> Documents & Manuals
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#media" type="button">
+                                    <i class="fa-solid fa-photo-film me-1"></i> Media & Photos
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="tab-content">
+                            <!-- Comm Tab -->
+                            <div class="tab-pane fade show active" id="comm" role="tabpanel">
+                                <h6 class="fw-bold text-primary mb-3">Serial Interface Parameters</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-3"><span class="text-muted small d-block">Protocol</span><span class="fw-bold" id="dProto">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Physical Interface</span><span class="fw-bold" id="dIface">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Slave ID</span><span class="fw-bold" id="dSlave">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Baud Rate</span><span class="fw-bold" id="dBaud">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Parity</span><span class="fw-bold" id="dParity">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Data Bits</span><span class="fw-bold" id="dData">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Stop Bits</span><span class="fw-bold" id="dStop">-</span></div>
+                                    <div class="col-md-3"><span class="text-muted small d-block">Timeout</span><span class="fw-bold" id="dTime">-</span></div>
+                                </div>
+
+                                <h6 class="fw-bold text-primary mb-3 border-top pt-3">TCP/IP Network Parameters</h6>
+                                <div id="tcpSection">
+                                    <div id="tcpDisabledMsg" style="display: none;" class="p-3 rounded border bg-light text-muted small">
+                                        <i class="fa-solid fa-circle-info me-2 text-secondary"></i> TCP/IP network configuration is not enabled for this instrument.
+                                    </div>
+                                    <div class="row g-3" id="tcpGrid">
+                                        <div class="col-md-3"><span class="text-muted small d-block">IP Address</span><span class="fw-bold" id="dIp">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">Subnet Mask</span><span class="fw-bold" id="dSub">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">Default Gateway</span><span class="fw-bold" id="dGate">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">DNS Server</span><span class="fw-bold" id="dDns">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">MAC Address</span><span class="fw-bold" id="dMac">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">Host Name</span><span class="fw-bold" id="dHost">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">Device Port</span><span class="fw-bold" id="dDevPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">Modbus TCP Port</span><span class="fw-bold" id="dModPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">HTTP Port</span><span class="fw-bold" id="dHttpPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">HTTPS Port</span><span class="fw-bold" id="dHttpsPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">MQTT Port</span><span class="fw-bold" id="dMqttPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">TCP Port</span><span class="fw-bold" id="dTcpPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">UDP Port</span><span class="fw-bold" id="dUdpPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">FTP Port</span><span class="fw-bold" id="dFtpPort">-</span></div>
+                                        <div class="col-md-3"><span class="text-muted small d-block">OPC UA Endpoint</span><span class="fw-bold" id="dOpc">-</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Registers Tab -->
+                            <div class="tab-pane fade" id="reg" role="tabpanel">
+                                <div class="table-responsive border rounded">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Register Name</th>
+                                                <th>Address</th>
+                                                <th>Length</th>
+                                                <th>Register Type</th>
+                                                <th>Data Type</th>
+                                                <th>Unit</th>
+                                                <th>R/W</th>
+                                                <th>Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dRegTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Documents Tab -->
+                            <div class="tab-pane fade" id="doc" role="tabpanel">
+                                <div class="row g-3" id="dDocContainer"></div>
+                            </div>
+
+                            <!-- Media Tab -->
+                            <div class="tab-pane fade" id="media" role="tabpanel">
+                                <div class="row g-3" id="dMediaContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/details.js"></script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

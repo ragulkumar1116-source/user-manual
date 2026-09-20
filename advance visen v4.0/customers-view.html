@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Customer & Instrument Directory - Confidential View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Confidentiality Protection Styles: No export, no print, no copy */
+        @media print {
+            body {
+                display: none !important;
+            }
+        }
+        .confidential-watermark {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 0.25rem 0.65rem;
+            border-radius: var(--ent-radius-pill);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .customer-card {
+            background: var(--ent-surface);
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--ent-shadow-sm);
+            transition: all 0.2s ease;
+        }
+        .customer-card:hover {
+            box-shadow: var(--ent-shadow);
+            border-color: var(--ent-accent);
+        }
+        .route-box {
+            background: var(--ent-bg);
+            border-left: 4px solid var(--ent-accent);
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            font-size: 0.88rem;
+            color: var(--ent-text-muted);
+            margin-top: 0.75rem;
+        }
+        .photo-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: var(--ent-radius-sm);
+            object-fit: cover;
+            border: 1px solid var(--ent-border);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .photo-thumb:hover {
+            transform: scale(1.05);
+            border-color: var(--ent-accent);
+        }
+        .inst-table-view {
+            background: var(--ent-bg);
+            border-radius: var(--ent-radius);
+            overflow: hidden;
+            border: 1px solid var(--ent-border);
+            margin-top: 1rem;
+        }
+        .inst-table-view th {
+            background: var(--ent-surface-hover);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .inst-table-view td {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="customers-view.html" class="list-group-item active"><i class="fa-solid fa-address-book"></i> Customer Directory (View)</a>
+                <a href="customer-config.html" class="list-group-item"><i class="fa-solid fa-building-user"></i> Customer & Inst Admin</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-address-book text-primary"></i>
+                    <span>Customer & Instrument Directory</span>
+                    <span class="confidential-watermark ms-2"><i class="fa-solid fa-lock"></i> Confidential View-Only</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="confidential-watermark d-flex d-md-none"><i class="fa-solid fa-lock"></i> View-Only</span>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <!-- Header Banner -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title">Customer & Instrument Directory</h2>
+                        <p class="page-subtitle">Authorized read-only portal for service technicians and field operations &mdash; Confidential Information</p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="customer-config.html" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-gear me-1"></i> Admin & Config Page
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Search and Filters Bar -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-3">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-6 col-lg-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 text-muted">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0 ps-0" id="searchFilter" 
+                                           placeholder="Search company, customer, city, serial number..." onkeyup="renderDirectory()">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="btn-group w-100" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary active" id="filterAll" onclick="setAmcFilter('all', this)">All</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="filterDue" onclick="setAmcFilter('due', this)">AMC Due Soon</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="filterActive" onclick="setAmcFilter('active', this)">Active AMC</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 text-lg-end">
+                                <span class="badge badge-soft-primary fs-6 px-3 py-2" id="statsCount">Loading records...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customers Cards Directory Container -->
+                <div id="directoryContainer">
+                    <div class="text-center py-5 text-muted">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <div class="mt-2 small">Loading confidential directory...</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Image Modal for Company Photos -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h6 class="modal-title fw-bold" id="photoModalTitle">Company Photo</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-3">
+                    <img id="modalImg" src="" alt="Company Photo" class="img-fluid rounded shadow-sm" style="max-height: 75vh;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+
+    <script type="module">
+        import { listenToCustomers } from './firebase.js';
+
+        let customersData = {};
+        let currentFilter = 'all';
+
+        // Disallow context menu right click on this confidential page
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        listenToCustomers((data) => {
+            customersData = data || {};
+            renderDirectory();
+        });
+
+        window.setAmcFilter = function(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.btn-group .btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderDirectory();
+        };
+
+        window.renderDirectory = function() {
+            const container = document.getElementById('directoryContainer');
+            const search = (document.getElementById('searchFilter')?.value || '').toLowerCase();
+            const statsCount = document.getElementById('statsCount');
+
+            const keys = Object.keys(customersData);
+
+            if (keys.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa-regular fa-folder-open fs-1 text-secondary mb-2"></i>
+                        <h5 class="fw-bold">No customer records available</h5>
+                        <p class="small">Contact the administrator to register customers and instruments.</p>
+                    </div>
+                `;
+                statsCount.textContent = '0 Companies';
+                return;
+            }
+
+            const now = new Date();
+
+            let filteredKeys = keys.filter(k => {
+                const c = customersData[k];
+                const instList = c.instruments || [];
+
+                // Filter by search
+                const text = `${c.companyName || ''} ${c.customerName || ''} ${c.phone || ''} ${c.email || ''} ${c.address || ''} ${c.bestRoute || ''}`.toLowerCase();
+                const instText = instList.map(i => `${i.name} ${i.model} ${i.serial} ${i.notes}`).join(' ').toLowerCase();
+                const matchesSearch = text.includes(search) || instText.includes(search);
+
+                if (!matchesSearch) return false;
+
+                // Filter by AMC
+                if (currentFilter === 'active') {
+                    return instList.some(i => i.amcRequired);
+                } else if (currentFilter === 'due') {
+                    return instList.some(i => {
+                        if (!i.amcRequired || !i.nextAmcDate) return false;
+                        const dueDate = new Date(i.nextAmcDate);
+                        const diffDays = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+                        return diffDays <= 30; // Due within 30 days or overdue
+                    });
+                }
+                return true;
+            });
+
+            statsCount.textContent = `${filteredKeys.length} Compan${filteredKeys.length === 1 ? 'y' : 'ies'}`;
+
+            if (filteredKeys.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-filter-circle-xmark fs-2 text-secondary mb-2"></i>
+                        <h6 class="fw-bold">No companies match the current search / filter</h6>
+                        <p class="small">Try clearing your search query or selecting "All".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filteredKeys.forEach(k => {
+                const c = customersData[k];
+                const instList = c.instruments || [];
+
+                // Split photos
+                const photoUrls = (c.photos || '').split(',').map(s => s.trim()).filter(Boolean);
+
+                // Split links
+                const links = (c.importantLinks || '').split(/[\n,]/).map(s => s.trim()).filter(Boolean);
+
+                // Build instruments table rows
+                let instRows = '';
+                if (instList.length > 0) {
+                    instList.forEach((inst, idx) => {
+                        const isAmcOn = inst.amcRequired;
+                        let amcBadge = isAmcOn 
+                            ? '<span class="badge badge-soft-success"><i class="fa-solid fa-check me-1"></i> Required</span>' 
+                            : '<span class="badge badge-soft-secondary">No AMC</span>';
+
+                        let dueBadge = '-';
+                        if (isAmcOn && inst.nextAmcDate) {
+                            const dueDate = new Date(inst.nextAmcDate);
+                            const diffDays = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+
+                            if (diffDays < 0) {
+                                dueBadge = `<span class="badge badge-soft-danger"><i class="fa-solid fa-triangle-exclamation me-1"></i> Overdue (${inst.nextAmcDate})</span>`;
+                            } else if (diffDays <= 30) {
+                                dueBadge = `<span class="badge badge-soft-warning"><i class="fa-solid fa-clock me-1"></i> Due in ${diffDays}d (${inst.nextAmcDate})</span>`;
+                            } else {
+                                dueBadge = `<span class="badge badge-soft-info">${inst.nextAmcDate}</span>`;
+                            }
+                        }
+
+                        instRows += `
+                            <tr>
+                                <td class="fw-bold text-dark-emphasis">${escapeHtml(inst.name || '-')}</td>
+                                <td>${escapeHtml(inst.model || '-')}</td>
+                                <td><code class="text-primary">${escapeHtml(inst.serial || '-')}</code></td>
+                                <td>${amcBadge}</td>
+                                <td>${escapeHtml(inst.lastAmcDate || '-')}</td>
+                                <td>${dueBadge}</td>
+                                <td class="small text-muted">${escapeHtml(inst.notes || '-')}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    instRows = '<tr><td colspan="7" class="text-center py-3 text-muted">No instruments recorded for this company.</td></tr>';
+                }
+
+                // Render Company Card
+                html += `
+                    <div class="customer-card">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                            <div>
+                                <h4 class="fw-bold mb-1 text-dark-emphasis d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-industry text-primary"></i>
+                                    <span>${escapeHtml(c.companyName || 'Unnamed Company')}</span>
+                                </h4>
+                                <div class="text-muted small">
+                                    <i class="fa-solid fa-location-dot text-danger me-1"></i> ${escapeHtml(c.address || 'Address not specified')}
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                ${c.locationUrl ? `
+                                    <a href="${c.locationUrl}" target="_blank" class="btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-map-location-dot me-1"></i> View on Google Maps
+                                    </a>
+                                ` : ''}
+                                <span class="badge badge-soft-primary px-3 py-2 fs-7">
+                                    <i class="fa-solid fa-microchip me-1"></i> ${instList.length} Instrument${instList.length === 1 ? '' : 's'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Details Row -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <div class="p-2 rounded bg-light border">
+                                    <div class="text-muted small text-uppercase fw-semibold">Contact Person</div>
+                                    <div class="fw-bold text-dark-emphasis">${escapeHtml(c.customerName || '-')}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-2 rounded bg-light border">
+                                    <div class="text-muted small text-uppercase fw-semibold">Contact Phone</div>
+                                    <div class="fw-bold">
+                                        <a href="tel:${escapeHtml(c.phone)}" class="text-decoration-none text-success">
+                                            <i class="fa-solid fa-phone me-1"></i> ${escapeHtml(c.phone || '-')}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-2 rounded bg-light border">
+                                    <div class="text-muted small text-uppercase fw-semibold">Email ID</div>
+                                    <div class="fw-bold text-truncate">
+                                        ${c.email ? `<a href="mailto:${escapeHtml(c.email)}" class="text-decoration-none"><i class="fa-solid fa-envelope me-1"></i> ${escapeHtml(c.email)}</a>` : '-'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Best Route / Travel Details -->
+                        ${c.bestRoute ? `
+                            <div class="route-box mb-3">
+                                <div class="fw-bold text-dark-emphasis mb-1">
+                                    <i class="fa-solid fa-route text-primary me-1"></i> Best Route & Travel Logistics:
+                                </div>
+                                <div>${escapeHtml(c.bestRoute)}</div>
+                            </div>
+                        ` : ''}
+
+                        <!-- Company Photos & Important Links -->
+                        ${(photoUrls.length > 0 || links.length > 0) ? `
+                            <div class="row g-3 mb-3">
+                                ${photoUrls.length > 0 ? `
+                                    <div class="col-md-6">
+                                        <div class="fw-bold small text-muted mb-2"><i class="fa-solid fa-camera me-1"></i> Company Photos:</div>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            ${photoUrls.map((url, i) => `
+                                                <img src="${escapeHtml(url)}" alt="Photo ${i+1}" class="photo-thumb" 
+                                                     onclick="previewPhoto('${escapeHtml(url)}', '${escapeHtml(c.companyName)}')">
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+
+                                ${links.length > 0 ? `
+                                    <div class="col-md-6">
+                                        <div class="fw-bold small text-muted mb-2"><i class="fa-solid fa-link me-1"></i> Important Links & Documents:</div>
+                                        <ul class="list-unstyled mb-0">
+                                            ${links.map(l => `
+                                                <li class="mb-1 text-truncate">
+                                                    <a href="${escapeHtml(l)}" target="_blank" class="text-decoration-none small">
+                                                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> ${escapeHtml(l)}
+                                                    </a>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+
+                        <!-- Deployed Instruments Table -->
+                        <div class="inst-table-view">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Instrument Name</th>
+                                            <th>Model</th>
+                                            <th>Serial / ID</th>
+                                            <th>AMC Required</th>
+                                            <th>Last AMC Visit</th>
+                                            <th>Next AMC Due</th>
+                                            <th>Important Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${instRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        };
+
+        window.previewPhoto = function(url, company) {
+            document.getElementById('modalImg').src = url;
+            document.getElementById('photoModalTitle').textContent = `Photo - ${company}`;
+            const modal = new bootstrap.Modal(document.getElementById('photoModal'));
+            modal.show();
+        };
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    </script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

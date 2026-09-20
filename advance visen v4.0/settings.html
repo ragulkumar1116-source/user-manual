@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Company Settings - Instrument Library V3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item active"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content Wrapper -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-gear text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Portal Configuration</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title">Company Settings</h2>
+                        <p class="page-subtitle">Configure organization branding, company name, contact info, and reports footer</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary px-4" id="btnSave">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left Form Section -->
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-building text-primary"></i>
+                                <span>Organization Profile</span>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label" for="cLogo">Company Logo URL</label>
+                                        <input type="url" class="form-control" id="cLogo" placeholder="https://example.com/logo.png">
+                                        <div class="text-muted small mt-1">Direct web link to your company logo image (.png, .svg, .jpg).</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cName">Company / Organization Name</label>
+                                        <input type="text" class="form-control" id="cName" placeholder="Aadhav Intech">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cTax">GST / Tax Registration Number</label>
+                                        <input type="text" class="form-control" id="cTax" placeholder="e.g. 33AAAAA0000A1Z5">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="cDesc">Company Tagline / Description</label>
+                                        <textarea class="form-control" id="cDesc" rows="2" placeholder="Industrial Automation & Environmental Monitoring Solutions"></textarea>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold text-primary border-top pt-4 mt-4 mb-3 d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Headquarters & Contact Information</span>
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label" for="cAddress">Street Address</label>
+                                        <input type="text" class="form-control" id="cAddress" placeholder="123 Industrial Area, Tech Park">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="cCity">City</label>
+                                        <input type="text" class="form-control" id="cCity" placeholder="Coimbatore">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="cState">State / Province</label>
+                                        <input type="text" class="form-control" id="cState" placeholder="Tamil Nadu">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="cZip">Postal Code</label>
+                                        <input type="text" class="form-control" id="cZip" placeholder="641001">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cCountry">Country</label>
+                                        <input type="text" class="form-control" id="cCountry" placeholder="India">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cWeb">Official Website</label>
+                                        <input type="url" class="form-control" id="cWeb" placeholder="https://aadhavintech.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cPhone1">Primary Phone</label>
+                                        <input type="text" class="form-control" id="cPhone1" placeholder="+91 98765 43210">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cPhone2">Alternate Phone</label>
+                                        <input type="text" class="form-control" id="cPhone2" placeholder="+91 98765 43211">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cEmail1">Primary Business Email</label>
+                                        <input type="email" class="form-control" id="cEmail1" placeholder="contact@aadhavintech.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="cEmail2">Technical Support Email</label>
+                                        <input type="email" class="form-control" id="cEmail2" placeholder="support@aadhavintech.com">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Live Preview Card -->
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm border-0 sticky-top" style="top: 80px;">
+                            <div class="card-header text-center">
+                                <span class="small fw-bold text-uppercase text-muted">Real-Time Branding Preview</span>
+                            </div>
+                            <div class="card-body p-4 text-center">
+                                <div class="mb-3" style="min-height: 70px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="" id="pLogo" alt="Logo" class="img-fluid" style="max-height: 65px; display: none;">
+                                    <div id="pLogoPlaceholder" class="text-muted small">
+                                        <i class="fa-solid fa-image fs-1 d-block mb-1 text-secondary opacity-50"></i>
+                                        Logo will appear here
+                                    </div>
+                                </div>
+                                <h5 class="fw-bold text-dark-emphasis mb-1" id="pName">Aadhav Intech</h5>
+                                <p class="text-muted small mb-3" id="pAddressBlock">Address Line, City, State, Country - Zip</p>
+                                
+                                <div class="p-3 rounded border bg-light text-start small d-flex flex-column gap-2 mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-phone text-primary" style="width: 16px;"></i> 
+                                        <span id="pPhone">-</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-envelope text-primary" style="width: 16px;"></i> 
+                                        <span id="pEmail">-</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-globe text-primary" style="width: 16px;"></i> 
+                                        <span id="pWeb">-</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-muted small border-top pt-3">
+                                    <strong>Instrument Library v3.0</strong><br>
+                                    &copy; <span id="pYear">2026</span> <span id="pCopyName">Aadhav Intech</span>. All rights reserved.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1060;">
+        <div id="appToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-medium" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/settings.js"></script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

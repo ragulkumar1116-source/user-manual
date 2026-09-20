@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Customer & Instrument Admin - Enterprise Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .inst-card {
+            background: var(--ent-bg);
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius);
+            padding: 1.25rem;
+            position: relative;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        .inst-card:hover {
+            border-color: var(--ent-accent);
+            box-shadow: var(--ent-shadow-sm);
+        }
+        .inst-card .btn-remove-inst {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .status-alert {
+            display: none;
+            padding: 0.75rem 1rem;
+            border-radius: var(--ent-radius);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="customer-config.html" class="list-group-item active"><i class="fa-solid fa-building-user"></i> Customer & Inst Admin</a>
+                <a href="customers-view.html" class="list-group-item"><i class="fa-solid fa-address-book"></i> Customer Directory (View)</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-building-user text-primary"></i>
+                    <span>Customer & Instrument Configuration</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title">Customer & Instrument Configuration</h2>
+                        <p class="page-subtitle">Add, edit, and maintain customer company accounts, route logistics, and deployed instruments</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="customers-view.html" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-eye me-1"></i> Open View-Only Page
+                        </a>
+                        <button class="btn btn-primary" onclick="resetCustomerForm(); window.scrollTo({top: 0, behavior: 'smooth'});">
+                            <i class="fa-solid fa-plus me-1"></i> New Customer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Customer Form Card -->
+                <div class="card shadow-sm border-0 mb-4" id="formCard">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-primary"></i>
+                            <span class="fw-bold" id="formCardTitle">Add New Customer & Deployments</span>
+                        </div>
+                        <span class="badge badge-soft-primary" id="editStatusBadge" style="display: none;">Editing Mode</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="customerForm">
+                            <input type="hidden" id="custKey" value="">
+
+                            <!-- Section 1: Customer & Company Information -->
+                            <div class="mb-4">
+                                <h5 class="fw-bold text-dark-emphasis mb-3 d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-id-card text-primary"></i>
+                                    <span>1. Customer & Company Profile</span>
+                                </h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6 col-lg-4">
+                                        <label class="form-label" for="custName">Customer / Contact Person <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="custName" placeholder="e.g. Ramesh Kumar" required>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <label class="form-label" for="companyName">Company / Plant Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="companyName" placeholder="e.g. Jindal Steel & Power Ltd." required>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <label class="form-label" for="custEmail">Email Address</label>
+                                        <input type="email" class="form-control" id="custEmail" placeholder="e.g. plant.engineer@example.com">
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <label class="form-label" for="custPhone">Contact Number <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control" id="custPhone" placeholder="e.g. +91 9876543210" required>
+                                    </div>
+                                    <div class="col-md-6 col-lg-8">
+                                        <label class="form-label" for="companyAddress">Company Physical Address <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="companyAddress" placeholder="e.g. Plot No. 42, Sector 8, Industrial Area, Raigarh, CG" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="companyLocation">Company Location / Map Link (Google Maps)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-location-dot text-danger"></i></span>
+                                            <input type="url" class="form-control" id="companyLocation" placeholder="https://maps.google.com/?q=...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="companyPhotos">Company Photos (Image URLs, comma-separated)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-image text-info"></i></span>
+                                            <input type="text" class="form-control" id="companyPhotos" placeholder="https://example.com/photo1.jpg, https://example.com/gate.jpg">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="bestRoute">Best Route / Travel Details</label>
+                                        <textarea class="form-control" id="bestRoute" rows="2" placeholder="e.g. Nearest Airport: Raipur (150km). Take NH-49 via Bilaspur. From Raigarh Station take Taxi towards Industrial Phase 2, near Gate #3."></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="importantLinks">Important Links / Documents (One link per line or comma-separated)</label>
+                                        <textarea class="form-control" id="importantLinks" rows="2" placeholder="e.g. https://example.com/site-safety-induction.pdf, https://drive.google.com/..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Section 2: Instruments Deployed at this Company -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                                    <h5 class="fw-bold text-dark-emphasis mb-0 d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-microchip text-primary"></i>
+                                        <span>2. Deployed Instruments</span>
+                                        <span class="badge badge-soft-primary" id="instCountBadge">1 Instrument</span>
+                                    </h5>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addInstrumentRow()">
+                                        <i class="fa-solid fa-plus me-1"></i> Add Another Instrument
+                                    </button>
+                                </div>
+
+                                <div id="instrumentsContainer">
+                                    <!-- Dynamic Instrument Rows injected here -->
+                                </div>
+                            </div>
+
+                            <!-- Actions & Status Alert -->
+                            <div class="d-flex align-items-center gap-2 flex-wrap pt-2">
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" id="btnSubmit">
+                                    <i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Customer & Instruments
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary px-3" onclick="resetCustomerForm()">
+                                    Cancel / Reset
+                                </button>
+                                <div id="statusMsg" class="status-alert ms-sm-2"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Registered Customers List Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-list-check text-primary"></i>
+                            <span class="fw-bold">Registered Companies & Deployment Registry</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="input-group" style="max-width: 280px;">
+                                <span class="input-group-text bg-transparent border-end-0"><i class="fa-solid fa-search text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="searchTableInput" placeholder="Search companies..." onkeyup="renderCustomersTable()">
+                            </div>
+                            <span class="badge badge-soft-primary" id="totalCustBadge">0 Companies</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive border-0">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Company & Location</th>
+                                        <th>Contact Person</th>
+                                        <th>Contact Details</th>
+                                        <th>Instruments Deployed</th>
+                                        <th>AMC Status</th>
+                                        <th class="text-end px-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customersTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5 text-muted">
+                                            <div class="spinner-border text-primary" role="status"></div>
+                                            <div class="mt-2 small">Loading customer registry...</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+
+    <script type="module">
+        import { addCustomer, updateCustomer, deleteCustomer, listenToCustomers } from './firebase.js';
+
+        let customersData = {};
+        let instrumentCounter = 0;
+
+        // Auto-calculate 3 months forward from a given YYYY-MM-DD
+        window.computeNextAmcDate = function(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return '';
+            d.setMonth(d.getMonth() + 3);
+            return d.toISOString().split('T')[0];
+        };
+
+        // Triggered when AMC toggle or Last AMC date changes
+        window.handleAmcChange = function(index) {
+            const amcToggle = document.getElementById(`amcReq_${index}`);
+            const lastAmcInput = document.getElementById(`lastAmc_${index}`);
+            const nextAmcInput = document.getElementById(`nextAmc_${index}`);
+            const badge = document.getElementById(`amcBadge_${index}`);
+
+            if (amcToggle.checked) {
+                badge.textContent = "AMC Required: ON";
+                badge.className = "badge badge-soft-success";
+                if (lastAmcInput.value) {
+                    nextAmcInput.value = computeNextAmcDate(lastAmcInput.value);
+                }
+            } else {
+                badge.textContent = "AMC Required: OFF";
+                badge.className = "badge badge-soft-warning";
+                nextAmcInput.value = "";
+            }
+        };
+
+        // Add an instrument row dynamically
+        window.addInstrumentRow = function(inst = {}) {
+            instrumentCounter++;
+            const idx = instrumentCounter;
+            const container = document.getElementById('instrumentsContainer');
+
+            const isAmcOn = inst.amcRequired !== false && inst.amcRequired !== 'false' && inst.amcRequired !== undefined;
+            const lastDate = inst.lastAmcDate || '';
+            const nextDate = inst.nextAmcDate || (isAmcOn && lastDate ? computeNextAmcDate(lastDate) : '');
+
+            const card = document.createElement('div');
+            card.className = 'inst-card';
+            card.id = `instCard_${idx}`;
+            card.innerHTML = `
+                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-inst" title="Remove Instrument" onclick="removeInstrumentRow(${idx})">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold">Instrument Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-sm inst-name" value="${escapeHtml(inst.name || '')}" placeholder="e.g. Gas Chromatograph" required>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold">Model</label>
+                        <input type="text" class="form-control form-control-sm inst-model" value="${escapeHtml(inst.model || '')}" placeholder="e.g. GC-9800 Pro">
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold">Serial Number / Instrument ID <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-sm inst-serial" value="${escapeHtml(inst.serial || '')}" placeholder="e.g. AIT-2024-SN-089" required>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold">AMC Status</label>
+                        <div class="d-flex align-items-center gap-2 pt-1">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input inst-amc-toggle" type="checkbox" role="switch" id="amcReq_${idx}" ${isAmcOn ? 'checked' : ''} onchange="handleAmcChange(${idx})">
+                            </div>
+                            <span id="amcBadge_${idx}" class="badge ${isAmcOn ? 'badge-soft-success' : 'badge-soft-warning'}">
+                                ${isAmcOn ? 'AMC Required: ON' : 'AMC Required: OFF'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Last AMC Visit Date</label>
+                        <input type="date" class="form-control form-control-sm inst-last-amc" id="lastAmc_${idx}" value="${lastDate}" onchange="handleAmcChange(${idx})">
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label">Next AMC Due Date</label>
+                        <input type="date" class="form-control form-control-sm inst-next-amc" id="nextAmc_${idx}" value="${nextDate}" title="Auto-computed 3 months forward when AMC is ON">
+                    </div>
+                    <div class="col-md-12 col-lg-6">
+                        <label class="form-label">Other Important Details / Notes</label>
+                        <input type="text" class="form-control form-control-sm inst-notes" value="${escapeHtml(inst.notes || '')}" placeholder="e.g. Calibration span gases required; located at Stack 3 Mezzanine floor">
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+            updateInstCountBadge();
+        };
+
+        window.removeInstrumentRow = function(idx) {
+            const card = document.getElementById(`instCard_${idx}`);
+            if (card) {
+                card.remove();
+                updateInstCountBadge();
+            }
+            const container = document.getElementById('instrumentsContainer');
+            if (container.children.length === 0) {
+                addInstrumentRow();
+            }
+        };
+
+        function updateInstCountBadge() {
+            const count = document.getElementById('instrumentsContainer').children.length;
+            document.getElementById('instCountBadge').textContent = `${count} Instrument${count === 1 ? '' : 's'}`;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Form Submit Handler (Add or Update)
+        document.getElementById('customerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+
+            const key = document.getElementById('custKey').value.trim();
+            const customerName = document.getElementById('custName').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+            const email = document.getElementById('custEmail').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('companyAddress').value.trim();
+            const locationUrl = document.getElementById('companyLocation').value.trim();
+            const photos = document.getElementById('companyPhotos').value.trim();
+            const bestRoute = document.getElementById('bestRoute').value.trim();
+            const importantLinks = document.getElementById('importantLinks').value.trim();
+
+            // Collect instruments
+            const instCards = document.querySelectorAll('.inst-card');
+            const instruments = [];
+            instCards.forEach(card => {
+                const name = card.querySelector('.inst-name')?.value.trim();
+                const serial = card.querySelector('.inst-serial')?.value.trim();
+                if (name && serial) {
+                    instruments.push({
+                        name: name,
+                        model: card.querySelector('.inst-model')?.value.trim() || '',
+                        serial: serial,
+                        amcRequired: card.querySelector('.inst-amc-toggle')?.checked || false,
+                        lastAmcDate: card.querySelector('.inst-last-amc')?.value || '',
+                        nextAmcDate: card.querySelector('.inst-next-amc')?.value || '',
+                        notes: card.querySelector('.inst-notes')?.value.trim() || ''
+                    });
+                }
+            });
+
+            if (instruments.length === 0) {
+                showStatus('Please specify at least one instrument with Name and Serial/ID.', '#dc2626', '#fef2f2');
+                return;
+            }
+
+            const payload = {
+                customerName,
+                companyName,
+                email,
+                phone,
+                address,
+                locationUrl,
+                photos,
+                bestRoute,
+                importantLinks,
+                instruments,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Saving...';
+
+                if (key) {
+                    await updateCustomer(key, payload);
+                    showStatus('Customer & instrument details updated successfully!', '#059669', '#ecfdf5');
+                } else {
+                    payload.createdAt = new Date().toISOString();
+                    await addCustomer(payload);
+                    showStatus('New customer & instruments registered successfully!', '#059669', '#ecfdf5');
+                }
+                resetCustomerForm();
+            } catch (err) {
+                console.error(err);
+                showStatus('Error saving: ' + err.message, '#dc2626', '#fef2f2');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Customer & Instruments';
+            }
+        });
+
+        // Realtime Subscription
+        listenToCustomers((data) => {
+            customersData = data || {};
+            renderCustomersTable();
+        });
+
+        // Render Management Table
+        window.renderCustomersTable = function() {
+            const tbody = document.getElementById('customersTableBody');
+            const search = (document.getElementById('searchTableInput')?.value || '').toLowerCase();
+            const totalBadge = document.getElementById('totalCustBadge');
+
+            const keys = Object.keys(customersData);
+            totalBadge.textContent = `${keys.length} Compan${keys.length === 1 ? 'y' : 'ies'}`;
+
+            if (keys.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">No customer records found. Add your first customer above!</td></tr>';
+                return;
+            }
+
+            let filteredKeys = keys.filter(k => {
+                const c = customersData[k];
+                const text = `${c.companyName || ''} ${c.customerName || ''} ${c.phone || ''} ${c.email || ''} ${c.address || ''}`.toLowerCase();
+                const instText = (c.instruments || []).map(i => `${i.name} ${i.model} ${i.serial}`).join(' ').toLowerCase();
+                return text.includes(search) || instText.includes(search);
+            });
+
+            if (filteredKeys.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">No matching companies found for "' + escapeHtml(search) + '"</td></tr>';
+                return;
+            }
+
+            let html = '';
+            filteredKeys.forEach(k => {
+                const c = customersData[k];
+                const instList = c.instruments || [];
+                const amcRequiredCount = instList.filter(i => i.amcRequired).length;
+
+                // Determine overall AMC indicator
+                let amcStatusBadge = '<span class="badge badge-soft-secondary">No AMC</span>';
+                if (amcRequiredCount > 0) {
+                    amcStatusBadge = `<span class="badge badge-soft-success"><i class="fa-solid fa-shield-halved me-1"></i> ${amcRequiredCount} Active AMC</span>`;
+                }
+
+                // Map link button
+                const mapBtn = c.locationUrl 
+                    ? `<a href="${c.locationUrl}" target="_blank" class="btn btn-sm btn-outline-danger py-0 px-2 mt-1" style="font-size:0.75rem;"><i class="fa-solid fa-map-pin me-1"></i> Map</a>` 
+                    : '';
+
+                html += `
+                    <tr>
+                        <td>
+                            <strong class="text-dark-emphasis">${escapeHtml(c.companyName || '-')}</strong>
+                            <div class="small text-muted">${escapeHtml(c.address || '-')}</div>
+                            ${mapBtn}
+                        </td>
+                        <td>
+                            <span class="fw-semibold">${escapeHtml(c.customerName || '-')}</span>
+                        </td>
+                        <td>
+                            <div><i class="fa-solid fa-phone text-success small me-1"></i> <a href="tel:${escapeHtml(c.phone)}" class="text-decoration-none">${escapeHtml(c.phone || '-')}</a></div>
+                            ${c.email ? `<div class="small text-muted"><i class="fa-solid fa-envelope small me-1"></i> ${escapeHtml(c.email)}</div>` : ''}
+                        </td>
+                        <td>
+                            <span class="badge badge-soft-info">${instList.length} Instrument${instList.length === 1 ? '' : 's'}</span>
+                            <div class="small text-muted text-truncate" style="max-width: 220px;" title="${instList.map(i => i.name).join(', ')}">
+                                ${instList.map(i => escapeHtml(i.name)).join(', ') || '-'}
+                            </div>
+                        </td>
+                        <td>
+                            ${amcStatusBadge}
+                        </td>
+                        <td class="text-end px-4 text-nowrap">
+                            <div class="d-inline-flex gap-1">
+                                <button class="btn-sm-action" onclick="editCustomer('${k}')" title="Edit / Re-edit Customer">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="btn-sm-action action-delete" onclick="deleteCustomerConfirm('${k}')" title="Delete Customer">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        };
+
+        // Edit / Re-edit Handler
+        window.editCustomer = function(key) {
+            const c = customersData[key];
+            if (!c) return;
+
+            document.getElementById('custKey').value = key;
+            document.getElementById('custName').value = c.customerName || '';
+            document.getElementById('companyName').value = c.companyName || '';
+            document.getElementById('custEmail').value = c.email || '';
+            document.getElementById('custPhone').value = c.phone || '';
+            document.getElementById('companyAddress').value = c.address || '';
+            document.getElementById('companyLocation').value = c.locationUrl || '';
+            document.getElementById('companyPhotos').value = c.photos || '';
+            document.getElementById('bestRoute').value = c.bestRoute || '';
+            document.getElementById('importantLinks').value = c.importantLinks || '';
+
+            // Render instruments
+            const container = document.getElementById('instrumentsContainer');
+            container.innerHTML = '';
+            const instList = c.instruments || [];
+            if (instList.length > 0) {
+                instList.forEach(inst => addInstrumentRow(inst));
+            } else {
+                addInstrumentRow();
+            }
+
+            document.getElementById('formCardTitle').textContent = `Edit Customer: ${c.companyName || c.customerName}`;
+            document.getElementById('editStatusBadge').style.display = 'inline-block';
+            document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-check me-1"></i> Update Customer Record';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Reset Form
+        window.resetCustomerForm = function() {
+            document.getElementById('customerForm').reset();
+            document.getElementById('custKey').value = '';
+            document.getElementById('formCardTitle').textContent = 'Add New Customer & Deployments';
+            document.getElementById('editStatusBadge').style.display = 'none';
+            document.getElementById('btnSubmit').innerHTML = '<i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Customer & Instruments';
+
+            const container = document.getElementById('instrumentsContainer');
+            container.innerHTML = '';
+            addInstrumentRow();
+        };
+
+        // Delete Handler
+        window.deleteCustomerConfirm = async function(key) {
+            const c = customersData[key];
+            const name = c ? (c.companyName || c.customerName) : 'this record';
+            if (confirm(`Are you sure you want to permanently delete "${name}" and all its instrument records?`)) {
+                try {
+                    await deleteCustomer(key);
+                    showStatus('Customer record deleted.', '#dc2626', '#fef2f2');
+                    if (document.getElementById('custKey').value === key) {
+                        resetCustomerForm();
+                    }
+                } catch (err) {
+                    showStatus('Delete error: ' + err.message, '#dc2626', '#fef2f2');
+                }
+            }
+        };
+
+        function showStatus(text, color, bgColor) {
+            const el = document.getElementById('statusMsg');
+            el.textContent = text;
+            el.style.color = color;
+            el.style.backgroundColor = bgColor;
+            el.style.display = 'inline-block';
+            setTimeout(() => { el.style.display = 'none'; }, 3500);
+        }
+
+        // Initialize with 1 empty instrument row
+        document.addEventListener('DOMContentLoaded', () => {
+            addInstrumentRow();
+        });
+    </script>
+
+    <script>
+        // Access Protection
+        if (sessionStorage.getItem("verified") !== "true") {
+            window.location.replace("index.html");
+        }
+        window.addEventListener("pageshow", function () {
+            if (sessionStorage.getItem("verified") !== "true") {
+                window.location.replace("index.html");
+            }
+        });
+    </script>
+</body>
+</html>

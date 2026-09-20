@@ -1,0 +1,43 @@
+Command details for SMS and UART
+To configure device using serial port, add SET: before all below commands
+
+UNIT:MFTP100
+APN:"airtlegprs.com"                       ----- To Change IMEI Number in Device
+SERVER1:"tnpcb.aadhavintech.com"           ----- To Change SIM APN in Device
+PORT1:21                                   ----- To Change FTP SERVER in Device
+FTP ID1:"aadhav_ftp4logger"                ----- To Change FTP USER NAME in Device
+FTP PASS1:"A@aDav#32$32"                   ----- To Change FTP PASSWORD in Device
+UF NAME:0000                               ----- To Change Upload File Name in Device
+UPATH:"/Iplharodi2/"                       ----- To Change File Path in Device
+HEADER:Date Time,A1,A2,A3,A4,M1,M2,M3,M4  ----- To Change header string in Device
+
+MODBUS1:A1,100                             ----- To Change Analog 1 Configuration in Device
+MODBUS2:A2,100                             ----- To Change Analog 2 Configuration in Device
+MODBUS3:A3,100                             ----- To Change Analog 3 Configuration in Device
+MODBUS4:A4,100                             ----- To Change Analog 4 Configuration in Device
+
+SIM:1                                      ----- To Change SIM no in Device
+LANIP:103.240.103.222                      ----- To Change LAN IP in Device
+LANGW:103.240.103.217                      ----- To Change LAN Gateway in Device
+LANSN:255.255.255.0                        ----- To Change LAN Subnet in Device
+
+URL:http://103.96.43.158/AADHAV_FTP.php?   ----- To Change API Server in Device
+PORT:80                                    ----- To Change API PORT in Device
+DATA INT:01                                ----- To Change Data Interval in Device
+BaudRate:009600,8,N,1,N                    ----- To Change BaudRate in Device
+
+DEFAULT                                    ----- To Restore Factory Setting
+DATAMODE:LAN                               ----- To Change Data transmission in Device (LAN/GSM)
+DNS1:8.8.8.8                               ----- To Change LAN DNS in Device
+RESET                                      ----- To Restart Device
+
+MODBUS5:01,3,00003,FS,                     ----- To Change MODBUS5 1 Configuration in Device
+MODBUS6:01,3,00009,FR,                     ----- To Change MODBUS5 1 Configuration in Device
+MODBUS7:01,4,00009,LS,                     ----- To Change MODBUS5 1 Configuration in Device
+MODBUS8:01,4,00011,LI,                     ----- To Change MODBUS5 1 Configuration in Device
+
+INT - INTEGER Totalizer
+IT  - INTEGER
+FS  - FLOAT SWAP
+
+Note: A few characters, particularly in the FTP password and upload path, are slightly unclear in the photograph and should be verified against the original configuration file.
