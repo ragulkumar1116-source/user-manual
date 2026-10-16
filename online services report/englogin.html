@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aadhav Intech - Field Engineer Access Portal</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="englogin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========================================================================= -->
+  <!-- SCREEN 1: ENGINEER LOGIN SCREEN                                           -->
+  <!-- ========================================================================= -->
+  <section class="login-view-wrapper" id="view-login">
+    <div class="login-card">
+      <div class="login-brand-header">
+        <div class="login-logo-badge">👨‍🔧</div>
+        <h1>Aadhav Intech</h1>
+        <p>Field Service Engineer Access Portal</p>
+      </div>
+
+      <form id="form-eng-login" autocomplete="off">
+        <div class="form-group">
+          <label for="input-eng-username">Engineer Username or Email</label>
+          <div class="input-with-icon">
+            <input type="text" id="input-eng-username" autocomplete="username" placeholder="e.g. ramesh.ait" required autofocus>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-eng-password">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="input-eng-password" autocomplete="current-password" placeholder="••••••••" required>
+            <button type="button" class="btn-toggle-pw" id="btn-toggle-pw" title="Show/Hide Password" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="btn-submit-login">
+          <span>Sign In to Engineer Portal</span>
+          <span>→</span>
+        </button>
+
+        <div class="login-info-box">
+          <p>⚠️ <strong>Access Notice:</strong> Accounts are provisioned and approved by your system administrator. Public registration is closed.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SCREEN 2: ENGINEER DASHBOARD SCREEN (ACTIVE AFTER LOGIN)                  -->
+  <!-- ========================================================================= -->
+  <div class="portal-view-wrapper" id="view-portal">
+    <!-- Top Header -->
+    <header class="portal-header">
+      <div class="portal-brand">
+        <span style="font-size: 1.4rem;">👨‍🔧</span>
+        <div>
+          <h2>Aadhav Report System</h2>
+          <span>Field Engineer Workspace</span>
+        </div>
+      </div>
+
+      <div class="portal-header-actions">
+        <div class="badge-pill badge-active">
+          <span>●</span>
+          <span>Cloud Verified</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-xs" id="btn-eng-logout" style="color: var(--danger); border-color: rgba(239, 68, 68, 0.4);">
+          🚪 Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="portal-content">
+      <!-- Profile Summary Card -->
+      <div class="engineer-profile-card">
+        <div class="profile-main-info">
+          <div class="profile-avatar" id="avatar-initials">E</div>
+          <div>
+            <div class="profile-name" id="display-engineer-name">Loading Profile...</div>
+            <div class="profile-role-tag">
+              <span>🛠️</span>
+              <span id="display-engineer-role">Field Service Engineer</span>
+              <span>•</span>
+              <span id="display-engineer-username" style="color: var(--text-muted);">@username</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-meta-grid">
+          <div class="profile-meta-item">
+            <strong>Contact Info</strong>
+            <span id="display-engineer-contact">-</span>
+          </div>
+          <div class="profile-meta-item">
+            <strong>Assigned Plants / Areas</strong>
+            <span id="display-engineer-locations">-</span>
+          </div>
+          <div class="profile-meta-item">
+            <strong>Last Login Recorded</strong>
+            <span id="display-engineer-last-login">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div>
+            <div class="metric-label">My Total Reports</div>
+            <div class="metric-val" id="metric-my-total-reports">0</div>
+          </div>
+          <div class="metric-icon-box icon-cyan">📄</div>
+        </div>
+
+        <div class="metric-card">
+          <div>
+            <div class="metric-label">Submitted This Month</div>
+            <div class="metric-val" id="metric-my-month-reports">0</div>
+          </div>
+          <div class="metric-icon-box icon-indigo">📅</div>
+        </div>
+
+        <div class="metric-card">
+          <div>
+            <div class="metric-label">Assigned Work Locations</div>
+            <div class="metric-val" id="metric-my-assigned-locations">0</div>
+          </div>
+          <div class="metric-icon-box icon-amber">🏢</div>
+        </div>
+
+        <div class="metric-card">
+          <div>
+            <div class="metric-label">Account Status</div>
+            <div class="metric-val" style="color: var(--success); font-size: 1.15rem; display: flex; align-items: center; gap: 6px;">
+              <span>🟢</span>
+              <span>Active & Verified</span>
+            </div>
+          </div>
+          <div class="metric-icon-box icon-emerald">🛡️</div>
+        </div>
+      </div>
+
+      <!-- Action Row -->
+      <div class="portal-actions-row">
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">Service Reports & Deployed Instruments</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Manage your submitted service documentation or launch the standard report generator.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn btn-outline" id="btn-refresh-portal">
+            🔄 Refresh
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-new-service-report">
+            ➕ Create New Service Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 1: My Submitted Reports -->
+      <div class="portal-card">
+        <div class="portal-card-header">
+          <div class="portal-card-title">
+            <span>📑 My Submitted Service Reports</span>
+          </div>
+          <div class="portal-toolbar">
+            <div class="search-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="input-search-my-reports" placeholder="Search my reports by customer, report #...">
+            </div>
+            <span class="badge-pill badge-location" id="badge-my-reports-count">0 Reports</span>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="portal-table" id="table-my-reports">
+            <thead>
+              <tr>
+                <th>Report #</th>
+                <th>Service Date</th>
+                <th>Customer / Plant Name</th>
+                <th>Instrument</th>
+                <th>Document Title</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-my-reports">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 28px;">
+                  Loading your submitted service reports from cloud...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Card 2: My Assigned Plants & Work Locations -->
+      <div class="portal-card">
+        <div class="portal-card-header">
+          <div class="portal-card-title">
+            <span>🏢 My Assigned Plants & Client Locations</span>
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">Click any plant below to generate a report with details pre-filled</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="portal-table" id="table-my-locations">
+            <thead>
+              <tr>
+                <th>Plant / Company Name</th>
+                <th>Location / Site Address</th>
+                <th>Contact Person</th>
+                <th>Contact Phone</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-my-locations">
+              <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">
+                  Loading assigned locations...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="eng-toast-container" aria-live="polite"></div>
+
+  <!-- Modular Script -->
+  <script type="module" src="englogin.js"></script>
+</body>
+</html>
