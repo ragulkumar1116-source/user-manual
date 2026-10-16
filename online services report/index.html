@@ -355,7 +355,16 @@
 
           <!-- Instrument Details -->
           <div class="form-section">
-            <h3>Instruments Details</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="margin-bottom: 0;">Instruments Details</h3>
+              <span id="badge-company-inst-count" style="display: none; font-size: 0.72rem; padding: 2px 8px; background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; font-weight: 600;"></span>
+            </div>
+            <div class="form-group" id="group-editor-inst-picker" style="display: none; margin-bottom: 10px;">
+              <label for="select-company-instrument" style="color: #60a5fa; font-weight: 600; font-size: 0.8rem;">Select from Company's Instruments</label>
+              <select id="select-company-instrument" class="form-control-select">
+                <option value="">-- Choose Deployed Instrument --</option>
+              </select>
+            </div>
             <div class="form-group">
               <label for="input-inst-name">Instrument Name</label>
               <input type="text" id="input-inst-name" value="OCEMS">
@@ -961,14 +970,25 @@
             <input type="text" id="comp-modal-addr4" placeholder="e.g. , Tamil Nadu, 641023.">
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="comp-modal-location">Site Location / Map URL</label>
-              <input type="text" id="comp-modal-location" placeholder="e.g. Coimbatore Plant / Maps Link">
+          <div class="form-group">
+            <label for="comp-modal-location">Site Location / Map URL</label>
+            <input type="text" id="comp-modal-location" placeholder="e.g. Coimbatore Plant / Maps Link">
+          </div>
+
+          <!-- Instruments Details Section with Dynamic Add Instrument Rows -->
+          <div class="modal-instruments-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div>
+                <label style="font-weight: 700; color: #ffffff; margin-bottom: 2px; display: block; font-size: 0.92rem;">Instruments Details</label>
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Configure instruments deployed at this company site</span>
+              </div>
+              <button type="button" class="btn btn-xs btn-outline" id="btn-add-comp-inst" style="display: inline-flex; align-items: center; gap: 4px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                + Add Instrument
+              </button>
             </div>
-            <div class="form-group">
-              <label for="comp-modal-inst">Default Instrument (Optional)</label>
-              <input type="text" id="comp-modal-inst" placeholder="e.g. OCEMS L-800">
+            <div id="comp-modal-inst-container">
+              <!-- Dynamic instrument rows (Instrument Name, Instrument Model, Sr. No) inserted here -->
             </div>
           </div>
         </div>

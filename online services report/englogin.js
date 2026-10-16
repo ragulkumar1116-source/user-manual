@@ -478,8 +478,10 @@ function setupFirebaseListeners() {
             mobile: c.phone || '',
             email: c.email || '',
             address: c.address || '',
-            siteLocation: c.locationUrl || '',
-            defaultInstrument: (c.instruments && c.instruments[0]?.name) || '',
+            defaultInstrument: (c.instruments && c.instruments[0]?.name) || c.defaultInstrument || '',
+            defaultModel: (c.instruments && c.instruments[0]?.model) || c.defaultModel || '',
+            defaultSerial: (c.instruments && (c.instruments[0]?.serial || c.instruments[0]?.srNo)) || c.defaultSerial || '',
+            instruments: Array.isArray(c.instruments) ? c.instruments : (c.instruments ? Object.values(c.instruments) : []),
             archived: !!c.archived
           };
           hasNew = true;

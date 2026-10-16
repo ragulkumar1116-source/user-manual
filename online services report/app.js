@@ -78,6 +78,9 @@ const defaultInitialCompanies = {
     addressLine4: ", Tamil Nadu, 641023.",
     siteLocation: "Podanur, Coimbatore",
     defaultInstrument: "OCEMS L-800",
+    instruments: [
+      { name: "OCEMS", model: "L - 800", serial: "IN2311 – 178A" }
+    ],
     archived: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -100,6 +103,9 @@ const defaultInitialCompanies = {
     addressLine4: "",
     siteLocation: "Saravanampatti, Coimbatore",
     defaultInstrument: "OCEMS L- 600",
+    instruments: [
+      { name: "OCEMS", model: "L - 600", serial: "IN2304 – 112B" }
+    ],
     archived: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -122,6 +128,9 @@ const defaultInitialCompanies = {
     addressLine4: "",
     siteLocation: "Mettupalayam Road, Coimbatore",
     defaultInstrument: "OCEMS L - 600",
+    instruments: [
+      { name: "OCEMS", model: "L - 600", serial: "IN2209 – 087C" }
+    ],
     archived: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -232,6 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputInstName = document.getElementById('input-inst-name');
   const inputInstModel = document.getElementById('input-inst-model');
   const inputSrNo = document.getElementById('input-sr-no');
+  const groupEditorInstPicker = document.getElementById('group-editor-inst-picker');
+  const selectCompanyInstrument = document.getElementById('select-company-instrument');
+  const badgeCompanyInstCount = document.getElementById('badge-company-inst-count');
+  let currentCompanyInstruments = [];
 
   const chkInstallation = document.getElementById('chk-installation');
   const chkWarranty = document.getElementById('chk-warranty');
@@ -829,6 +842,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createNewReport() {
+    if (selectCompanyAutofill) selectCompanyAutofill.value = '';
+    if (groupEditorInstPicker) groupEditorInstPicker.style.display = 'none';
+    if (badgeCompanyInstCount) badgeCompanyInstCount.style.display = 'none';
+    currentCompanyInstruments = [];
     loadFormData({
       reportNumber: generateSequentialReportNumber(),
       reportType: 'SERVICE REPORT',
@@ -1264,10 +1281,59 @@ Note: The required network connectivity is to be arranged from the customer side
   const btnCloseCompanyModal = document.getElementById('btn-close-company-modal');
   const btnCancelCompanyModal = document.getElementById('btn-cancel-company-modal');
   const btnAddNewCompany = document.getElementById('btn-add-new-company');
+  const compModalInstContainer = document.getElementById('comp-modal-inst-container');
+  const btnAddCompInst = document.getElementById('btn-add-comp-inst');
+
+  function addModalInstrumentRow(inst = { name: '', model: '', serial: '' }) {
+    if (!compModalInstContainer) return null;
+
+    const row = document.createElement('div');
+    row.className = 'comp-inst-row';
+    row.innerHTML = `
+      <div class="form-group">
+        <label>Instrument Name</label>
+        <input type="text" class="comp-inst-name" placeholder="e.g. OCEMS" value="${escapeHtml(inst.name || '')}">
+      </div>
+      <div class="form-group">
+        <label>Instrument Model</label>
+        <input type="text" class="comp-inst-model" placeholder="e.g. L - 800" value="${escapeHtml(inst.model || '')}">
+      </div>
+      <div class="form-group">
+        <label>Sr. No</label>
+        <input type="text" class="comp-inst-serial" placeholder="e.g. IN2311 – 178A" value="${escapeHtml(inst.serial || inst.srNo || '')}">
+      </div>
+      <button type="button" class="btn-remove-inst-row" title="Remove this instrument">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    `;
+
+    const removeBtn = row.querySelector('.btn-remove-inst-row');
+    removeBtn?.addEventListener('click', () => {
+      const allRows = compModalInstContainer.querySelectorAll('.comp-inst-row');
+      if (allRows.length > 1) {
+        row.remove();
+      } else {
+        // If it's the only row, clear its fields
+        row.querySelector('.comp-inst-name').value = '';
+        row.querySelector('.comp-inst-model').value = '';
+        row.querySelector('.comp-inst-serial').value = '';
+      }
+    });
+
+    compModalInstContainer.appendChild(row);
+    return row;
+  }
+
+  btnAddCompInst?.addEventListener('click', () => {
+    const newRow = addModalInstrumentRow();
+    const firstInput = newRow?.querySelector('.comp-inst-name');
+    firstInput?.focus();
+  });
 
   function openCompanyModal(companyId = null) {
     const titleEl = document.getElementById('modal-company-title');
     const idInput = document.getElementById('modal-company-id');
+    if (compModalInstContainer) compModalInstContainer.innerHTML = '';
 
     if (companyId && companiesData[companyId]) {
       const comp = companiesData[companyId];
@@ -1286,11 +1352,21 @@ Note: The required network connectivity is to be arranged from the customer side
       document.getElementById('comp-modal-addr3').value = comp.addressLine3 || '';
       document.getElementById('comp-modal-addr4').value = comp.addressLine4 || '';
       document.getElementById('comp-modal-location').value = comp.siteLocation || comp.locationUrl || '';
-      document.getElementById('comp-modal-inst').value = comp.defaultInstrument || '';
+
+      const instList = (Array.isArray(comp.instruments) && comp.instruments.length > 0)
+        ? comp.instruments
+        : (comp.defaultInstrument ? [{ name: comp.defaultInstrument, model: comp.defaultModel || '', serial: comp.defaultSerial || '' }] : []);
+
+      if (instList.length > 0) {
+        instList.forEach(inst => addModalInstrumentRow(inst));
+      } else {
+        addModalInstrumentRow();
+      }
     } else {
       titleEl.textContent = 'Add New Company';
       idInput.value = '';
       formCompanyModal.reset();
+      addModalInstrumentRow();
     }
 
     modalCompany.classList.add('active');
@@ -1299,6 +1375,7 @@ Note: The required network connectivity is to be arranged from the customer side
   function closeCompanyModal() {
     modalCompany.classList.remove('active');
     formCompanyModal.reset();
+    if (compModalInstContainer) compModalInstContainer.innerHTML = '';
   }
 
   btnAddNewCompany?.addEventListener('click', () => openCompanyModal(null));
@@ -1328,6 +1405,24 @@ Note: The required network connectivity is to be arranged from the customer side
 
     const companyId = idInput || (push(ref(db, 'customers')).key || `comp_${Date.now()}`);
 
+    // Gather dynamic instrument rows
+    const rows = compModalInstContainer?.querySelectorAll('.comp-inst-row') || [];
+    const instruments = [];
+    rows.forEach(r => {
+      const instName = r.querySelector('.comp-inst-name')?.value.trim() || '';
+      const instModel = r.querySelector('.comp-inst-model')?.value.trim() || '';
+      const instSerial = r.querySelector('.comp-inst-serial')?.value.trim() || '';
+      if (instName || instModel || instSerial) {
+        instruments.push({
+          name: instName,
+          model: instModel,
+          serial: instSerial
+        });
+      }
+    });
+
+    const defaultInst = instruments[0]?.name ? (instruments[0].name + (instruments[0].model ? ' ' + instruments[0].model : '')) : '';
+
     const payload = {
       id: companyId,
       companyName: name,
@@ -1351,7 +1446,10 @@ Note: The required network connectivity is to be arranged from the customer side
       addressLine4: document.getElementById('comp-modal-addr4').value.trim(),
       siteLocation: document.getElementById('comp-modal-location').value.trim(),
       locationUrl: document.getElementById('comp-modal-location').value.trim(),
-      defaultInstrument: document.getElementById('comp-modal-inst').value.trim(),
+      defaultInstrument: defaultInst,
+      defaultModel: instruments[0]?.model || '',
+      defaultSerial: instruments[0]?.serial || '',
+      instruments: instruments,
       archived: idInput && companiesData[idInput]?.archived ? true : false,
       updatedAt: new Date().toISOString()
     };
@@ -1472,12 +1570,67 @@ Note: The required network connectivity is to be arranged from the customer side
     inputMobile.value = comp.mobile || comp.phone || '';
     inputEmail.value = comp.email || '';
 
-    if (comp.defaultInstrument && (!inputInstName.value || inputInstName.value === 'OCEMS')) {
-      inputInstName.value = comp.defaultInstrument;
+    // Handle Instruments Autofill
+    let instList = [];
+    if (Array.isArray(comp.instruments) && comp.instruments.length > 0) {
+      instList = comp.instruments;
+    } else if (comp.defaultInstrument) {
+      instList = [{
+        name: comp.defaultInstrument,
+        model: comp.defaultModel || '',
+        serial: comp.defaultSerial || ''
+      }];
+    }
+
+    currentCompanyInstruments = instList;
+
+    if (instList.length > 0) {
+      if (badgeCompanyInstCount) {
+        badgeCompanyInstCount.style.display = 'inline-block';
+        badgeCompanyInstCount.textContent = `${instList.length} Instrument${instList.length > 1 ? 's' : ''}`;
+      }
+
+      if (selectCompanyInstrument) {
+        selectCompanyInstrument.innerHTML = instList.map((inst, idx) => {
+          const parts = [
+            inst.name || 'Instrument',
+            inst.model ? `Model: ${inst.model}` : '',
+            (inst.serial || inst.srNo) ? `Sr: ${inst.serial || inst.srNo}` : ''
+          ].filter(Boolean).join(' | ');
+          return `<option value="${idx}">${escapeHtml(parts)}</option>`;
+        }).join('');
+
+        if (instList.length > 1 && groupEditorInstPicker) {
+          groupEditorInstPicker.style.display = 'block';
+        } else if (groupEditorInstPicker) {
+          groupEditorInstPicker.style.display = 'none';
+        }
+      }
+
+      // Auto-fill the first instrument
+      const first = instList[0];
+      if (first.name) inputInstName.value = first.name;
+      if (first.model) inputInstModel.value = first.model;
+      if (first.serial || first.srNo) inputSrNo.value = first.serial || first.srNo;
+    } else {
+      if (badgeCompanyInstCount) badgeCompanyInstCount.style.display = 'none';
+      if (groupEditorInstPicker) groupEditorInstPicker.style.display = 'none';
     }
 
     updatePreview();
   }
+
+  selectCompanyInstrument?.addEventListener('change', (e) => {
+    const idx = parseInt(e.target.value, 10);
+    if (!isNaN(idx) && currentCompanyInstruments[idx]) {
+      const inst = currentCompanyInstruments[idx];
+      inputInstName.value = inst.name || '';
+      inputInstModel.value = inst.model || '';
+      inputSrNo.value = inst.serial || inst.srNo || '';
+      updatePreview();
+      showToast(`Selected instrument: ${inst.name || 'Instrument ' + (idx + 1)}`, 'info');
+    }
+  });
 
   function checkAndAutoRegisterCompanyFromReport(formData) {
     if (!formData.custName) return;
@@ -1504,6 +1657,13 @@ Note: The required network connectivity is to be arranged from the customer side
         addressLine4: formData.custAddr4 || '',
         siteLocation: '',
         defaultInstrument: formData.instName || '',
+        defaultModel: formData.instModel || '',
+        defaultSerial: formData.srNo || '',
+        instruments: (formData.instName || formData.instModel || formData.srNo) ? [{
+          name: formData.instName || '',
+          model: formData.instModel || '',
+          serial: formData.srNo || ''
+        }] : [],
         archived: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -1553,7 +1713,13 @@ Note: The required network connectivity is to be arranged from the customer side
         (c.email || '').toLowerCase().includes(searchVal) ||
         (c.mobile || c.phone || '').toLowerCase().includes(searchVal) ||
         (c.siteLocation || '').toLowerCase().includes(searchVal) ||
-        (c.address || c.addressLine1 || '').toLowerCase().includes(searchVal)
+        (c.address || c.addressLine1 || '').toLowerCase().includes(searchVal) ||
+        (c.defaultInstrument || '').toLowerCase().includes(searchVal) ||
+        (Array.isArray(c.instruments) && c.instruments.some(i => 
+          (i.name || '').toLowerCase().includes(searchVal) ||
+          (i.model || '').toLowerCase().includes(searchVal) ||
+          (i.serial || i.srNo || '').toLowerCase().includes(searchVal)
+        ))
       );
     }
 
@@ -1577,6 +1743,17 @@ Note: The required network connectivity is to be arranged from the customer side
         <td>
           <div style="font-weight: 700; color: #ffffff;">${escapeHtml(c.companyName)}</div>
           <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(c.siteLocation || 'Default Site')}</div>
+          ${Array.isArray(c.instruments) && c.instruments.length > 0 ? `
+            <div style="font-size: 0.72rem; color: #60a5fa; margin-top: 3px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+              <span>🔬</span>
+              <span>${escapeHtml(c.instruments.map(i => i.name + (i.model ? ' (' + i.model + ')' : '')).join(', '))}</span>
+            </div>
+          ` : (c.defaultInstrument ? `
+            <div style="font-size: 0.72rem; color: #60a5fa; margin-top: 3px; display: flex; align-items: center; gap: 4px;">
+              <span>🔬</span>
+              <span>${escapeHtml(c.defaultInstrument)}</span>
+            </div>
+          ` : '')}
         </td>
         <td>
           <div>${escapeHtml(c.contactPerson || c.customerName || '-')}</div>
@@ -1829,6 +2006,9 @@ Note: The required network connectivity is to be arranged from the customer side
               addressLine4: c.addressLine4 || '',
               siteLocation: c.locationUrl || c.siteLocation || '',
               defaultInstrument: (c.instruments && c.instruments[0]?.name) || c.defaultInstrument || '',
+              defaultModel: (c.instruments && c.instruments[0]?.model) || c.defaultModel || '',
+              defaultSerial: (c.instruments && (c.instruments[0]?.serial || c.instruments[0]?.srNo)) || c.defaultSerial || '',
+              instruments: Array.isArray(c.instruments) ? c.instruments : (c.instruments ? Object.values(c.instruments) : []),
               archived: !!c.archived,
               createdAt: c.createdAt || new Date().toISOString(),
               updatedAt: c.updatedAt || new Date().toISOString()
