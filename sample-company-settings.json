@@ -1,0 +1,20 @@
+{
+  "name": "Aadhav Intech",
+  "logo": "manuals/logo (2).ico",
+  "tax": "33AAAAA0000A1Z5",
+  "desc": "Industrial Automation & Environmental Monitoring Solutions",
+  "address": "123 Industrial Area, Tech Park",
+  "city": "Coimbatore",
+  "state": "Tamil Nadu",
+  "zip": "641001",
+  "country": "India",
+  "web": "https://aadhavintech.com",
+  "phone1": "+91 98765 43210",
+  "phone2": "+91 98765 43211",
+  "email1": "contact@aadhavintech.com",
+  "email2": "support@aadhavintech.com",
+  "_metadata": {
+    "app": "Instrument Library V3.0",
+    "exportedAt": "2026-10-19T09:15:00.000Z"
+  }
+}

@@ -11,15 +11,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     try {
         const snap = await get(ref(db, `instruments/${instId}`));
-        if(snap.exists()) {
-            const inst = snap.val();
-            
+        let inst = null;
+        if (snap.exists()) {
+            inst = snap.val();
+        } else {
+            const cached = localStorage.getItem('cached_instruments');
+            if (cached) {
+                const list = JSON.parse(cached);
+                inst = list[instId] || Object.values(list).find(i => i.id === instId);
+            }
+        }
+        if(inst) {
             // General
             document.getElementById('dTitle').textContent = `${inst.general?.name || 'Unnamed Instrument'}`;
             document.title = `${inst.general?.name} - Details`;
             
             document.getElementById('dSummaryManuf').textContent = inst.general?.manufacturer || '-';
-            document.getElementById('dSummaryType').textContent = inst.general?.type || '-';
+            document.getElementById('dSummaryType').textContent = inst.general?.inst_type || inst.general?.type || '-';
             document.getElementById('dSummaryCat').textContent = inst.general?.category || 'General';
             
             document.getElementById('dManuf').textContent = inst.general?.manufacturer || '-';

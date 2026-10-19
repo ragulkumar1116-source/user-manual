@@ -540,8 +540,21 @@
             return processedDocs;
         }
 
+        const cachedDocs = localStorage.getItem('cached_documents');
+        if (cachedDocs) {
+            try {
+                window.documents = processRecords(JSON.parse(cachedDocs));
+                renderDocs();
+            } catch(e) {}
+        }
+
         listenToDocuments((data) => {
-            window.documents = data ? processRecords(data) : [];
+            if (data) {
+                localStorage.setItem('cached_documents', JSON.stringify(data));
+                window.documents = processRecords(data);
+            } else if (!cachedDocs) {
+                window.documents = [];
+            }
             renderDocs();
         });
 

@@ -25,14 +25,29 @@ async function loadLibrary() {
         const snapshot = await get(ref(db, 'instruments'));
         if (snapshot.exists()) {
             allInstruments = Object.values(snapshot.val());
+            localStorage.setItem('cached_instruments', JSON.stringify(snapshot.val()));
             allInstruments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
             renderTable(allInstruments);
         } else {
-            allInstruments = [];
-            renderTable([]);
+            const cached = localStorage.getItem('cached_instruments');
+            if (cached) {
+                allInstruments = Object.values(JSON.parse(cached));
+                allInstruments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                renderTable(allInstruments);
+            } else {
+                allInstruments = [];
+                renderTable([]);
+            }
         }
     } catch (e) {
         console.error("Error loading library:", e);
+        const cached = localStorage.getItem('cached_instruments');
+        if (cached) {
+            allInstruments = Object.values(JSON.parse(cached));
+            allInstruments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            renderTable(allInstruments);
+            return;
+        }
         const tbody = document.getElementById('libraryTableBody');
         if (tbody) {
             tbody.innerHTML = '<tr><td colspan="10" class="text-center text-danger py-4"><i class="fa-solid fa-triangle-exclamation me-2"></i>Failed to load database.</td></tr>';

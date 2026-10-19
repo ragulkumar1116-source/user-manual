@@ -189,15 +189,27 @@
         let allInstruments = [];
 
         document.addEventListener("DOMContentLoaded", () => {
+            const cached = localStorage.getItem('cached_instruments');
+            if (cached) {
+                try {
+                    const cData = JSON.parse(cached);
+                    allInstruments = Array.isArray(cData) ? cData : Object.values(cData);
+                    populateCategories();
+                } catch(e) {}
+            }
+
             onValue(ref(db, 'instruments'), (snapshot) => {
-                allInstruments = [];
                 const data = snapshot.val();
                 if (data) {
+                    allInstruments = [];
                     Object.keys(data).forEach(key => {
                         allInstruments.push(data[key]);
                     });
+                    localStorage.setItem('cached_instruments', JSON.stringify(data));
+                    populateCategories();
                 }
-                populateCategories();
+            }, (err) => {
+                console.warn("RTDB sync error, relying on cache:", err);
             });
 
             document.getElementById('category').addEventListener('change', populateInstruments);

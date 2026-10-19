@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         let allInst = [];
         if (snap.exists()) {
             allInst = Object.values(snap.val());
+            localStorage.setItem('cached_instruments', JSON.stringify(snap.val()));
+        } else {
+            const cached = localStorage.getItem('cached_instruments');
+            if (cached) {
+                allInst = Object.values(JSON.parse(cached));
+            }
         }
         
         allInst.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
