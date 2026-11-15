@@ -1,0 +1,2267 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>ESP32 IoT Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #111827;
+}
+
+/* HEADER */
+
+header {
+    background: #111827;
+    color: white;
+    padding: 18px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.device-name {
+    font-size: 14px;
+    opacity: .8;
+}
+
+.status {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.online {
+    background: #16a34a;
+}
+
+.offline {
+    background: #dc2626;
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+/* CARDS */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.06);
+}
+
+.sensor-title {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.sensor-value {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.temperature {
+    color: #dc2626;
+}
+
+.humidity {
+    color: #2563eb;
+}
+
+/* GRID */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+/* CHART */
+
+.chart-container {
+    height: 350px;
+}
+
+/* OLED */
+
+.oled-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.oled-display {
+    background: #050505;
+    border: 4px solid #333;
+    border-radius: 12px;
+
+    min-height: 210px;
+
+    padding: 25px;
+
+    display: flex;
+    align-items: center;
+}
+
+.oled-screen {
+    color: #00ff66;
+
+    font-family: monospace;
+
+    font-size: 20px;
+
+    line-height: 1.5;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+    width: 100%;
+}
+
+.oled-label {
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+/* INPUT */
+
+textarea {
+    width: 100%;
+
+    height: 130px;
+
+    resize: vertical;
+
+    padding: 15px;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #2563eb;
+}
+
+/* BUTTON */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+button {
+    border: none;
+
+    padding: 12px 20px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+.send {
+    background: #2563eb;
+    color: white;
+}
+
+.clear {
+    background: #dc2626;
+    color: white;
+}
+
+.download {
+    background: #16a34a;
+    color: white;
+}
+
+/* ON OFF */
+
+.power-control {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #f8fafc;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 15px;
+}
+
+.power-text {
+    font-weight: bold;
+}
+
+.switch {
+    position: relative;
+
+    width: 62px;
+    height: 32px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+
+    cursor: pointer;
+
+    inset: 0;
+
+    background: #94a3b8;
+
+    border-radius: 30px;
+
+    transition: .3s;
+}
+
+.slider:before {
+    content: "";
+
+    position: absolute;
+
+    width: 24px;
+    height: 24px;
+
+    left: 4px;
+    top: 4px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: .3s;
+}
+
+input:checked + .slider {
+    background: #16a34a;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* INFO */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap: 15px;
+}
+
+.info-box {
+    background: #f8fafc;
+
+    padding: 15px;
+
+    border-radius: 10px;
+}
+
+.info-label {
+    color: #64748b;
+
+    font-size: 13px;
+
+    margin-bottom: 6px;
+}
+
+.info-value {
+    font-size: 17px;
+
+    font-weight: bold;
+}
+
+/* NOTIFICATION */
+
+#notification {
+    position: fixed;
+
+    bottom: 20px;
+    right: 20px;
+
+    background: #111827;
+
+    color: white;
+
+    padding: 14px 20px;
+
+    border-radius: 8px;
+
+    display: none;
+}
+
+/* MOBILE */
+
+@media(max-width:900px) {
+
+    .cards {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .oled-section {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:600px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =================================================
+     HEADER
+================================================= -->
+
+<header>
+
+    <h1>
+        ESP32 IoT Dashboard
+    </h1>
+
+    <div class="header-right">
+
+        <span class="device-name">
+            ESP32_001
+        </span>
+
+        <span
+            id="connectionStatus"
+            class="status offline">
+
+            OFFLINE
+
+        </span>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- =================================================
+     SENSOR CARDS
+================================================= -->
+
+<div class="cards">
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            Temperature
+        </div>
+
+        <div
+            class="sensor-value temperature">
+
+            <span id="temperature">
+                --
+            </span>
+
+            °C
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            Humidity
+        </div>
+
+        <div
+            class="sensor-value humidity">
+
+            <span id="humidity">
+                --
+            </span>
+
+            %
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            Device
+        </div>
+
+        <div class="sensor-value">
+            ESP32_001
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="sensor-title">
+            System Status
+        </div>
+
+        <div
+            id="systemStatus"
+            class="sensor-value">
+
+            --
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     GRAPH
+================================================= -->
+
+<div class="grid">
+
+    <div class="card full">
+
+        <h2>
+            Sensor Graph
+        </h2>
+
+        <br>
+
+        <div class="chart-container">
+
+            <canvas id="sensorChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     OLED CONTROL
+================================================= -->
+
+<div class="card">
+
+    <h2>
+        OLED Display Control
+    </h2>
+
+    <br>
+
+
+    <!-- ON/OFF -->
+
+    <div class="power-control">
+
+        <div>
+
+            <div class="power-text">
+                OLED Power
+            </div>
+
+            <small id="powerText">
+                OLED ON
+            </small>
+
+        </div>
+
+
+        <label class="switch">
+
+            <input
+                type="checkbox"
+                id="oledPower"
+                checked>
+
+            <span class="slider"></span>
+
+        </label>
+
+    </div>
+
+
+    <!-- OLED PREVIEW -->
+
+    <div class="oled-section">
+
+
+        <div>
+
+            <div class="oled-label">
+                OLED PREVIEW
+            </div>
+
+            <div class="oled-display">
+
+                <div
+                    class="oled-screen"
+                    id="oledPreview">
+
+                    Waiting...
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div>
+
+            <label>
+                Message to OLED
+            </label>
+
+            <br>
+
+            <textarea
+                id="message"
+                maxlength="100"
+                placeholder="Type message here..."></textarea>
+
+
+            <div style="
+                text-align:right;
+                color:#64748b;
+                font-size:13px;
+                margin-top:5px;">
+
+                <span id="charCount">
+                    0
+                </span>
+                / 100
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="send"
+                    onclick="sendMessage()">
+
+                    Send to OLED
+
+                </button>
+
+
+                <button
+                    class="clear"
+                    onclick="clearOLED()">
+
+                    Clear OLED
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<br>
+
+
+<!-- =================================================
+     INFORMATION
+================================================= -->
+
+<div class="card">
+
+    <h2>
+        System Information
+    </h2>
+
+    <br>
+
+
+    <div class="info-grid">
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                Last Sensor Update
+            </div>
+
+            <div
+                class="info-value"
+                id="lastUpdate">
+
+                --
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                Last OLED Update
+            </div>
+
+            <div
+                class="info-value"
+                id="lastOLEDUpdate">
+
+                --
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                OLED Status
+            </div>
+
+            <div
+                class="info-value"
+                id="oledStatus">
+
+                ON
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                Firebase
+            </div>
+
+            <div
+                class="info-value"
+                id="firebaseStatus">
+
+                Connecting...
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                Temperature
+            </div>
+
+            <div
+                class="info-value"
+                id="currentTemp">
+
+                --
+
+            </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <div class="info-label">
+                Humidity
+            </div>
+
+            <div
+                class="info-value"
+                id="currentHumidity">
+
+                --
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <br>
+
+
+    <button
+        class="download"
+        onclick="downloadCSV()">
+
+        Download Sensor CSV
+
+    </button>
+
+</div>
+
+
+</div>
+
+
+<footer style="
+    text-align:center;
+    padding:25px;
+    color:#64748b;">
+
+    ESP32 IoT Monitoring System
+
+</footer>
+
+
+<div id="notification">
+    Message sent
+</div>
+
+
+<!-- =================================================
+     FIREBASE
+================================================= -->
+
+<script type="module">
+
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    onValue,
+    set
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+// =====================================================
+// FIREBASE CONFIG
+// =====================================================
+
+const firebaseConfig = {
+
+    apiKey:
+        "YOUR_FIREBASE_API_KEY",
+
+    authDomain:
+        "hotel-city-park.firebaseapp.com",
+
+    databaseURL:
+        "https://hotel-city-park-default-rtdb.firebaseio.com",
+
+    projectId:
+        "hotel-city-park",
+
+    storageBucket:
+        "hotel-city-park.appspot.com",
+
+    messagingSenderId:
+        "YOUR_SENDER_ID",
+
+    appId:
+        "YOUR_APP_ID"
+
+};
+
+
+// =====================================================
+// FIREBASE INIT
+// =====================================================
+
+const app =
+    initializeApp(firebaseConfig);
+
+const database =
+    getDatabase(app);
+
+
+// =====================================================
+// PATHS
+// =====================================================
+
+const deviceRef =
+    ref(
+        database,
+        "devices/ESP32_001/sensor"
+    );
+
+
+const oledMessageRef =
+    ref(
+        database,
+        "devices/ESP32_001/oled_message"
+    );
+
+
+const oledPowerRef =
+    ref(
+        database,
+        "devices/ESP32_001/oled_power"
+    );
+
+
+// =====================================================
+// VARIABLES
+// =====================================================
+
+let sensorHistory = [];
+
+let temperatures = [];
+
+let humidities = [];
+
+let labels = [];
+
+
+// =====================================================
+// CHART
+// =====================================================
+
+const ctx =
+    document
+    .getElementById("sensorChart")
+    .getContext("2d");
+
+
+const sensorChart =
+    new Chart(
+        ctx,
+        {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+                        label:
+                            "Temperature °C",
+
+                        data:
+                            temperatures,
+
+                        borderWidth: 2,
+
+                        tension: .3,
+
+                        fill: false
+                    },
+
+                    {
+                        label:
+                            "Humidity %",
+
+                        data:
+                            humidities,
+
+                        borderWidth: 2,
+
+                        tension: .3,
+
+                        fill: false
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+                        beginAtZero: false
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+// =====================================================
+// SENSOR REAL-TIME
+// =====================================================
+
+onValue(
+    deviceRef,
+
+    (snapshot) => {
+
+        const data =
+            snapshot.val();
+
+
+        if (!data)
+        {
+            return;
+        }
+
+
+        // TEMPERATURE
+
+        if (
+            data.temperature !== undefined
+        )
+        {
+
+            const temp =
+                Number(
+                    data.temperature
+                );
+
+
+            document.getElementById(
+                "temperature"
+            ).textContent =
+                temp.toFixed(1);
+
+
+            document.getElementById(
+                "currentTemp"
+            ).textContent =
+                temp.toFixed(1) +
+                " °C";
+
+
+            temperatures.push(temp);
+
+        }
+
+
+        // HUMIDITY
+
+        if (
+            data.humidity !== undefined
+        )
+        {
+
+            const humidity =
+                Number(
+                    data.humidity
+                );
+
+
+            document.getElementById(
+                "humidity"
+            ).textContent =
+                humidity.toFixed(1);
+
+
+            document.getElementById(
+                "currentHumidity"
+            ).textContent =
+                humidity.toFixed(1) +
+                " %";
+
+
+            humidities.push(
+                humidity
+            );
+
+        }
+
+
+        // STATUS
+
+        const status =
+            data.status ||
+            "UNKNOWN";
+
+
+        document.getElementById(
+            "systemStatus"
+        ).textContent =
+            status;
+
+
+        if (
+            status === "ONLINE"
+        )
+        {
+
+            document.getElementById(
+                "connectionStatus"
+            ).textContent =
+                "ONLINE";
+
+
+            document.getElementById(
+                "connectionStatus"
+            ).className =
+                "status online";
+
+        }
+
+
+        // TIME
+
+        document.getElementById(
+            "lastUpdate"
+        ).textContent =
+            new Date()
+            .toLocaleTimeString();
+
+
+        labels.push(
+            new Date()
+            .toLocaleTimeString()
+        );
+
+
+        // Keep last 20
+
+        if (
+            temperatures.length > 20
+        )
+        {
+            temperatures.shift();
+        }
+
+
+        if (
+            humidities.length > 20
+        )
+        {
+            humidities.shift();
+        }
+
+
+        if (
+            labels.length > 20
+        )
+        {
+            labels.shift();
+        }
+
+
+        sensorChart.update();
+
+
+        // HISTORY
+
+        sensorHistory.push({
+
+            time:
+                new Date()
+                .toLocaleString(),
+
+            temperature:
+                data.temperature ?? "",
+
+            humidity:
+                data.humidity ?? "",
+
+            status:
+                data.status ?? ""
+
+        });
+
+
+        if (
+            sensorHistory.length > 500
+        )
+        {
+            sensorHistory.shift();
+        }
+
+
+        document.getElementById(
+            "firebaseStatus"
+        ).textContent =
+            "Connected";
+
+    },
+
+    (error) => {
+
+        console.error(error);
+
+        document.getElementById(
+            "firebaseStatus"
+        ).textContent =
+            "ERROR";
+
+    }
+
+);
+
+
+// =====================================================
+// OLED MESSAGE REAL-TIME
+// =====================================================
+
+onValue(
+    oledMessageRef,
+
+    (snapshot) => {
+
+        let message =
+            snapshot.val();
+
+
+        if (
+            message === null ||
+            message === undefined
+        )
+        {
+            message = "";
+        }
+
+
+        message =
+            String(message);
+
+
+        document.getElementById(
+            "oledPreview"
+        ).textContent =
+            message ||
+            "OLED cleared";
+
+
+        document.getElementById(
+            "message"
+        ).value =
+            message;
+
+
+        document.getElementById(
+            "charCount"
+        ).textContent =
+            message.length;
+
+
+        document.getElementById(
+            "lastOLEDUpdate"
+        ).textContent =
+            new Date()
+            .toLocaleTimeString();
+
+    }
+
+);
+
+
+// =====================================================
+// OLED POWER REAL-TIME
+// =====================================================
+
+onValue(
+    oledPowerRef,
+
+    (snapshot) => {
+
+        let power =
+            snapshot.val();
+
+
+        // Default ON
+
+        if (power === null)
+        {
+            power = true;
+        }
+
+
+        power =
+            Boolean(power);
+
+
+        const checkbox =
+            document.getElementById(
+                "oledPower"
+            );
+
+
+        checkbox.checked =
+            power;
+
+
+        updatePowerUI(power);
+
+    }
+
+);
+
+
+// =====================================================
+// ON/OFF SWITCH
+// =====================================================
+
+document
+.getElementById("oledPower")
+.addEventListener(
+    "change",
+    async function()
+    {
+
+        const power =
+            this.checked;
+
+
+        try
+        {
+
+            await set(
+                oledPowerRef,
+                power
+            );
+
+
+            updatePowerUI(
+                power
+            );
+
+
+            if (power)
+            {
+
+                showNotification(
+                    "OLED turned ON"
+                );
+
+            }
+            else
+            {
+
+                showNotification(
+                    "OLED turned OFF"
+                );
+
+            }
+
+        }
+        catch(error)
+        {
+
+            console.error(error);
+
+            showNotification(
+                "Firebase error"
+            );
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// POWER UI
+// =====================================================
+
+function updatePowerUI(power)
+{
+
+    document.getElementById(
+        "powerText"
+    ).textContent =
+        power
+        ? "OLED ON"
+        : "OLED OFF";
+
+
+    document.getElementById(
+        "oledStatus"
+    ).textContent =
+        power
+        ? "ON"
+        : "OFF";
+
+
+    if (!power)
+    {
+
+        document.getElementById(
+            "oledPreview"
+        ).textContent =
+            "OLED OFF";
+
+    }
+
+}
+
+
+// =====================================================
+// SEND MESSAGE
+// =====================================================
+
+window.sendMessage =
+async function()
+{
+
+    const message =
+        document
+        .getElementById("message")
+        .value
+        .trim();
+
+
+    if (
+        message.length === 0
+    )
+    {
+
+        showNotification(
+            "Type a message first"
+        );
+
+        return;
+
+    }
+
+
+    const power =
+        document
+        .getElementById("oledPower")
+        .checked;
+
+
+    if (!power)
+    {
+
+        showNotification(
+            "Turn OLED ON first"
+        );
+
+        return;
+
+    }
+
+
+    try
+    {
+
+        await set(
+            oledMessageRef,
+            message
+        );
+
+
+        showNotification(
+            "Message sent to OLED"
+        );
+
+    }
+    catch(error)
+    {
+
+        console.error(error);
+
+        showNotification(
+            "Firebase error"
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// CLEAR OLED
+// =====================================================
+
+window.clearOLED =
+async function()
+{
+
+    try
+    {
+
+        await set(
+            oledMessageRef,
+            ""
+        );
+
+
+        showNotification(
+            "OLED message cleared"
+        );
+
+    }
+    catch(error)
+    {
+
+        console.error(error);
+
+        showNotification(
+            "Firebase error"
+        );
+
+    }
+
+};
+
+
+// =====================================================
+// CHARACTER COUNT
+// =====================================================
+
+document
+.getElementById("message")
+.addEventListener(
+    "input",
+    function()
+    {
+
+        document.getElementById(
+            "charCount"
+        ).textContent =
+            this.value.length;
+
+    }
+);
+
+
+// =====================================================
+// NOTIFICATION
+// =====================================================
+
+function showNotification(text)
+{
+
+    const box =
+        document.getElementById(
+            "notification"
+        );
+
+
+    box.textContent =
+        text;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        function()
+        {
+
+            box.style.display =
+                "none";
+
+        },
+        2500
+    );
+
+}
+
+
+// =====================================================
+// DOWNLOAD CSV
+// =====================================================
+
+window.downloadCSV =
+function()
+{
+
+    if (
+        sensorHistory.length === 0
+    )
+    {
+
+        alert(
+            "No sensor data available"
+        );
+
+        return;
+
+    }
+
+
+    let csv =
+        "Time,Temperature,Humidity,Status\n";
+
+
+    sensorHistory.forEach(
+        row =>
+        {
+
+            csv +=
+                `"${row.time}",` +
+                `"${row.temperature}",` +
+                `"${row.humidity}",` +
+                `"${row.status}"\n`;
+
+        }
+    );
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        "ESP32_001_sensor_data.csv";
+
+
+    link.click();
+
+
+    URL.revokeObjectURL(url);
+
+};
+
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+c code
+
+
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <DHT.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// =====================================================
+// WIFI
+// =====================================================
+#define WIFI_SSID      "admin"
+#define WIFI_PASSWORD  "00000009"
+
+// =====================================================
+// FIREBASE
+// =====================================================
+const char* firebaseBaseURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001";
+
+// Sensor paths
+const char* sensorURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/sensor.json";
+
+// OLED message path
+const char* oledMessageURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/oled_message.json";
+
+// OLED ON/OFF path
+const char* oledPowerURL =
+"https://hotel-city-park-default-rtdb.firebaseio.com/devices/ESP32_001/oled_power.json";
+
+// =====================================================
+// DHT11
+// =====================================================
+#define DHT_PIN 4
+#define DHT_TYPE DHT11
+
+DHT dht(DHT_PIN, DHT_TYPE);
+
+// =====================================================
+// OLED SSD1306
+// =====================================================
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+
+#define OLED_SDA 21
+#define OLED_SCL 22
+
+Adafruit_SSD1306 display(
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+  &Wire,
+  OLED_RESET
+);
+
+// =====================================================
+// TIMER
+// =====================================================
+unsigned long previousMillis = 0;
+const unsigned long sensorInterval = 5000;
+
+unsigned long oledPreviousMillis = 0;
+const unsigned long oledInterval = 1000;
+
+// =====================================================
+// VARIABLES
+// =====================================================
+String lastOLEDMessage = "";
+
+bool oledPower = true;
+
+
+// =====================================================
+// SETUP
+// =====================================================
+void setup()
+{
+  Serial.begin(115200);
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.println("ESP32 DHT11 + OLED + Firebase");
+  Serial.println("================================");
+
+  // ---------------------------------------------------
+  // DHT
+  // ---------------------------------------------------
+  dht.begin();
+
+  // ---------------------------------------------------
+  // OLED
+  // ---------------------------------------------------
+  Wire.begin(OLED_SDA, OLED_SCL);
+
+  if (!display.begin(
+        SSD1306_SWITCHCAPVCC,
+        0x3C))
+  {
+    Serial.println("OLED ERROR!");
+
+    while (true)
+    {
+      delay(1000);
+    }
+  }
+
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+
+  display.setCursor(0, 0);
+  display.println("ESP32 Starting...");
+
+  display.display();
+
+  // ---------------------------------------------------
+  // WIFI
+  // ---------------------------------------------------
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  Serial.print("Connecting WiFi");
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+
+  Serial.println("WiFi Connected");
+
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+
+  // ---------------------------------------------------
+  // START SCREEN
+  // ---------------------------------------------------
+  display.clearDisplay();
+
+  display.setCursor(0, 0);
+  display.println("WiFi Connected");
+
+  display.setCursor(0, 15);
+  display.println("ESP32_001");
+
+  display.setCursor(0, 30);
+  display.println("Firebase Ready");
+
+  display.display();
+
+  delay(2000);
+
+  showOLEDMessage("Waiting...");
+}
+
+
+// =====================================================
+// LOOP
+// =====================================================
+void loop()
+{
+  // ---------------------------------------------------
+  // SENSOR
+  // ---------------------------------------------------
+  if (millis() - previousMillis >= sensorInterval)
+  {
+    previousMillis = millis();
+
+    sendSensorData();
+  }
+
+  // ---------------------------------------------------
+  // OLED CONTROL
+  // ---------------------------------------------------
+  if (millis() - oledPreviousMillis >= oledInterval)
+  {
+    oledPreviousMillis = millis();
+
+    readOLEDPower();
+
+    if (oledPower)
+    {
+      readOLEDMessage();
+    }
+  }
+}
+
+
+// =====================================================
+// SEND SENSOR DATA
+// =====================================================
+void sendSensorData()
+{
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  if (isnan(temperature) || isnan(humidity))
+  {
+    Serial.println("DHT11 ERROR");
+
+    return;
+  }
+
+  Serial.println();
+  Serial.println("-------------------------");
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" C");
+
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // ---------------------------------------------------
+  // WIFI CHECK
+  // ---------------------------------------------------
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("WiFi disconnected!");
+
+    return;
+  }
+
+  // ---------------------------------------------------
+  // SENSOR JSON
+  // ---------------------------------------------------
+  String json = "{";
+
+  json += "\"temperature\":";
+  json += String(temperature, 1);
+
+  json += ",\"humidity\":";
+  json += String(humidity, 1);
+
+  json += ",\"status\":\"ONLINE\"";
+
+  json += ",\"timestamp\":";
+  json += String(millis());
+
+  json += "}";
+
+  Serial.println("Sending Sensor Data:");
+
+  Serial.println(json);
+
+  // ---------------------------------------------------
+  // FIREBASE
+  // ---------------------------------------------------
+  HTTPClient http;
+
+  http.begin(sensorURL);
+
+  http.addHeader(
+    "Content-Type",
+    "application/json"
+  );
+
+  int httpCode = http.PUT(json);
+
+  Serial.print("HTTP Code: ");
+  Serial.println(httpCode);
+
+  if (httpCode > 0)
+  {
+    String response = http.getString();
+
+    Serial.println("Firebase Response:");
+    Serial.println(response);
+  }
+  else
+  {
+    Serial.print("HTTP Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+
+  Serial.println("-------------------------");
+}
+
+
+// =====================================================
+// READ OLED ON/OFF
+// =====================================================
+void readOLEDPower()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    return;
+  }
+
+  HTTPClient http;
+
+  http.begin(oledPowerURL);
+
+  int httpCode = http.GET();
+
+  if (httpCode > 0)
+  {
+    String value = http.getString();
+
+    Serial.print("OLED Power Firebase: ");
+    Serial.println(value);
+
+    bool newPower = true;
+
+    // Firebase REST boolean returns:
+    // true
+    // false
+
+    if (value == "false")
+    {
+      newPower = false;
+    }
+    else
+    {
+      newPower = true;
+    }
+
+    // -------------------------------------------------
+    // POWER CHANGED
+    // -------------------------------------------------
+    if (newPower != oledPower)
+    {
+      oledPower = newPower;
+
+      if (oledPower)
+      {
+        Serial.println("OLED ON");
+
+        display.ssd1306_command(
+          SSD1306_DISPLAYON
+        );
+
+        showOLEDMessage(lastOLEDMessage);
+      }
+      else
+      {
+        Serial.println("OLED OFF");
+
+        display.clearDisplay();
+
+        display.display();
+
+        display.ssd1306_command(
+          SSD1306_DISPLAYOFF
+        );
+      }
+    }
+  }
+  else
+  {
+    Serial.print("OLED Power Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+}
+
+
+// =====================================================
+// READ OLED MESSAGE
+// =====================================================
+void readOLEDMessage()
+{
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    return;
+  }
+
+  if (!oledPower)
+  {
+    return;
+  }
+
+  HTTPClient http;
+
+  http.begin(oledMessageURL);
+
+  int httpCode = http.GET();
+
+  if (httpCode > 0)
+  {
+    String message = http.getString();
+
+    Serial.print("OLED Message: ");
+    Serial.println(message);
+
+    // -------------------------------------------------
+    // Firebase returns:
+    // "HELLO ESP32"
+    // -------------------------------------------------
+
+    if (message == "null")
+    {
+      http.end();
+
+      return;
+    }
+
+    // Remove JSON quotes
+    if (
+      message.startsWith("\"") &&
+      message.endsWith("\"")
+    )
+    {
+      message =
+        message.substring(
+          1,
+          message.length() - 1
+        );
+    }
+
+    // Handle escaped characters
+    message.replace("\\\"", "\"");
+
+    message.replace("\\n", "\n");
+
+    // -------------------------------------------------
+    // Update OLED only if changed
+    // -------------------------------------------------
+    if (message != lastOLEDMessage)
+    {
+      lastOLEDMessage = message;
+
+      showOLEDMessage(message);
+    }
+  }
+  else
+  {
+    Serial.print("OLED Message Error: ");
+
+    Serial.println(
+      http.errorToString(httpCode)
+    );
+  }
+
+  http.end();
+}
+
+
+// =====================================================
+// SHOW MESSAGE
+// =====================================================
+void showOLEDMessage(String message)
+{
+  if (!oledPower)
+  {
+    return;
+  }
+
+  // Turn display ON
+  display.ssd1306_command(
+    SSD1306_DISPLAYON
+  );
+
+  display.clearDisplay();
+
+  display.setTextColor(
+    SSD1306_WHITE
+  );
+
+  // ---------------------------------------------------
+  // HEADER
+  // ---------------------------------------------------
+  display.setTextSize(1);
+
+  display.setCursor(0, 0);
+
+  display.println("ESP32_001");
+
+  display.drawLine(
+    0,
+    10,
+    127,
+    10,
+    SSD1306_WHITE
+  );
+
+  // ---------------------------------------------------
+  // MESSAGE
+  // ---------------------------------------------------
+  display.setTextSize(1);
+
+  int y = 16;
+
+  String line = "";
+
+  for (
+    int i = 0;
+    i < message.length();
+    i++
+  )
+  {
+    char c = message.charAt(i);
+
+    // New line
+    if (c == '\n')
+    {
+      display.setCursor(0, y);
+
+      display.println(line);
+
+      line = "";
+
+      y += 10;
+
+      if (y >= 64)
+      {
+        break;
+      }
+
+      continue;
+    }
+
+    line += c;
+
+    // 21 characters per line
+    if (line.length() >= 21)
+    {
+      display.setCursor(0, y);
+
+      display.println(line);
+
+      line = "";
+
+      y += 10;
+
+      if (y >= 64)
+      {
+        break;
+      }
+    }
+  }
+
+  // Remaining text
+  if (
+    line.length() > 0 &&
+    y < 64
+  )
+  {
+    display.setCursor(0, y);
+
+    display.println(line);
+  }
+
+  display.display();
+}
+
+
+
+
+
+```

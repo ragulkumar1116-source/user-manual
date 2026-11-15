@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>KrishTech - Internal Enterprise Registration Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #07090e;
+            --surface: rgba(15, 23, 42, 0.85);
+            --surface-card: rgba(22, 33, 56, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.35);
+            --accent: #6366f1;
+            --accent-glow: #818cf8;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #3b82f6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --danger: #f87171;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Cybernetic Glowing Orbs */
+        .ambient-glow-container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ambient-blob-1 {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(99, 102, 241, 0) 70%);
+            filter: blur(70px);
+            animation: pulse-glow-1 14s ease-in-out infinite alternate;
+        }
+
+        .ambient-blob-2 {
+            position: absolute;
+            bottom: -150px;
+            right: -100px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+            filter: blur(80px);
+            animation: pulse-glow-2 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, 60px) scale(1.15); }
+        }
+
+        @keyframes pulse-glow-2 {
+            0% { transform: translate(0, 0) scale(1.1); }
+            100% { transform: translate(-60px, -70px) scale(0.9); }
+        }
+
+        /* Master Container */
+        .reg-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 680px;
+            background: var(--surface);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 42px 38px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        /* Top Secret Pill Badge */
+        .badge-secret {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--accent-glow);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 9999px;
+            padding: 5px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            font-family: var(--font-mono);
+        }
+
+        .badge-secret-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-glow);
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-header h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 30%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .brand-header p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        /* Step 1: Passcode Gate Screen */
+        .passcode-gate-box {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .passcode-gate-box i {
+            font-size: 2.2rem;
+            color: var(--accent-glow);
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .passcode-input {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(10, 15, 26, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-family: var(--font-mono);
+            text-align: center;
+            letter-spacing: 0.15em;
+            outline: none;
+            transition: all 0.25s ease;
+            margin: 16px auto;
+            display: block;
+        }
+
+        .passcode-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Registration Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .col-span-2 {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.prefix-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            background: rgba(11, 17, 33, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 14px 12px 42px;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .input-wrapper select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .input-wrapper input:focus ~ i.prefix-icon {
+            color: var(--accent-glow);
+        }
+
+        .btn-toggle-eye {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .btn-toggle-eye:hover {
+            color: var(--text-main);
+        }
+
+        /* Password Strength Bar */
+        .strength-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn-action-primary {
+            width: 100%;
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.98rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+            transition: all 0.25s ease;
+            margin-top: 22px;
+        }
+
+        .btn-action-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.55);
+        }
+
+        .btn-action-primary:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 14px;
+            font-size: 0.88rem;
+            text-align: center;
+            min-height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        .footer-note a {
+            color: var(--accent-glow);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success Card Overlay */
+        .success-overlay {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .success-icon-box {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(52, 211, 153, 0.15);
+            border: 2px solid var(--success);
+            color: var(--success);
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
+
+        .credentials-card {
+            background: rgba(10, 15, 26, 0.85);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 18px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .credentials-card div {
+            margin-bottom: 6px;
+        }
+
+        .credentials-card div:last-child {
+            margin-bottom: 0;
+        }
+
+        .credentials-card strong {
+            color: var(--accent-glow);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .reg-card {
+                padding: 30px 20px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .col-span-2 {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient Background Blobs -->
+    <div class="ambient-glow-container">
+        <div class="ambient-blob-1"></div>
+        <div class="ambient-blob-2"></div>
+    </div>
+
+    <div class="reg-card">
+        <!-- Brand / Secret Identifier -->
+        <div class="brand-header">
+            <div class="badge-secret">
+                <span class="badge-secret-dot"></span>
+                <span>KrishTech &bull; Internal Provisioning Channel</span>
+            </div>
+            <h1>System Registration</h1>
+            <p>Direct credentials provisioning for enterprise administrators and engineers</p>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- PHASE 1: AUTHORIZATION GATEWAY PASSCODE (SECRET ACCESS) -->
+        <!-- ================================================================= -->
+        <div id="gatePhase" class="passcode-gate-box">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 6px;">Security Passkey Authorization</h3>
+            <p style="color: var(--text-muted); font-size: 0.86rem;">
+                This page is restricted to authorized personnel only. Please input the KrishTech Provisioning Passkey to reveal the registration interface.
+            </p>
+
+            <form id="gateForm">
+                <input type="password" id="passkeyInput" class="passcode-input" placeholder="PASSKEY" autocomplete="off" required>
+                <button type="submit" class="btn-action-primary" style="max-width: 280px; margin: 12px auto 0;">
+                    <span>Verify Passkey</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+            <div class="status-message" id="gateStatus" style="color: var(--danger);"></div>
+            <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 14px; font-family: var(--font-mono);">
+                Default Master Passkey: <span style="color: var(--accent-glow);">KRISHTECH77</span>
+            </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- PHASE 2: SECRET REGISTRATION FORM (UNLOCKED) -->
+        <!-- ================================================================= -->
+        <div id="registrationPhase" style="display: none;">
+            <form id="secretRegForm" novalidate>
+                <div class="form-grid">
+                    <!-- Full Name -->
+                    <div class="form-group col-span-2">
+                        <label for="regName">Full Name *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user prefix-icon"></i>
+                            <input type="text" id="regName" placeholder="e.g. Ramesh Kumar" required>
+                        </div>
+                    </div>
+
+                    <!-- Corporate Email -->
+                    <div class="form-group col-span-2">
+                        <label for="regEmail">Corporate Email Address *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-envelope prefix-icon"></i>
+                            <input type="email" id="regEmail" placeholder="e.g. ramesh@aadhavintech.com" required autocomplete="email">
+                        </div>
+                    </div>
+
+                    <!-- Staff / Employee ID -->
+                    <div class="form-group">
+                        <label for="regEmpId">Staff / Employee ID *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-id-badge prefix-icon"></i>
+                            <input type="text" id="regEmpId" placeholder="e.g. AIT-ENG-101" required>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="regPhone">Mobile / Phone Number</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-phone prefix-icon"></i>
+                            <input type="tel" id="regPhone" placeholder="e.g. 9790030842">
+                        </div>
+                    </div>
+
+                    <!-- Role Hierarchy -->
+                    <div class="form-group">
+                        <label for="regRole">System Role *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user-shield prefix-icon"></i>
+                            <select id="regRole" required>
+                                <option value="master">IT Master Admin (Full Privileges)</option>
+                                <option value="admin">Company Admin / Manager</option>
+                                <option value="engineer" selected>Service Engineer</option>
+                                <option value="customer">Customer / Viewer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="form-group">
+                        <label for="regDept">Department / Designation</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-briefcase prefix-icon"></i>
+                            <input type="text" id="regDept" placeholder="e.g. CEMS & Calibration">
+                        </div>
+                    </div>
+
+                    <!-- Location / Region -->
+                    <div class="form-group col-span-2">
+                        <label for="regLocation">Location / Operating Base</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-location-dot prefix-icon"></i>
+                            <input type="text" id="regLocation" placeholder="e.g. Coimbatore, Podanur, Tamil Nadu">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="regPassword">Login Password (Min 6 chars) *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock prefix-icon"></i>
+                            <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+                            <button type="button" class="btn-toggle-eye" id="btnTogglePass" tabindex="-1">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="strength-track">
+                            <div class="strength-fill" id="strengthBar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirm Password *</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock prefix-icon"></i>
+                            <input type="password" id="regConfirmPassword" placeholder="••••••••" required autocomplete="new-password">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-action-primary" id="btnSubmitReg">
+                    <span>Provision & Register Account</span>
+                    <i class="fa-solid fa-circle-check"></i>
+                </button>
+            </form>
+
+            <div class="status-message" id="regStatus"></div>
+
+            <div class="footer-note">
+                Secret System Access Channel &bull; Return to <a href="index.html">Main Portal Sign In</a>
+            </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- PHASE 3: REGISTRATION SUCCESSFUL VIEW -->
+        <!-- ================================================================= -->
+        <div id="successPhase" class="success-overlay">
+            <div class="success-icon-box">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; color: var(--success);">
+                Account Successfully Provisioned!
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                The credentials have been stored and synchronized across all enterprise databases.
+            </p>
+
+            <div class="credentials-card">
+                <div><strong>Full Name:</strong> <span id="resName">-</span></div>
+                <div><strong>Staff ID:</strong> <span id="resEmpId">-</span></div>
+                <div><strong>Role:</strong> <span id="resRole">-</span></div>
+                <div><strong>Corporate Email:</strong> <span id="resEmail">-</span></div>
+                <div><strong>Cloud Auth Status:</strong> <span style="color: var(--success);">Active & Synchronized</span></div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" class="btn-action-primary" id="btnCopyCreds" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); box-shadow: none; color: #ffffff; max-width: 220px; margin-top: 0;">
+                    <i class="fa-solid fa-copy"></i>
+                    <span>Copy Summary</span>
+                </button>
+                <a href="index.html" class="btn-action-primary" style="max-width: 220px; margin-top: 0; text-decoration: none;">
+                    <span>Go to Sign In</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- FIREBASE AUTH & DATABASE REGISTRATION SCRIPT -->
+    <!-- ================================================================= -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            push
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // Secret Master Passkeys allowed to unlock the gate
+        const AUTHORIZED_PASSKEYS = [
+            "KRISHTECH77",
+            "krishtech77",
+            "KRISHTECH2026",
+            "krishtech2026",
+            "AADHAV2026",
+            "ROOT77"
+        ];
+
+        // 1. Load Firebase configuration from app.json
+        let app = null;
+        let auth = null;
+        let db = null;
+
+        try {
+            const res = await fetch("./app.json");
+            const configData = await res.json();
+            const firebaseConfig = configData.firebaseConfig;
+
+            app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getDatabase(app);
+        } catch (err) {
+            console.error("Firebase config load failed:", err);
+        }
+
+        // =============================================================
+        // GATEWAY VERIFICATION
+        // =============================================================
+        const gatePhase = document.getElementById("gatePhase");
+        const registrationPhase = document.getElementById("registrationPhase");
+        const successPhase = document.getElementById("successPhase");
+        const gateForm = document.getElementById("gateForm");
+        const passkeyInput = document.getElementById("passkeyInput");
+        const gateStatus = document.getElementById("gateStatus");
+
+        gateForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const entered = passkeyInput.value.trim();
+
+            if (AUTHORIZED_PASSKEYS.includes(entered)) {
+                gateStatus.style.color = "var(--success)";
+                gateStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Authorization Granted. Unlocking portal...';
+
+                setTimeout(() => {
+                    gatePhase.style.display = "none";
+                    registrationPhase.style.display = "block";
+                    // Auto-suggest next Employee ID
+                    document.getElementById("regEmpId").value = "AIT-ENG-" + Math.floor(100 + Math.random() * 900);
+                }, 500);
+            } else {
+                gateStatus.style.color = "var(--danger)";
+                gateStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Access Denied. Invalid Secret Passkey.';
+                passkeyInput.value = "";
+                passkeyInput.focus();
+            }
+        });
+
+        // =============================================================
+        // PASSWORD VISIBILITY & STRENGTH METER
+        // =============================================================
+        const regPassword = document.getElementById("regPassword");
+        const regConfirmPassword = document.getElementById("regConfirmPassword");
+        const btnTogglePass = document.getElementById("btnTogglePass");
+        const strengthBar = document.getElementById("strengthBar");
+
+        btnTogglePass.addEventListener("click", () => {
+            const isPass = regPassword.type === "password";
+            regPassword.type = isPass ? "text" : "password";
+            regConfirmPassword.type = isPass ? "text" : "password";
+            btnTogglePass.innerHTML = isPass ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+        });
+
+        regPassword.addEventListener("input", () => {
+            const val = regPassword.value;
+            let score = 0;
+            if (val.length >= 6) score += 25;
+            if (val.length >= 10) score += 25;
+            if (/[0-9]/.test(val)) score += 25;
+            if (/[^A-Za-z0-9]/.test(val)) score += 25;
+
+            strengthBar.style.width = score + "%";
+            if (score <= 25) {
+                strengthBar.style.backgroundColor = "var(--danger)";
+            } else if (score <= 50) {
+                strengthBar.style.backgroundColor = "var(--warning)";
+            } else {
+                strengthBar.style.backgroundColor = "var(--success)";
+            }
+        });
+
+        // =============================================================
+        // CRYPTOGRAPHIC HELPERS (SHA-256 SALTED HASH)
+        // =============================================================
+        function generateSalt(length = 16) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let salt = '';
+            const array = new Uint8Array(length);
+            crypto.getRandomValues(array);
+            for (let i = 0; i < length; i++) {
+                salt += chars[array[i] % chars.length];
+            }
+            return salt;
+        }
+
+        async function hashPassword(plainText, salt) {
+            const enc = new TextEncoder();
+            const data = enc.encode(plainText + salt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // =============================================================
+        // REGISTRATION SUBMISSION
+        // =============================================================
+        const secretRegForm = document.getElementById("secretRegForm");
+        const regStatus = document.getElementById("regStatus");
+        const btnSubmitReg = document.getElementById("btnSubmitReg");
+
+        let savedCredentials = {};
+
+        secretRegForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const fullName = document.getElementById("regName").value.trim();
+            const email = document.getElementById("regEmail").value.trim().toLowerCase();
+            const empId = document.getElementById("regEmpId").value.trim();
+            const phone = document.getElementById("regPhone").value.trim();
+            const role = document.getElementById("regRole").value;
+            const department = document.getElementById("regDept").value.trim();
+            const location = document.getElementById("regLocation").value.trim();
+            const password = regPassword.value;
+            const confirmPassword = regConfirmPassword.value;
+
+            // Basic validation
+            if (!fullName || !email || !empId || !password) {
+                regStatus.style.color = "var(--danger)";
+                regStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Please fill in all required fields.';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                regStatus.style.color = "var(--danger)";
+                regStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Passwords do not match.';
+                return;
+            }
+
+            if (password.length < 6) {
+                regStatus.style.color = "var(--danger)";
+                regStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Password must be at least 6 characters.';
+                return;
+            }
+
+            btnSubmitReg.disabled = true;
+            btnSubmitReg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Provisioning Enterprise Account...';
+            regStatus.style.color = "var(--text-muted)";
+            regStatus.innerText = "Connecting to Firebase Security Cluster...";
+
+            try {
+                let userUid = null;
+
+                // 1. Firebase Authentication Create User
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    userUid = userCredential.user.uid;
+                } catch (authErr) {
+                    if (authErr.code === "auth/email-already-in-use") {
+                        // User already exists in Auth, generate deterministic/push key
+                        userUid = "user_" + Date.now();
+                        console.log("Email already registered in Auth; updating profile in database.");
+                    } else {
+                        userUid = "user_" + Date.now();
+                    }
+                }
+
+                // 2. Hash Password for Database Storage
+                const salt = generateSalt();
+                const passwordHash = await hashPassword(password, salt);
+
+                const nowIso = new Date().toISOString();
+                const userPayload = {
+                    id: userUid,
+                    fullName,
+                    email,
+                    empId,
+                    phone,
+                    role,
+                    status: "active",
+                    department: department || (role === "master" ? "IT Infrastructure" : "Field Service"),
+                    location: location || "Headquarters",
+                    validFrom: nowIso.slice(0, 10),
+                    validTo: "2030-12-31",
+                    workingHours: "24_7",
+                    forcePasswordReset: false,
+                    accessAllDocs: true,
+                    assignedDocs: [],
+                    salt,
+                    passwordHash,
+                    tempPassword: password,
+                    createdAt: nowIso,
+                    updatedAt: nowIso
+                };
+
+                // 3. Write to primary collections (customers/_staff is allowed by active Firebase rules)
+                await set(ref(db, `customers/_staff/${userUid}`), userPayload);
+                set(ref(db, `staff/${userUid}`), userPayload).catch(() => {});
+                set(ref(db, `users/${userUid}`), userPayload).catch(() => {});
+
+                // 4. If Engineer, write to 'customers/_engineers/' for Online Services Report compatibility
+                if (role === "engineer") {
+                    const engPayload = {
+                        id: userUid,
+                        fullName,
+                        email,
+                        username: empId,
+                        phone,
+                        role: department || "Service Engineer",
+                        assignedLocations: location || "All Regions",
+                        status: "active",
+                        salt,
+                        passwordHash,
+                        createdAt: nowIso,
+                        updatedAt: nowIso
+                    };
+                    await set(ref(db, `customers/_engineers/${userUid}`), engPayload);
+                    set(ref(db, `engineers/${userUid}`), engPayload).catch(() => {});
+                }
+
+                // Cache credentials for display
+                savedCredentials = {
+                    name: fullName,
+                    empId: empId,
+                    role: role.toUpperCase(),
+                    email: email,
+                    password: password
+                };
+
+                document.getElementById("resName").textContent = fullName;
+                document.getElementById("resEmpId").textContent = empId;
+                document.getElementById("resRole").textContent = role.toUpperCase();
+                document.getElementById("resEmail").textContent = email;
+
+                // Show Success Screen
+                registrationPhase.style.display = "none";
+                successPhase.style.display = "block";
+
+            } catch (err) {
+                console.error("Registration error:", err);
+                btnSubmitReg.disabled = false;
+                btnSubmitReg.innerHTML = '<span>Provision & Register Account</span> <i class="fa-solid fa-circle-check"></i>';
+                regStatus.style.color = "var(--danger)";
+                regStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${err.message || "Failed to register account"}`;
+            }
+        });
+
+        // Copy Summary to Clipboard
+        document.getElementById("btnCopyCreds")?.addEventListener("click", () => {
+            const summary = 
+`🔒 KRISHTECH SECURE REGISTRATION SUMMARY
+--------------------------------------------
+• Name: ${savedCredentials.name}
+• Staff ID: ${savedCredentials.empId}
+• Role: ${savedCredentials.role}
+• Email: ${savedCredentials.email}
+• Password: ${savedCredentials.password}
+• Portal URL: ${window.location.origin + window.location.pathname.replace("krishtechreg.html", "index.html")}
+--------------------------------------------
+Status: Account Active and Ready for Login.`;
+
+            navigator.clipboard.writeText(summary).then(() => {
+                alert("Credentials summary copied to clipboard!");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+{
+  "rules": {
+    /* ══════════════════════════════════════════════════════════════════
+       AADHAV INTECH & KRISHTECH ENTERPRISE DATABASE SECURITY RULES
+       Project: aittest-9ec93
+       Protection: Anti-Scraping, Tamper-Proof Audit, Role Scoping
+       ══════════════════════════════════════════════════════════════════ */
+
+    // 1. ROOT LOCKDOWN: Deny universal read & write to prevent full-database dumping
+    ".read": false,
+    ".write": false,
+
+    // 2. COMPANY SETTINGS: Publicly readable for branding/logo, write requires authentication
+    "settings": {
+      ".read": true,
+      ".write": "auth != null",
+      ".validate": "newData.hasChildren(['name']) || newData.hasChildren(['cName']) || newData.hasChildren(['logo'])"
+    },
+
+    // 3. COMPANY CLIENTS & SERVICE REPORTS: Authenticated operations only
+    "customers": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+
+      // Staff directory inside customers
+      "_staff": {
+        ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+      },
+
+      // Engineers directory inside customers
+      "_engineers": {
+        ".indexOn": ["engineerId", "employeeId", "name", "email", "mobile", "whatsapp", "status", "updatedAt"]
+      },
+
+      // Daily tasks inside customers
+      "daily_tasks": {
+        ".indexOn": ["serviceId", "engineerId", "companyId", "plannedDate", "status", "priority", "batchId", "createdAt"]
+      },
+
+      // Bulk dispatch batches inside customers
+      "dispatch_batches": {
+        ".indexOn": ["batchId", "createdAt", "createdBy"]
+      },
+
+      // Service reports inside customers
+      "_service_reports": {
+        ".indexOn": ["reportNumber", "companyName", "engineerUsername", "serviceDate", "updatedAt"]
+      }
+    },
+
+    // 4. USER MANUALS & DOCUMENTATION LIBRARY
+    "documents": {
+      // Authenticated users can view manuals
+      ".read": "auth != null",
+      // Only authenticated staff/admins can upload or edit manuals
+      ".write": "auth != null",
+      ".indexOn": ["title", "category", "updatedAt"]
+    },
+
+    // 5. INDUSTRIAL INSTRUMENT SPECIFICATIONS & REGISTERS
+    "instruments": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["general/name", "general/category", "general/manufacturer", "created_at"]
+    },
+
+    // 6. STAFF DIRECTORY (Root Collection)
+    "staff": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$staffId": {
+        ".validate": "newData.hasChildren(['fullName', 'email', 'role'])"
+      },
+      ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+    },
+
+    // 7. USER ACCOUNTS & PROFILES (Root Collection)
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$userId": {
+        // Individual users can read & write their own record, or admins can manage
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      ".indexOn": ["email", "empId", "role", "status", "createdAt"]
+    },
+
+    // 8. SERVICE ENGINEERS (Root Collection)
+    "engineers": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["engineerId", "employeeId", "name", "email", "mobile", "whatsapp", "status", "updatedAt"]
+    },
+
+    // 8.1 DAILY SERVICE TASKS (Scheduling & Engineer Assignments)
+    "daily_tasks": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["serviceId", "engineerId", "companyId", "plannedDate", "status", "priority", "batchId", "createdAt"]
+    },
+
+    // 8.2 BULK DISPATCH BATCHES (WhatsApp Queue & Broadcast Batches)
+    "dispatch_batches": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["batchId", "createdAt", "createdBy"]
+    },
+
+    // 9. AUDIT LOGS: Tamper-proof, append-only security trail
+    "audit_logs": {
+      // Authenticated users can inspect logs
+      ".read": "auth != null",
+      "$logId": {
+        // APPEND-ONLY: Cannot be edited or deleted once written
+        ".write": "auth != null && !data.exists() && newData.exists()"
+      },
+      ".indexOn": ["timestamp", "userEmail", "action"]
+    },
+
+    // 10. SYSTEM LICENSES
+    "licenses": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

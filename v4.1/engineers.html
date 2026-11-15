@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Engineer Management - Aadhav Intech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .eng-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--ent-accent-light);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--ent-accent);
+            border: 2px solid var(--ent-border);
+            flex-shrink: 0;
+        }
+        .eng-avatar-placeholder {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+        .cursor-pointer { cursor: pointer; }
+        .sens-mask-btn {
+            background: none;
+            border: none;
+            padding: 0 4px;
+            color: var(--ent-text-muted);
+            cursor: pointer;
+        }
+        .sens-mask-btn:hover {
+            color: var(--ent-accent);
+        }
+
+        /* Printable Profile Layout */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .print-profile-card {
+                border: 2px solid #0f172a !important;
+                padding: 24px !important;
+                border-radius: 8px !important;
+                page-break-inside: avoid;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="companies.html" class="list-group-item"><i class="fa-solid fa-building-user"></i> Company Management</a>
+                <a href="engineers.html" class="list-group-item active"><i class="fa-solid fa-user-gear"></i> Engineer Management</a>
+                <a href="dispatch.html" class="list-group-item"><i class="fa-solid fa-calendar-days"></i> Daily Service Scheduling</a>
+                <a href="engineer-portal.html" class="list-group-item"><i class="fa-solid fa-clipboard-check"></i> Field Engineer Portal</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="staff.html" class="list-group-item"><i class="fa-solid fa-users-gear"></i> Company Staff</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-user-gear text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Site Engineer Directory</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="page-title"><i class="fa-solid fa-id-card-clip text-primary me-2"></i>Site Engineer Management</h2>
+                        <p class="page-subtitle">Manage individual field service engineer profiles, credentials, insurance, and active status</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="dispatch.html" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-calendar-days me-1"></i> Daily Service Scheduling
+                        </a>
+                        <button class="btn btn-primary" id="btnOpenAddEngineer">
+                            <i class="fa-solid fa-user-plus me-1"></i> Add Engineer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="row g-3 mb-4" id="engineerStatsRow">
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Engineers</div>
+                                    <h3 class="fw-bold mb-0 mt-1" id="statTotalEngineers">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper bg-primary-subtle text-primary p-3 rounded-circle">
+                                    <i class="fa-solid fa-users-line fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Active On-Field</div>
+                                    <h3 class="fw-bold text-success mb-0 mt-1" id="statActiveEngineers">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper bg-success-subtle text-success p-3 rounded-circle">
+                                    <i class="fa-solid fa-user-check fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Inactive / On Leave</div>
+                                    <h3 class="fw-bold text-secondary mb-0 mt-1" id="statInactiveEngineers">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper bg-secondary-subtle text-secondary p-3 rounded-circle">
+                                    <i class="fa-solid fa-user-slash fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Departments</div>
+                                    <h3 class="fw-bold text-info mb-0 mt-1" id="statDepartments">0</h3>
+                                </div>
+                                <div class="stat-icon-wrapper bg-info-subtle text-info p-3 rounded-circle">
+                                    <i class="fa-solid fa-network-wired fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Toolbar -->
+                <div class="card p-3 mb-4">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="searchEngineerInput" placeholder="Search by name, ID, phone, designation, or department...">
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="filterStatus">
+                                <option value="all">All Statuses</option>
+                                <option value="active" selected>Active Engineers Only</option>
+                                <option value="inactive">Inactive / Deactivated</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="filterDepartment">
+                                <option value="all">All Departments</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-1 d-flex justify-content-end">
+                            <button class="btn btn-outline-secondary w-100" id="btnResetFilters" title="Reset Filters">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engineers Table Card -->
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0 fw-bold">Site Engineer Roster</h5>
+                            <span class="badge badge-soft-primary" id="badgeTotalCount">0 records</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" id="btnRefreshList">
+                                <i class="fa-solid fa-rotate-right me-1"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="engineersTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50px;">Photo</th>
+                                    <th>Engineer Details</th>
+                                    <th>Employee ID & Dept</th>
+                                    <th>Contact Numbers</th>
+                                    <th>Sensitive ID Status</th>
+                                    <th>Joining Date</th>
+                                    <th>Status</th>
+                                    <th class="text-end" style="width: 175px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="engineersTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center py-5 text-muted">
+                                        <div class="spinner-border text-primary" role="status"></div>
+                                        <div class="mt-2">Loading engineers from Firebase...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 1: ADD / EDIT ENGINEER                                              -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalEngineerForm" tabindex="-1" aria-labelledby="modalEngineerFormTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form class="modal-content" id="formEngineer" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalEngineerFormTitle">
+                        <i class="fa-solid fa-user-plus text-primary me-2"></i>Add Site Engineer
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editEngineerKey" value="">
+
+                        <!-- Section 1: Identification & Core Details -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                            <i class="fa-solid fa-id-badge me-1"></i> 1. Identification & Profile
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Engineer ID <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="inputEngId" required readonly placeholder="Auto-generated">
+                                    <button class="btn btn-outline-secondary" type="button" id="btnRegenEngId" title="Generate New ID">
+                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text small">Unique system identifier</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="inputEngName" required placeholder="e.g. Rahul Krish">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Employee ID <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="inputEngEmpId" required placeholder="e.g. AIT-EMP-101">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Department <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="inputEngDept" list="deptList" required placeholder="e.g. Service & Instrumentation">
+                                <datalist id="deptList">
+                                    <option value="Service & Instrumentation">
+                                    <option value="OCEMS & Environmental">
+                                    <option value="Calibration & AMC">
+                                    <option value="Site Commissioning">
+                                    <option value="Automation & SCADA">
+                                    <option value="Field Support">
+                                </datalist>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Designation <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="inputEngDesignation" list="desigList" required placeholder="e.g. Site Service Engineer">
+                                <datalist id="desigList">
+                                    <option value="Site Service Engineer">
+                                    <option value="Senior Field Engineer">
+                                    <option value="Lead Commissioning Engineer">
+                                    <option value="Calibration Specialist">
+                                    <option value="Service Technician">
+                                    <option value="Field Service Manager">
+                                </datalist>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Account Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="inputEngStatus" required>
+                                    <option value="active" selected>Active</option>
+                                    <option value="inactive">Inactive / On Leave</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Contact & Communications -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                            <i class="fa-solid fa-address-book me-1"></i> 2. Contact & Communications
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Mobile Number <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="tel" class="form-control" id="inputEngMobile" required placeholder="e.g. 9790030842">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label class="form-label small fw-semibold mb-0">WhatsApp Number <span class="text-danger">*</span></label>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input class="form-check-input" type="checkbox" id="chkSameAsMobile">
+                                        <label class="form-check-label small" for="chkSameAsMobile">Same</label>
+                                    </div>
+                                </div>
+                                <div class="input-group mt-1">
+                                    <span class="input-group-text text-success"><i class="fa-brands fa-whatsapp"></i></span>
+                                    <input type="tel" class="form-control" id="inputEngWhatsapp" required placeholder="e.g. 9790030842">
+                                </div>
+                                <div class="form-text small">Used for daily service scheduling & WhatsApp dispatch</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Gmail / Email ID <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="inputEngEmail" required placeholder="e.g. rahul.ait@gmail.com">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Date of Birth</label>
+                                <input type="date" class="form-control" id="inputEngDob">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Joining Date</label>
+                                <input type="date" class="form-control" id="inputEngJoiningDate">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Residential / Base City</label>
+                                <input type="text" class="form-control" id="inputEngCity" placeholder="e.g. Coimbatore">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Complete Residential Address</label>
+                                <textarea class="form-control" id="inputEngAddress" rows="2" placeholder="Full residential street address, pin code, district..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Sensitive KYC Identifiers (Restricted & Masked) -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-shield-halved me-1"></i> 3. Sensitive KYC Identifiers (Security Controlled)</span>
+                            <span class="badge badge-soft-warning"><i class="fa-solid fa-lock me-1"></i> Encrypted / Masked</span>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Aadhaar Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-fingerprint"></i></span>
+                                    <input type="text" class="form-control" id="inputEngAadhaar" placeholder="12-digit Aadhaar (e.g. 7654 3210 9876)">
+                                </div>
+                                <div class="form-text small">Display is masked as XXXX-XXXX-1234 for privacy.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">PAN Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-credit-card"></i></span>
+                                    <input type="text" class="form-control text-uppercase" id="inputEngPan" placeholder="10-digit PAN (e.g. ABCDE1234F)" maxlength="10">
+                                </div>
+                                <div class="form-text small">Display is masked as ABCDE****F for privacy.</div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Document & Photo URL Links (Direct Preview - No Storage Upload) -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                            <i class="fa-solid fa-images me-1"></i> 4. Image & Document URLs (Cloud Storage Free)
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label small fw-semibold">Profile Photo URL</label>
+                                <input type="url" class="form-control" id="inputEngPhotoUrl" placeholder="https://example.com/photos/rahul.jpg">
+                                <div class="form-text small">Direct HTTPS image URL (Preview loads live on the right)</div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <label class="form-label small fw-semibold d-block">Photo Preview</label>
+                                <img src="manuals/logo (2).ico" id="previewEngPhoto" class="img-url-preview shadow-sm" alt="Profile Preview" onerror="this.src='manuals/logo (2).ico'">
+                            </div>
+
+                            <div class="col-md-8">
+                                <label class="form-label small fw-semibold">Group Insurance Document / Photo URL</label>
+                                <input type="url" class="form-control" id="inputEngInsuranceUrl" placeholder="https://example.com/insurance/policy-card.jpg">
+                                <div class="form-text small">Direct HTTPS image/document URL</div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <label class="form-label small fw-semibold d-block">Insurance Preview</label>
+                                <img src="manuals/logo (2).ico" id="previewEngInsurance" class="img-url-preview shadow-sm" alt="Insurance Preview" onerror="this.src='manuals/logo (2).ico'">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Other Document URLs</label>
+                                <textarea class="form-control" id="inputEngOtherDocs" rows="2" placeholder="Enter other certificate/driving license URLs (separated by new lines or commas)"></textarea>
+                                <div class="form-text small">Links to technical certificates, driver's license, or safety passes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveEngineer">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Engineer Profile
+                        </button>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 2: VIEW & PRINT ENGINEER PROFILE                                    -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalViewEngineer" tabindex="-1" aria-labelledby="modalViewEngineerTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header d-print-none">
+                    <h5 class="modal-title fw-bold" id="modalViewEngineerTitle">
+                        <i class="fa-solid fa-address-card text-primary me-2"></i>Engineer Profile
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="btnPrintProfile">
+                            <i class="fa-solid fa-print me-1"></i> Print Profile
+                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-4" id="printProfileArea">
+                    <!-- Printable Profile Layout -->
+                    <div class="print-profile-card">
+                        <!-- Header / Branding -->
+                        <div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="manuals/logo (2).ico" alt="Logo" style="width: 48px; height: 48px; object-fit: contain;">
+                                <div>
+                                    <h4 class="fw-bold mb-0 text-primary">AADHAV INTECH</h4>
+                                    <div class="small text-muted fw-semibold">Site Service Engineer Operational Dossier</div>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge" id="viewStatusBadge">Active</span>
+                                <div class="small text-muted mt-1" id="viewGeneratedDate">Generated: 18 Nov 2026</div>
+                            </div>
+                        </div>
+
+                        <!-- Top Profile Info & Photo -->
+                        <div class="row align-items-center mb-4">
+                            <div class="col-auto">
+                                <img src="" id="viewProfilePhoto" class="img-url-preview-lg shadow-sm" alt="Profile" onerror="this.src='manuals/logo (2).ico'">
+                            </div>
+                            <div class="col">
+                                <h3 class="fw-bold mb-1" id="viewName">Engineer Name</h3>
+                                <div class="text-primary fw-semibold fs-6 mb-2" id="viewDesignation">Site Service Engineer</div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-light text-dark border"><i class="fa-solid fa-id-badge me-1"></i> ID: <strong id="viewEngId">-</strong></span>
+                                    <span class="badge bg-light text-dark border"><i class="fa-solid fa-hashtag me-1"></i> Emp ID: <strong id="viewEmpId">-</strong></span>
+                                    <span class="badge bg-light text-dark border"><i class="fa-solid fa-building me-1"></i> Dept: <strong id="viewDept">-</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact & Personal Details Grid -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="card p-3 h-100 bg-light border-0">
+                                    <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-phone me-1"></i> Contact Details</h6>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">Mobile:</span>
+                                        <strong id="viewMobile">-</strong>
+                                    </div>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">WhatsApp:</span>
+                                        <strong class="text-success" id="viewWhatsapp">-</strong>
+                                    </div>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">Gmail / Email:</span>
+                                        <strong id="viewEmail">-</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted small">Base City:</span>
+                                        <strong id="viewCity">-</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card p-3 h-100 bg-light border-0">
+                                    <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-calendar me-1"></i> Service & Dates</h6>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">Date of Birth:</span>
+                                        <strong id="viewDob">-</strong>
+                                    </div>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">Joining Date:</span>
+                                        <strong id="viewJoiningDate">-</strong>
+                                    </div>
+                                    <div class="mb-2 d-flex justify-content-between">
+                                        <span class="text-muted small">Record Created:</span>
+                                        <span id="viewCreatedAt" class="small">-</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted small">Last Updated:</span>
+                                        <span id="viewUpdatedAt" class="small">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card p-3 bg-light border-0">
+                                    <h6 class="fw-bold mb-2 text-secondary"><i class="fa-solid fa-location-dot me-1"></i> Residential Address</h6>
+                                    <div id="viewAddress" class="text-dark">-</div>
+                                </div>
+                            </div>
+
+                            <!-- Sensitive KYC section with toggle mask -->
+                            <div class="col-12">
+                                <div class="card p-3 bg-light border-0">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0 text-secondary"><i class="fa-solid fa-shield-halved me-1"></i> Identity & Sensitive Numbers (Masked)</h6>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-0 d-print-none" id="btnToggleMaskView">
+                                            <i class="fa-solid fa-eye me-1"></i> <span id="toggleMaskText">Unmask Values</span>
+                                        </button>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <div class="p-2 border rounded bg-white d-flex justify-content-between align-items-center">
+                                                <span class="text-muted small">Aadhaar:</span>
+                                                <span class="masked-sensitive-value fw-bold text-dark" id="viewAadhaar">XXXX-XXXX-XXXX</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="p-2 border rounded bg-white d-flex justify-content-between align-items-center">
+                                                <span class="text-muted small">PAN:</span>
+                                                <span class="masked-sensitive-value fw-bold text-dark" id="viewPan">ABCDE****F</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Insurance & Documentation links -->
+                            <div class="col-12">
+                                <div class="card p-3 bg-light border-0">
+                                    <h6 class="fw-bold mb-3 text-secondary"><i class="fa-solid fa-file-shield me-1"></i> Insurance & Verified Documents</h6>
+                                    <div class="row align-items-center g-3">
+                                        <div class="col-auto">
+                                            <img src="" id="viewInsurancePhoto" class="img-url-preview shadow-sm" alt="Insurance Card" onerror="this.src='manuals/logo (2).ico'">
+                                        </div>
+                                        <div class="col">
+                                            <div class="fw-semibold">Group Term / Medical Insurance</div>
+                                            <div class="small text-muted mb-2">Policy document preview from linked cloud URL</div>
+                                            <a href="#" id="viewInsuranceLink" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open Full Document
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 pt-3 border-top" id="viewOtherDocsContainer">
+                                        <div class="small fw-semibold text-muted mb-1">Other Attached Documents:</div>
+                                        <div id="viewOtherDocsList" class="d-flex flex-wrap gap-2">
+                                            <span class="text-muted small">None attached</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Assigned Company Responsibilities -->
+                            <div class="col-12">
+                                <div class="card p-3 bg-light border-0">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0 text-secondary"><i class="fa-solid fa-building me-1"></i> Dedicated Company Responsibilities</h6>
+                                        <a href="companies.html" class="btn btn-sm btn-outline-primary py-0 d-print-none" title="Manage territory allocations">
+                                            <i class="fa-solid fa-gear me-1"></i> Manage Allocations
+                                        </a>
+                                    </div>
+                                    <div id="viewAssignedCompaniesContainer">
+                                        <span class="text-muted small">No dedicated companies currently mapped to this engineer.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Signatures & Official Stamp (For Print) -->
+                        <div class="pt-4 mt-4 border-top d-flex justify-content-between align-items-end">
+                            <div>
+                                <div class="small text-muted">Aadhav Intech Field Operations</div>
+                                <div class="small fw-bold">Authorized Signatory / Administrator</div>
+                            </div>
+                            <div class="text-center">
+                                <div style="height: 40px; border-bottom: 1px dashed #94a3b8; width: 160px; margin-bottom: 4px;"></div>
+                                <div class="small text-muted">Engineer Signature</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-print-none d-flex justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-outline-danger" id="btnDeleteFromView">
+                            <i class="fa-solid fa-trash-can me-1"></i> Delete Engineer
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnEditFromView">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Action completed successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/engineers.js"></script>
+</body>
+</html>

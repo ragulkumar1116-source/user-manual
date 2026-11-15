@@ -1,0 +1,103 @@
+{
+  "rules": {
+    /* ══════════════════════════════════════════════════════════════════
+       HYBRID PRODUCTION RULES (Safe for Both Portal & Unauthenticated Readers)
+       - All modifications, staff, and user data require authentication.
+       - Manuals and instruments can be read safely.
+       - Root dumping is strictly blocked.
+       ══════════════════════════════════════════════════════════════════ */
+
+    ".read": false,
+    ".write": false,
+
+    "settings": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+
+    "documents": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["title", "category", "updatedAt"]
+    },
+
+    "instruments": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["general/name", "general/category", "general/manufacturer", "created_at"]
+    },
+
+    "customers": {
+      ".read": true,
+      ".write": "auth != null",
+      "_staff": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+      },
+      "_engineers": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["engineerId", "employeeId", "name", "email", "mobile", "whatsapp", "status", "updatedAt"]
+      },
+      "daily_tasks": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["serviceId", "engineerId", "companyId", "plannedDate", "status", "priority", "batchId", "createdAt"]
+      },
+      "dispatch_batches": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["batchId", "createdAt", "createdBy"]
+      },
+      "_service_reports": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["reportNumber", "companyName", "engineerUsername", "serviceDate", "updatedAt"]
+      }
+    },
+
+    "staff": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+    },
+
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["email", "empId", "role", "status", "createdAt"]
+    },
+
+    "engineers": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["engineerId", "employeeId", "name", "email", "mobile", "whatsapp", "status", "updatedAt"]
+    },
+
+    "daily_tasks": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["serviceId", "engineerId", "companyId", "plannedDate", "status", "priority", "batchId", "createdAt"]
+    },
+
+    "dispatch_batches": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["batchId", "createdAt", "createdBy"]
+    },
+
+    "audit_logs": {
+      ".read": "auth != null",
+      "$logId": {
+        ".write": "auth != null && !data.exists() && newData.exists()"
+      },
+      ".indexOn": ["timestamp", "userEmail", "action"]
+    },
+
+    "licenses": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}

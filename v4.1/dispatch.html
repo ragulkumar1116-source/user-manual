@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Daily Service Scheduling - Aadhav Intech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .assignment-stepper-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--ent-accent);
+            color: #ffffff;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .inst-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--ent-bg);
+            border: 1px solid var(--ent-border);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .inst-chip.selected {
+            background: var(--ent-accent-light);
+            border-color: var(--ent-accent);
+            color: var(--ent-accent);
+            font-weight: 600;
+        }
+        .cursor-pointer { cursor: pointer; }
+        .queue-step-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .queue-step-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .queue-step-badge.sent {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .queue-step-badge.skipped {
+            background: rgba(100, 116, 139, 0.15);
+            color: #64748b;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="companies.html" class="list-group-item"><i class="fa-solid fa-building-user"></i> Company Management</a>
+                <a href="dispatch.html" class="list-group-item active"><i class="fa-solid fa-calendar-days"></i> Daily Service Scheduling</a>
+                <a href="engineers.html" class="list-group-item"><i class="fa-solid fa-user-gear"></i> Engineer Management</a>
+                <a href="engineer-portal.html" class="list-group-item"><i class="fa-solid fa-clipboard-check"></i> Field Engineer Portal</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="staff.html" class="list-group-item"><i class="fa-solid fa-users-gear"></i> Company Staff</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Daily Service Scheduling</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <!-- Page Header with Bulk Submit Button -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="page-title"><i class="fa-solid fa-calendar-days text-primary me-2"></i>Daily Service Scheduling</h2>
+                        <p class="page-subtitle">Schedule multiple companies, assign site engineers, and bulk-dispatch via interactive WhatsApp queue</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-outline-secondary" id="btnLoadDemoAssignments" title="Load Global Calcium, Adithya Tech Park, etc.">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Load Example Plan
+                        </button>
+                        <button class="btn btn-outline-danger" id="btnClearAllAssignments">
+                            <i class="fa-solid fa-trash-can me-1"></i> Clear All
+                        </button>
+                        <button class="btn btn-primary" id="btnAddCompanyBtn">
+                            <i class="fa-solid fa-plus-circle me-1"></i> Add Company
+                        </button>
+                        <!-- Main Submit Button (Highlight) -->
+                        <button class="btn btn-success fw-bold px-3 shadow" id="btnBulkSubmitAndDispatch" style="background-color: #25d366; border-color: #20ba5a;">
+                            <i class="fa-brands fa-whatsapp fa-lg me-1"></i> SUBMIT ALL & DISPATCH WHATSAPP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Metrics Summary Dashboard (Section 8) -->
+                <div class="row g-3 mb-4" id="dispatchDashboardRow">
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Companies Selected</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-primary" id="statSelectedCompanies">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Engineers Assigned</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-info" id="statAssignedEngineers">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Service Tasks</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-dark" id="statTotalAssignments">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">High / Urgent Priority</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-danger" id="statHighPriority">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">WhatsApp Pending</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-warning" id="statPendingMessages">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Messages Sent</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-success" id="statSentMessages">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignment Cards Container (Multi-company Scheduling Section) -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-list-check text-primary me-2"></i>Prepared Service Assignments</h5>
+                        <span class="badge badge-soft-primary" id="badgeAssignmentsCount">0 Active</span>
+                    </div>
+                    <div class="small text-muted">
+                        Every company assignment is saved together with independent engineer and work instructions.
+                    </div>
+                </div>
+
+                <div id="assignmentsContainer" class="mb-4">
+                    <!-- Populated dynamically -->
+                    <div class="card p-5 text-center text-muted border-dashed" id="emptyStatePlaceholder">
+                        <i class="fa-solid fa-building-circle-check fa-3x mb-3 text-secondary opacity-50"></i>
+                        <h5>No Companies Scheduled In This Session</h5>
+                        <p class="small text-muted mb-3">Prepare multiple company visits by clicking <strong>"Add Company"</strong> or click <strong>"Load Example Plan"</strong> to auto-fill sample assignments (Global Calcium, Adithya Tech Park, etc.)</p>
+                        <div>
+                            <button class="btn btn-primary btn-sm me-2" onclick="document.getElementById('btnAddCompanyBtn').click()">
+                                <i class="fa-solid fa-plus me-1"></i> Add Company
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('btnLoadDemoAssignments').click()">
+                                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Load Example Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Scheduling Summary Table (Section 8) -->
+                <div class="card shadow-sm border-0 mb-5" id="summaryTableCard">
+                    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0 fw-bold"><i class="fa-solid fa-table-list text-primary me-2"></i>Scheduling Session Roster</h5>
+                            <span class="badge badge-soft-success" id="badgeTableTotal">0 Ready to Dispatch</span>
+                        </div>
+                        <div>
+                            <!-- SUBMIT ALL Button in footer/summary header -->
+                            <button class="btn btn-success btn-sm fw-bold shadow-sm" id="btnBottomSubmitAll" style="background-color: #25d366; border-color: #20ba5a;">
+                                <i class="fa-brands fa-whatsapp me-1"></i> SUBMIT ALL & DISPATCH WHATSAPP
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="summaryTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th>Company</th>
+                                    <th>Assigned Engineer</th>
+                                    <th>Planned Date</th>
+                                    <th>Service Type</th>
+                                    <th>Priority</th>
+                                    <th>Instruments</th>
+                                    <th>WhatsApp Status</th>
+                                    <th class="text-end" style="width: 140px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <tr>
+                                    <td colspan="9" class="text-center py-4 text-muted">
+                                        No assignments prepared yet. Click "Add Company" above.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Dispatch Batches Log (Realtime Cloud History) -->
+                <div class="card shadow-sm border-0 mb-5">
+                    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h6 class="mb-0 fw-bold text-secondary"><i class="fa-solid fa-clock-rotate-left me-2"></i>Recent Saved Cloud Dispatch Batches</h6>
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary" id="btnRefreshBatches">
+                            <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh History
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Batch ID</th>
+                                    <th>Created Time</th>
+                                    <th>Assignments</th>
+                                    <th>Dispatch Progress</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batchesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-muted small">Loading batch history...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: ADD / EDIT COMPANY ASSIGNMENT FORM                                  -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalAssignmentForm" tabindex="-1" aria-labelledby="modalAssignmentTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form class="modal-content" id="formAssignment" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalAssignmentTitle">
+                        <i class="fa-solid fa-building-circle-check text-primary me-2"></i>Configure Company Service Assignment
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="modalAssignmentIndex" value="">
+
+                        <!-- Section 1: Company Selection (Direct from customers database) -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-building me-1"></i> 1. Company Selection (Customers Cloud Database)</span>
+                            <span class="badge badge-soft-primary"><i class="fa-solid fa-database me-1"></i> Live Customer Data</span>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label small fw-semibold mb-0">Select Company <span class="text-danger">*</span></label>
+                                    <a href="companies.html" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.78rem;" title="Register new company in database">
+                                        <i class="fa-solid fa-plus me-1"></i> Add New Company
+                                    </a>
+                                </div>
+                                <select class="form-select form-select-lg" id="modalSelectCompany" required>
+                                    <option value="">-- Choose a company from database --</option>
+                                </select>
+                                <div class="form-text small">Select an existing company to automatically retrieve address, contact, and instruments.</div>
+                            </div>
+
+                            <!-- Auto-retrieved company details display -->
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Company Location</label>
+                                <input type="text" class="form-control" id="modalCompanyLocation" placeholder="Auto-retrieved (e.g. Coimbatore)" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Contact Person & Designation</label>
+                                <input type="text" class="form-control" id="modalCompanyContact" placeholder="Auto-retrieved contact name & role" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Contact Mobile</label>
+                                <input type="tel" class="form-control" id="modalCompanyMobile" placeholder="Auto-retrieved mobile" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Company ID</label>
+                                <input type="text" class="form-control font-monospace" id="modalCompanyId" placeholder="comp_xxx" readonly>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Complete Company Address</label>
+                                <textarea class="form-control" id="modalCompanyAddress" rows="2" placeholder="Auto-retrieved full company address" readonly></textarea>
+                            </div>
+
+                            <!-- Instruments selection -->
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold d-flex justify-content-between">
+                                    <span>Existing Company Instruments to Service</span>
+                                    <span class="text-muted small">Click chips to toggle or specify below</span>
+                                </label>
+                                <div id="modalInstrumentsContainer" class="p-2 border rounded bg-light min-height-40 d-flex flex-wrap gap-1">
+                                    <span class="text-muted small p-1">Select a company first to see its registered instruments.</span>
+                                </div>
+                                <div class="mt-2">
+                                    <input type="text" class="form-control form-control-sm" id="modalCustomInstruments" placeholder="Or enter/edit instrument names (e.g. OCEMS L-600, Dust Monitor)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Engineer Selection -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom d-flex justify-content-between align-items-center">
+                            <span><i class="fa-solid fa-user-gear me-1"></i> 2. Site Engineer Assignment</span>
+                            <span class="badge badge-soft-success"><i class="fa-solid fa-users me-1"></i> Independent per Company</span>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Assigned Engineer <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-lg" id="modalSelectEngineer" required>
+                                    <option value="">-- Choose site engineer --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Engineer WhatsApp Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text text-success"><i class="fa-brands fa-whatsapp"></i></span>
+                                    <input type="tel" class="form-control" id="modalEngineerWhatsapp" placeholder="Auto-retrieved WhatsApp number" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Engineer Mobile Number</label>
+                                <input type="tel" class="form-control" id="modalEngineerMobile" placeholder="Auto-retrieved mobile" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Engineer ID</label>
+                                <input type="text" class="form-control font-monospace" id="modalEngineerId" placeholder="ENG-AIT-xxx" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Scheduling Fields -->
+                        <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                            <i class="fa-solid fa-calendar-day me-1"></i> 3. Service Scope & Execution Details
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Service ID</label>
+                                <input type="text" class="form-control font-monospace" id="modalServiceId" readonly placeholder="Auto-generated">
+                                <div class="form-text small">Unique tracking ID</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Planned Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="modalPlannedDate" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-semibold">Priority <span class="text-danger">*</span></label>
+                                <select class="form-select" id="modalPriority" required>
+                                    <option value="Normal" selected>Normal</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Service Type <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="modalServiceType" list="serviceTypeList" required placeholder="e.g. OCEMS AMC, General Service">
+                                    <datalist id="serviceTypeList">
+                                        <option value="OCEMS AMC">
+                                        <option value="General Service">
+                                        <option value="Instrument Maintenance">
+                                        <option value="Breakdown Maintenance">
+                                        <option value="Sensor Calibration">
+                                        <option value="Installation & Commissioning">
+                                        <option value="Periodic Inspection">
+                                        <option value="Emergency Callout">
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Work Instructions <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="modalWorkInstructions" rows="3" required placeholder="Specific tasks, checking sensors, analyzer calibration, cabling, gas cylinders, etc."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Additional Instructions / Site Notes</label>
+                                <textarea class="form-control" id="modalAdditionalInstructions" rows="2" placeholder="Entry gate pass, safety shoes required, PPE, coordinator phone..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary" id="btnSaveAndAddAnother">
+                                <i class="fa-solid fa-plus me-1"></i> Save & Add Another Company
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="btnSaveAssignment">
+                                <i class="fa-solid fa-check me-1"></i> Save Assignment
+                            </button>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: INTERACTIVE WHATSAPP DISPATCH QUEUE (Section 5 & 6)                 -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalWhatsappDispatch" tabindex="-1" aria-labelledby="modalWhatsappDispatchTitle" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <!-- WhatsApp Themed Header -->
+                <div class="modal-header text-white" style="background-color: #075e54;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fa-brands fa-whatsapp fa-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="modalWhatsappDispatchTitle">
+                                WhatsApp Bulk Dispatch Queue
+                            </h5>
+                            <div class="small opacity-75" id="dispatchQueueSubtitle">
+                                Batch saved to Firebase. Sequential dispatch ready.
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <!-- Saved Notification Banner -->
+                    <div class="alert alert-success d-flex align-items-center mb-4 py-2" role="alert">
+                        <i class="fa-solid fa-circle-check fa-lg me-2"></i>
+                        <div>
+                            <strong>Batch Saved to Firebase Cloud!</strong>
+                            <span id="dispatchSavedCountNotice">0 assignments generated and stored in daily_tasks.</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Stepper Bar -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold small" id="queueProgressLabel">Dispatching Message 1 of 3</span>
+                            <span class="badge bg-light text-dark border font-monospace" id="queuePercentLabel">0% Completed</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" id="queueProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Queue Stepper Horizontal Pills -->
+                    <div class="d-flex gap-2 overflow-auto pb-2 mb-3" id="queueStepPills">
+                        <!-- Step chips -->
+                    </div>
+
+                    <!-- Active Message Dispatch Card -->
+                    <div class="card border mb-3">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="fw-bold" id="currentMsgEngineerName">Engineer Name</span>
+                                <span class="small text-muted ms-2" id="currentMsgCompanyName">&bull; Company Name</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="priority-pill priority-normal" id="currentMsgPriorityBadge">Normal</span>
+                                <span class="badge bg-secondary" id="currentMsgStatusBadge">Pending</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center mb-3">
+                                <div class="col-md-6">
+                                    <div class="small text-muted">WhatsApp Recipient:</div>
+                                    <div class="fw-bold text-success fs-6">
+                                        <i class="fa-brands fa-whatsapp me-1"></i>
+                                        <span id="currentMsgPhone">+91 XXXXXXXXXX</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <div class="small text-muted">Service ID:</div>
+                                    <div class="fw-bold font-monospace" id="currentMsgServiceId">AIT-SRV-2026-0001</div>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp Message Preview Box -->
+                            <div class="whatsapp-chat-box mb-3">
+                                <div class="whatsapp-bubble" id="currentMsgText">
+                                    <!-- Formatted message -->
+                                </div>
+                            </div>
+
+                            <!-- Operational Action Controls -->
+                            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center pt-2 border-top">
+                                <div>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="btnCopyWhatsappText">
+                                        <i class="fa-solid fa-copy me-1"></i> Copy Message
+                                    </button>
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="fa-solid fa-arrow-down me-1"></i> Actions in sticky bottom bar
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Safety Warning Notice from Prompt -->
+                    <div class="small text-muted border-start border-3 border-info ps-2 mb-2">
+                        <i class="fa-solid fa-shield-halved text-info me-1"></i>
+                        <strong>Compliance Note:</strong> Per communication safety guidelines, standard WhatsApp click-to-chat opens pre-filled messages sequentially. Messages are only marked <strong>"Sent"</strong> upon explicit admin confirmation.
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close Queue</button>
+                        <span class="small fw-semibold text-muted" id="dispatchQueueSummaryFooter">0 of 0 Sent</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btnPrevQueueMessage" disabled title="Previous message">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-warning btn-sm" id="btnSkipQueueMessage" title="Skip this message and go to next">
+                            Skip <i class="fa-solid fa-forward ms-1"></i>
+                        </button>
+                        <!-- Main WhatsApp Launch Button -->
+                        <button type="button" class="btn btn-success btn-sm whatsapp-btn px-3 fw-bold" id="btnOpenWhatsappChat">
+                            <i class="fa-brands fa-whatsapp me-1"></i> Open WhatsApp Chat
+                        </button>
+                        <!-- Mark as Sent Button (Explicit admin confirmation required) -->
+                        <button type="button" class="btn btn-primary btn-sm fw-bold px-3" id="btnMarkSentAndNext">
+                            <i class="fa-solid fa-check-double me-1"></i> Mark as Sent & Next →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Action completed successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/dispatch.js"></script>
+</body>
+</html>

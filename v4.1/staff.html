@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Company Staff Management - Instrument Library V3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .staff-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ent-accent), #8b5cf6);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+        .staff-avatar.role-master {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        }
+        .staff-avatar.role-admin {
+            background: linear-gradient(135deg, #2563eb, #0284c7);
+        }
+        .staff-avatar.role-engineer {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+        .staff-avatar.role-customer {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
+        .badge-role-master {
+            background-color: rgba(124, 58, 237, 0.12);
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.25);
+        }
+        .badge-role-admin {
+            background-color: rgba(37, 99, 235, 0.12);
+            color: #2563eb;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+        }
+        .badge-role-engineer {
+            background-color: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .badge-role-customer {
+            background-color: rgba(245, 158, 11, 0.12);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+        .pulse-dot-active {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            animation: pulse-green 2s infinite;
+        }
+        .pulse-dot-suspended {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            display: inline-block;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .credential-box {
+            background: var(--ent-surface-hover);
+            border: 1px dashed var(--ent-border);
+            border-radius: var(--ent-radius);
+            padding: 1.25rem;
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+        }
+        .document-checklist {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius);
+            padding: 0.75rem;
+            background: var(--ent-surface);
+        }
+        .cursor-pointer { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Mobile Drawer Backdrop -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="companies.html" class="list-group-item"><i class="fa-solid fa-building-user"></i> Company Management</a>
+                <a href="dispatch.html" class="list-group-item"><i class="fa-solid fa-calendar-days"></i> Daily Service Scheduling</a>
+                <a href="engineers.html" class="list-group-item"><i class="fa-solid fa-user-gear"></i> Engineer Management</a>
+                <a href="engineer-portal.html" class="list-group-item"><i class="fa-solid fa-clipboard-check"></i> Field Engineer Portal</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="staff.html" class="list-group-item active"><i class="fa-solid fa-users-gear"></i> Company Staff</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content Wrapper -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-users-gear text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Staff & Access Control</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">System Online</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <!-- Header Title Bar -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="page-title">Company Staff & User Access</h2>
+                        <p class="page-subtitle">Add company engineers, assign roles, configure passwords, and manage document access permissions</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-outline-secondary px-3" id="btnFirebaseRules" type="button" title="View Firebase Realtime Database Security Rules" data-bs-toggle="modal" data-bs-target="#modalFirebaseRules">
+                            <i class="fa-solid fa-shield-halved me-1 text-warning"></i> DB Rules
+                        </button>
+                        <button class="btn btn-outline-secondary px-3" id="btnExportCsv" type="button" title="Export Staff Directory to CSV">
+                            <i class="fa-solid fa-file-csv me-1 text-success"></i> Export CSV
+                        </button>
+                        <button class="btn btn-primary px-4" id="btnOpenAddStaffModal">
+                            <i class="fa-solid fa-user-plus me-1"></i> Add New Staff
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Row -->
+                <div class="row g-3 mb-4" id="staffStatsRow">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center gap-3">
+                            <div class="stat-icon stat-icon-blue fs-4"><i class="fa-solid fa-users"></i></div>
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Total Staff</div>
+                                <div class="fs-4 fw-bold text-dark-emphasis" id="statTotalStaff">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center gap-3">
+                            <div class="stat-icon stat-icon-green fs-4"><i class="fa-solid fa-helmet-safety"></i></div>
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Service Engineers</div>
+                                <div class="fs-4 fw-bold text-dark-emphasis" id="statTotalEngineers">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center gap-3">
+                            <div class="stat-icon stat-icon-purple fs-4"><i class="fa-solid fa-user-shield"></i></div>
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Admins & Managers</div>
+                                <div class="fs-4 fw-bold text-dark-emphasis" id="statTotalAdmins">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center gap-3">
+                            <div class="stat-icon stat-icon-rose fs-4"><i class="fa-solid fa-user-slash"></i></div>
+                            <div>
+                                <div class="text-muted small fw-semibold text-uppercase">Suspended Accounts</div>
+                                <div class="fs-4 fw-bold text-dark-emphasis" id="statSuspendedStaff">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter & Search Bar -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5 col-lg-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0 text-muted">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </span>
+                                    <input type="text" id="staffSearch" class="form-control border-start-0" placeholder="Search by name, email, employee ID, department, or location...">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 col-lg-3">
+                                <select id="roleFilter" class="form-select">
+                                    <option value="all">All Roles</option>
+                                    <option value="master">IT Master Admin</option>
+                                    <option value="admin">Company Admin / Manager</option>
+                                    <option value="engineer">Service Engineer</option>
+                                    <option value="customer">Customer / Viewer</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <select id="statusFilter" class="form-select">
+                                    <option value="all">All Statuses</option>
+                                    <option value="active">Active Only</option>
+                                    <option value="suspended">Suspended Only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff Directory Table Card -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-transparent py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-address-book text-primary"></i>
+                            <span class="fw-bold">Staff Directory</span>
+                            <span class="badge bg-secondary-subtle text-secondary ms-1" id="staffCountBadge">0</span>
+                        </div>
+                        <div class="small text-muted">
+                            Auto-synced with Cloud Database
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0" id="staffTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Contact</th>
+                                    <th>Role & Access</th>
+                                    <th>Department & Location</th>
+                                    <th>Working Hours</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                        Loading staff directory...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 1: ADD / EDIT COMPANY STAFF -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalStaffForm" tabindex="-1" aria-labelledby="modalStaffFormLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold" id="modalStaffFormLabel">
+                        <i class="fa-solid fa-user-plus text-primary me-2"></i> Add Company Staff Member
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="staffForm" novalidate>
+                        <input type="hidden" id="editStaffKey" value="">
+
+                        <!-- Section 1: Basic Information -->
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-id-card"></i> <span>Personal & Contact Information</span>
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfFullName">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="sfFullName" placeholder="e.g. Ramesh Kumar" required>
+                                <div class="invalid-feedback">Full name is required.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfEmpId">Staff / Employee ID <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="sfEmpId" placeholder="e.g. AIT-ENG-105" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="btnGenEmpId" title="Generate New ID">
+                                        <i class="fa-solid fa-arrows-rotate"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfEmail">Corporate Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="sfEmail" placeholder="e.g. ramesh@aadhavintech.com" required>
+                                <div class="invalid-feedback">A valid email address is required.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfPhone">Mobile / WhatsApp Number</label>
+                                <input type="tel" class="form-control" id="sfPhone" placeholder="e.g. 9790030842">
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Role & Department -->
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2 border-top pt-3">
+                            <i class="fa-solid fa-user-shield"></i> <span>Role Hierarchy & Organization</span>
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfRole">Account Role Hierarchy <span class="text-danger">*</span></label>
+                                <select class="form-select" id="sfRole" required>
+                                    <option value="engineer" selected>Service Engineer (View Assigned Manuals & Reports)</option>
+                                    <option value="admin">Company Admin / Manager (Staff & Manual Management)</option>
+                                    <option value="master">IT Master Admin (Full System & License Control)</option>
+                                    <option value="customer">Customer / Viewer (Restricted Document Access)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfStatus">Account Status</label>
+                                <select class="form-select" id="sfStatus">
+                                    <option value="active" selected>Active</option>
+                                    <option value="suspended">Suspended / Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfDepartment">Department / Designation</label>
+                                <input type="text" class="form-control" id="sfDepartment" placeholder="e.g. CEMS & Dust Monitoring, Service Engineering" list="deptOptions">
+                                <datalist id="deptOptions">
+                                    <option value="Field Service & Calibration">
+                                    <option value="CEMS & Emission Monitoring">
+                                    <option value="Industrial Automation">
+                                    <option value="Technical Support & Training">
+                                    <option value="Installation & Commissioning">
+                                    <option value="IT Administration">
+                                </datalist>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold" for="sfLocation">Assigned Location / Region</label>
+                                <input type="text" class="form-control" id="sfLocation" placeholder="e.g. Coimbatore, Podanur, Tamil Nadu">
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Credentials & Access Window -->
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2 border-top pt-3">
+                            <i class="fa-solid fa-key"></i> <span>Credentials & Security Policy</span>
+                        </h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6" id="passwordGroup">
+                                <label class="form-label fw-semibold" for="sfPassword">
+                                    Temporary Password <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control font-monospace" id="sfPassword" placeholder="Minimum 6 characters" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="btnGenPassword" title="Generate Strong Password">
+                                        <i class="fa-solid fa-dice me-1"></i> Generate
+                                    </button>
+                                </div>
+                                <div class="small text-muted mt-1" id="passwordHelpText">A secure temporary password for initial sign-in.</div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="sfForceReset" checked>
+                                    <label class="form-check-label fw-semibold" for="sfForceReset">
+                                        Require password change on first login
+                                    </label>
+                                    <div class="text-muted small">Prompts the user to set their private password upon entering.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold" for="sfValidFrom">Access Valid From</label>
+                                <input type="date" class="form-control" id="sfValidFrom">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold" for="sfValidTo">Access Valid Until</label>
+                                <input type="date" class="form-control" id="sfValidTo">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold" for="sfWorkingHours">Working Hours Window</label>
+                                <select class="form-select" id="sfWorkingHours">
+                                    <option value="24_7" selected>24/7 (Anytime Access)</option>
+                                    <option value="general_shift">General Shift (08:00 AM - 08:00 PM)</option>
+                                    <option value="office_hours">Office Hours (09:00 AM - 06:00 PM)</option>
+                                    <option value="custom">Custom Timing</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Document & Instrument Permissions -->
+                        <h6 class="fw-bold text-primary mb-3 d-flex align-items-center gap-2 border-top pt-3">
+                            <i class="fa-solid fa-book-bookmark"></i> <span>Assigned Manuals & Instrument Permissions</span>
+                        </h6>
+                        <div class="mb-2">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="sfAccessAllDocs" checked>
+                                <label class="form-check-label fw-semibold" for="sfAccessAllDocs">
+                                    Grant unrestricted access to all manuals & instruments
+                                </label>
+                            </div>
+                            <div id="individualDocSelector" style="display: none;">
+                                <div class="small text-muted mb-2">Select the specific manuals and instruments this staff member is authorized to view:</div>
+                                <div class="document-checklist" id="docChecklistContainer">
+                                    <div class="text-muted small">Loading documents and instruments...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary px-4" id="btnSaveStaff">
+                        <i class="fa-solid fa-check me-1"></i> Save Staff Member
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 2: INVITE CREDENTIALS READY (SHARE MODAL) -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalInviteShare" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-circle-check me-2"></i> Staff Account Created!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="text-muted">The user account has been successfully configured. You can now copy and send the initial sign-in credentials to the employee:</p>
+                    
+                    <div class="credential-box mb-3" id="inviteSummaryBox">
+                        <div><strong>Employee:</strong> <span id="invStaffName">-</span></div>
+                        <div><strong>Staff ID:</strong> <span id="invStaffId">-</span></div>
+                        <div><strong>Role:</strong> <span id="invRole">-</span></div>
+                        <div><strong>Login Email:</strong> <span id="invEmail">-</span></div>
+                        <div><strong>Temporary Password:</strong> <span id="invPass" class="text-danger fw-bold">-</span></div>
+                        <div class="mt-2 text-muted small"><strong>Portal URL:</strong> <span id="invUrl">-</span></div>
+                    </div>
+
+                    <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-0">
+                        <i class="fa-solid fa-shield-halved fs-5"></i>
+                        <span>The employee will be required to create a new personal password on their initial login.</span>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Done</button>
+                    <button type="button" class="btn btn-success" id="btnCopyInvite">
+                        <i class="fa-solid fa-copy me-1"></i> Copy Invite Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 3: QUICK PASSWORD RESET -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalResetPassword" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-key text-warning me-2"></i> Reset Staff Password
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="resetStaffKey">
+                    <p class="mb-3">Issuing a new temporary password for: <br><strong id="resetStaffName" class="text-primary">-</strong></p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="newTempPassword">New Temporary Password</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control font-monospace" id="newTempPassword" required>
+                            <button class="btn btn-outline-secondary" type="button" id="btnGenResetPassword">
+                                <i class="fa-solid fa-dice me-1"></i> Generate
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="resetForceChange" checked>
+                        <label class="form-check-label fw-semibold" for="resetForceChange">
+                            Force password change on next login
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning fw-semibold px-4" id="btnConfirmResetPassword">
+                        Update Password
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 4: FIREBASE DATABASE RULES HELPER -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalFirebaseRules" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fa-solid fa-shield-halved text-warning me-2"></i> Firebase Realtime Database Security Rules
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                        <i class="fa-solid fa-circle-info fs-5"></i>
+                        <span>Staff is saved under <code>customers/_staff</code> (allowed by default). To also permit direct root access to <code>staff/</code> and <code>users/</code>, apply these rules in your Firebase Console.</span>
+                    </div>
+
+                    <p class="small text-muted mb-2">Go to <a href="https://console.firebase.google.com" target="_blank" class="fw-semibold">Firebase Console</a> &rarr; <strong>aittest-9ec93</strong> &rarr; <strong>Realtime Database</strong> &rarr; <strong>Rules</strong> tab, paste this JSON, and click <strong>Publish</strong>:</p>
+
+                    <pre class="p-3 rounded bg-dark text-light font-monospace small" id="dbRulesCode" style="max-height: 250px; overflow-y: auto;">{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "settings": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "documents": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["title", "category", "updatedAt"]
+    },
+    "instruments": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["general/name", "general/category", "general/manufacturer", "created_at"]
+    },
+    "customers": {
+      ".read": true,
+      ".write": "auth != null",
+      "_staff": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+      },
+      "_engineers": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["username", "email", "status", "updatedAt"]
+      },
+      "_service_reports": {
+        ".read": true,
+        ".write": "auth != null",
+        ".indexOn": ["reportNumber", "companyName", "engineerUsername", "serviceDate", "updatedAt"]
+      }
+    },
+    "staff": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["email", "empId", "role", "status", "updatedAt"]
+    },
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["email", "empId", "role", "status", "createdAt"]
+    },
+    "engineers": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["username", "email", "status", "updatedAt"]
+    },
+    "audit_logs": {
+      ".read": "auth != null",
+      "$logId": {
+        ".write": "auth != null && !data.exists() && newData.exists()"
+      },
+      ".indexOn": ["timestamp", "userEmail", "action"]
+    },
+    "licenses": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}</pre>
+                </div>
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnCopyRules">
+                        <i class="fa-solid fa-copy me-1"></i> Copy Rules to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Notification message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/staff.js"></script>
+</body>
+</html>

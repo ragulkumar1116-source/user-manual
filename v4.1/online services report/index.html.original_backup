@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aadhav Intech - Installation & Service Report Generator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-times">
+  <!-- Top App Toolbar -->
+  <header class="app-header no-print">
+    <div class="header-brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      <h1>Aadhav Report System</h1>
+    </div>
+
+    <!-- Mobile Toggle Switch -->
+    <div class="mobile-view-toggle no-print">
+      <button type="button" class="view-btn active" id="btn-show-editor">✏️ Form Editor</button>
+      <button type="button" class="view-btn" id="btn-show-preview">📄 A4 Preview</button>
+    </div>
+
+    <div class="header-actions">
+      <!-- Preset Selection -->
+      <div class="preset-dropdown">
+        <select id="select-preset-loader" class="btn btn-secondary preset-select">
+          <option value="" disabled selected>📂 Select Report Preset...</option>
+          <option value="everest1">Everest - OCEMS L-800 (Pdf)</option>
+          <option value="everest2">Everest - AAQMS BMA-1020 (Pdf)</option>
+          <option value="adithya">Adithya Techno Park (Doc)</option>
+          <option value="ganga">Ganga Hospital (Pdf)</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-outline" id="btn-clear-form" title="Clear Form">
+        Clear
+      </button>
+
+      <button type="button" class="btn btn-primary" id="btn-print-report" title="Print / Save A4 PDF">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        <span>Print A4 PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Layout -->
+  <div class="app-layout">
+    <!-- Left Form Editor Sidebar -->
+    <aside class="editor-panel no-print" id="panel-editor">
+      <div class="editor-header">
+        <h2>Report Details Editor</h2>
+        <p>Dynamic modules & two-way live A4 report sync.</p>
+      </div>
+
+      <form id="report-form" autocomplete="off">
+        <!-- Module Settings -->
+        <div class="form-section">
+          <h3>Report Type & Module Settings</h3>
+          <div class="form-group">
+            <label for="select-report-type">Report Document Title</label>
+            <select id="select-report-type" class="form-control-select">
+              <option value="SERVICE REPORT" selected>SERVICE REPORT</option>
+              <option value="INSTALLATION AND COMMISSIONING REPORT">INSTALLATION AND COMMISSIONING REPORT</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 8px;">
+            <label for="select-font-family">Document Font</label>
+            <select id="select-font-family" class="form-control-select">
+              <option value="font-times" selected>Times New Roman (Word Doc standard)</option>
+              <option value="font-arial">Arial (Clean sans-serif)</option>
+              <option value="font-calibri">Calibri (Corporate)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-enable-spares" checked>
+              <span>Enable Spare Parts Replaced/Recommended Module</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date Meta -->
+        <div class="form-section">
+          <h3>Report Date</h3>
+          <div class="form-group">
+            <label for="input-date">Date</label>
+            <input type="text" id="input-date" placeholder="DD/MM/YYYY" value="11/06/2026">
+          </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="form-section">
+          <h3>Customer Details</h3>
+          <div class="form-group">
+            <label for="input-cust-name">Customer Name & Address</label>
+            <input type="text" id="input-cust-name" value="Everest Industries Limited">
+          </div>
+          <div class="form-group">
+            <label for="input-cust-addr1">Address Line 1</label>
+            <input type="text" id="input-cust-addr1" value="SF No. 583 & 586/587, Asbestos Road">
+          </div>
+          <div class="form-group">
+            <label for="input-cust-addr2">Address Line 2</label>
+            <input type="text" id="input-cust-addr2" value="Everest Colony">
+          </div>
+          <div class="form-group">
+            <label for="input-cust-addr3">Address Line 3</label>
+            <input type="text" id="input-cust-addr3" value="Podanur, Coimbatore">
+          </div>
+          <div class="form-group">
+            <label for="input-cust-addr4">Address Line 4 (State / Pin)</label>
+            <input type="text" id="input-cust-addr4" value=", Tamil Nadu, 641023.">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-contact-person">Contact Person</label>
+              <input type="text" id="input-contact-person" value="Gopinathan.SR">
+            </div>
+            <div class="form-group">
+              <label for="input-designation">Designation</label>
+              <input type="text" id="input-designation" value="Asst. Manager">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-dept">Dept.</label>
+              <input type="text" id="input-dept" value="EHS">
+            </div>
+            <div class="form-group">
+              <label for="input-tel">Tel. No.</label>
+              <input type="text" id="input-tel">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="input-mobile">Mobile</label>
+              <input type="text" id="input-mobile" value="9790030842">
+            </div>
+            <div class="form-group">
+              <label for="input-email">E-Mail</label>
+              <input type="email" id="input-email" value="Gopinathan.sr@everestind.com">
+            </div>
+          </div>
+        </div>
+
+        <!-- Instrument Details -->
+        <div class="form-section">
+          <h3>Instruments Details</h3>
+          <div class="form-group">
+            <label for="input-inst-name">Instrument Name</label>
+            <input type="text" id="input-inst-name" value="OCEMS">
+          </div>
+          <div class="form-group">
+            <label for="input-inst-model">Instrument Model</label>
+            <input type="text" id="input-inst-model" value="L - 800">
+          </div>
+          <div class="form-group">
+            <label for="input-sr-no">Sr. No</label>
+            <input type="text" id="input-sr-no" value="IN2311 – 178A">
+          </div>
+        </div>
+
+        <!-- Service Details -->
+        <div class="form-section">
+          <h3>Service Details</h3>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-installation">
+              <span>Installation</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-warranty">
+              <span>Warranty</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-amc" checked>
+              <span>AMC</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-services">
+              <span>Services</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-calibration">
+              <span>Calibration</span>
+            </label>
+          </div>
+
+          <div class="chargeable-block">
+            <label class="checkbox-label">
+              <input type="checkbox" id="chk-chargeable">
+              <span>Chargeable/Free</span>
+            </label>
+            <div class="form-group" style="margin-top: 8px;">
+              <label for="input-charge-amount">If chargeable Amount Rs.</label>
+              <input type="text" id="input-charge-amount" placeholder="Amount">
+            </div>
+          </div>
+        </div>
+
+        <!-- Regards / Work / Problem Description -->
+        <div class="form-section">
+          <h3>Work Done / Problem Reported</h3>
+          <div class="form-group">
+            <label for="input-action-heading">Heading Title</label>
+            <input type="text" id="input-action-heading" value="Problem Reported:">
+          </div>
+          <div class="form-group" id="group-regards" style="display: none;">
+            <label for="input-regards">Regards Value</label>
+            <input type="text" id="input-regards" value="NEW Installation and Commissioning">
+          </div>
+          <div class="form-group">
+            <label for="input-action-taken">Details & Description</label>
+            <textarea id="input-action-taken" rows="7" placeholder="Work details..."></textarea>
+          </div>
+        </div>
+
+        <!-- Spare Parts Module Form Controls -->
+        <div class="form-section" id="section-spares-editor">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3>Spare Parts Replaced / Recommended</h3>
+            <button type="button" class="btn btn-xs btn-primary" id="btn-add-spare">+ Add Row</button>
+          </div>
+          <div id="spares-rows-container">
+            <!-- Dynamic Spare Item Rows -->
+          </div>
+        </div>
+
+        <!-- Customer Remarks -->
+        <div class="form-section">
+          <h3>Customer Remark</h3>
+          <div class="form-group">
+            <textarea id="input-customer-remark" rows="3" placeholder="Customer remarks..."></textarea>
+          </div>
+        </div>
+
+        <!-- Signatures & Stamp -->
+        <div class="form-section">
+          <h3>Signatures & Stamp</h3>
+          
+          <div class="signature-input-box">
+            <h4>Engineer Signature</h4>
+            <div class="signature-tabs">
+              <button type="button" class="tab-btn active" data-target="eng-draw">Touch Draw</button>
+              <button type="button" class="tab-btn" data-target="eng-file">Upload Image</button>
+            </div>
+            <div class="tab-content active" id="eng-draw">
+              <canvas id="canvas-engineer" width="300" height="90"></canvas>
+              <button type="button" class="btn btn-xs" id="btn-clear-eng-canvas">Clear Signature</button>
+            </div>
+            <div class="tab-content" id="eng-file">
+              <input type="file" id="file-engineer-sig" accept="image/*">
+            </div>
+          </div>
+
+          <div class="signature-input-box">
+            <h4>Customer Seal & Signature</h4>
+            <div class="signature-tabs">
+              <button type="button" class="tab-btn active" data-target="cust-draw">Touch Draw</button>
+              <button type="button" class="tab-btn" data-target="cust-file">Upload Image</button>
+            </div>
+            <div class="tab-content active" id="cust-draw">
+              <canvas id="canvas-customer" width="300" height="90"></canvas>
+              <button type="button" class="btn btn-xs" id="btn-clear-cust-canvas">Clear Signature</button>
+            </div>
+            <div class="tab-content" id="cust-file">
+              <input type="file" id="file-customer-sig" accept="image/*">
+            </div>
+          </div>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Right Live Preview Panel -->
+    <main class="preview-panel" id="panel-preview">
+      <div class="preview-bar no-print">
+        <span>Live Preview (A4 Format)</span>
+        <span class="preview-badge">A4 Standard Printable</span>
+      </div>
+
+      <div class="a4-wrapper" id="a4-scaler">
+        <!-- Exact A4 Printable Document Structure -->
+        <div class="a4-document font-times" id="a4-report-content">
+          <!-- Header Area -->
+          <div class="doc-header">
+            <h1 class="company-name">AADHAV INTECH</h1>
+            <div class="company-address">No:60, 3<sup>rd</sup> Street, Kasi Estate, West Jafferkhanpet, Chennai-600 0083,</div>
+            <div class="company-contact">Landline: 044 - 4204 1270; Mobile: 7092466445</div>
+            <div class="company-email">Email: <a href="mailto:service@aadhavintech.com">service@aadhavintech.com</a></div>
+          </div>
+
+          <!-- Document Title -->
+          <div class="report-title" id="view-doc-title">
+            SERVICE REPORT
+          </div>
+
+          <!-- Section 1: Customer Details Table -->
+          <table class="report-table cust-table">
+            <thead>
+              <tr>
+                <th class="th-cust-title">CUSTOMER DETAILS</th>
+                <th class="th-date-title" id="view-date-cell">Date: 11/06/2026</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-left">
+                  <div class="lbl">Customer Name & Address</div>
+                  <div class="val-bold" id="view-cust-name">Everest Industries Limited</div>
+                </td>
+                <td class="col-right">
+                  <span class="lbl-inline">Contact Person</span>
+                  <span class="val-inline" id="view-contact-person">Gopinathan.SR</span>
+                </td>
+              </tr>
+              <tr id="row-designation">
+                <td class="col-left">
+                  <div class="val" id="view-cust-addr1">SF No. 583 & 586/587, Asbestos Road</div>
+                </td>
+                <td class="col-right">
+                  <span class="lbl-inline">Designation</span>
+                  <span class="val-inline" id="view-designation">Asst. Manager</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="col-left">
+                  <div class="val" id="view-cust-addr2">Everest Colony</div>
+                </td>
+                <td class="col-right">
+                  <span class="lbl-inline">Dept.:</span>
+                  <span class="val-inline" id="view-dept">EHS</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="col-left">
+                  <div class="val" id="view-cust-addr3">Podanur, Coimbatore</div>
+                </td>
+                <td class="col-right">
+                  <span class="lbl-inline">Tel. No.:</span>
+                  <span class="val-inline" id="view-tel"></span>
+                </td>
+              </tr>
+              <tr>
+                <td class="col-left">
+                  <div class="val" id="view-cust-addr4">, Tamil Nadu, 641023.</div>
+                </td>
+                <td class="col-right">
+                  <span class="lbl-inline">Mobile:</span>
+                  <span class="val-inline" id="view-mobile">9790030842</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="col-left"></td>
+                <td class="col-right">
+                  <span class="lbl-inline">E-Mail.:</span>
+                  <span class="val-inline" id="view-email">Gopinathan.sr@everestind.com</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Section 2: Instruments Details Table -->
+          <table class="report-table inst-table">
+            <thead>
+              <tr>
+                <th colspan="2" class="th-center">INSTRUMENTS DETAILS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-label">Instrument Name</td>
+                <td class="cell-val-bold" id="view-inst-name">OCEMS</td>
+              </tr>
+              <tr>
+                <td class="cell-label">Instrument Model</td>
+                <td class="cell-val-bold" id="view-inst-model">L - 800</td>
+              </tr>
+              <tr>
+                <td class="cell-label">Sr. No</td>
+                <td class="cell-val" id="view-sr-no">IN2311 – 178A</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Section 3: Service Details Block -->
+          <div class="report-block service-block">
+            <div class="block-title">SERVICE DETAILS</div>
+            <div class="service-checkboxes-row">
+              <span class="chk-item"><span class="chk-box" id="view-chk-installation">☐</span>Installation</span>
+              <span class="chk-item"><span class="chk-box" id="view-chk-warranty">☐</span>Warranty</span>
+              <span class="chk-item"><span class="chk-box" id="view-chk-amc">☑</span>AMC</span>
+              <span class="chk-item"><span class="chk-box" id="view-chk-services">☐</span>Services</span>
+              <span class="chk-item"><span class="chk-box" id="view-chk-calibration">☐</span>Calibration</span>
+            </div>
+            <div class="service-chargeable-row">
+              <span class="chk-box" id="view-chk-chargeable">☐</span>Chargeable/Free. If chargeable Amount Rs. <span class="underline-amount" id="view-charge-amount">_______________</span>
+            </div>
+          </div>
+
+          <!-- Section 4: Regards Row (If applicable) -->
+          <div class="report-block regards-block" id="view-regards-block" style="display:none;">
+            <table class="nested-table">
+              <tr>
+                <td class="td-regards-lbl">Regards:</td>
+                <td class="td-regards-val" id="view-regards">NEW Installation and Commissioning</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Section 5: Action Taken / Problem Description Block -->
+          <div class="report-block action-block">
+            <div class="block-subheading" id="view-action-heading">Problem Reported:</div>
+            <div class="action-content" id="view-action-taken"></div>
+          </div>
+
+          <!-- Section 6: Spare Parts Module Table -->
+          <div class="report-block spares-block" id="view-spares-block">
+            <div class="spares-title-header">SPARE PARTS REPLACED / RECOMMENDED</div>
+            <table class="report-table spares-table">
+              <thead>
+                <tr>
+                  <th style="width: 8%;">Sr. No.</th>
+                  <th style="width: 18%;">Item Code</th>
+                  <th style="width: 44%;">Item</th>
+                  <th style="width: 8%;">Qty.</th>
+                  <th style="width: 11%;">Replaced</th>
+                  <th style="width: 11%;">Recommended</th>
+                </tr>
+              </thead>
+              <tbody id="view-spares-tbody">
+                <!-- Dynamically generated spare part rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 7: Customer Remark Block -->
+          <div class="report-block remark-block">
+            <div class="block-subheading">Customer Remark:</div>
+            <div class="remark-content" id="view-customer-remark"></div>
+          </div>
+
+          <!-- Section 8: Signatures Grid -->
+          <div class="signature-section-grid">
+            <div class="sig-box sig-left">
+              <div class="sig-image-container" id="view-eng-sig-img"></div>
+              <div class="sig-bottom-label">Engineer Signature</div>
+            </div>
+            <div class="sig-box sig-right">
+              <div class="sig-top-label">Machine Working Satisfactory</div>
+              <div class="sig-image-container" id="view-cust-sig-img"></div>
+              <div class="sig-bottom-label">Customer Seal & Signature</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

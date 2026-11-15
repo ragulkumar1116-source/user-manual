@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Service Engineer Portal - Aadhav Intech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .portal-eng-badge {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .task-card {
+            background: var(--ent-surface);
+            border: 1px solid var(--ent-border);
+            border-radius: var(--ent-radius-lg);
+            box-shadow: var(--ent-shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .task-card:hover {
+            box-shadow: var(--ent-shadow);
+            border-color: var(--ent-accent);
+        }
+        .task-status-bar {
+            height: 4px;
+            width: 100%;
+        }
+        .task-status-assigned { background-color: #f59e0b; }
+        .task-status-accepted { background-color: #0ea5e9; }
+        .task-status-on-the-way { background-color: #8b5cf6; }
+        .task-status-in-progress { background-color: #2563eb; }
+        .task-status-completed { background-color: #10b981; }
+        .task-status-rescheduled { background-color: #64748b; }
+
+        .filter-tab-btn {
+            border-radius: var(--ent-radius-pill);
+            padding: 0.35rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid var(--ent-border);
+            background: var(--ent-surface);
+            color: var(--ent-text-muted);
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-tab-btn:hover {
+            color: var(--ent-accent);
+            border-color: var(--ent-accent);
+        }
+        .filter-tab-btn.active {
+            background: var(--ent-accent);
+            color: #ffffff;
+            border-color: var(--ent-accent);
+        }
+        .filter-tab-btn .badge {
+            font-size: 0.72rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Field Operations</div>
+            <div class="list-group list-group-flush">
+                <a href="engineer-portal.html" class="list-group-item active"><i class="fa-solid fa-clipboard-check"></i> Field Engineer Portal</a>
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Main Dashboard</a>
+                <a href="companies.html" class="list-group-item"><i class="fa-solid fa-building-user"></i> Company Management</a>
+                <a href="dispatch.html" class="list-group-item"><i class="fa-solid fa-calendar-days"></i> Daily Service Scheduling</a>
+                <a href="engineers.html" class="list-group-item"><i class="fa-solid fa-user-gear"></i> Engineer Management</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Engineer Field Workspace</span>
+                <span class="badge badge-soft-success">Online</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-clipboard-check text-primary"></i>
+                    <span class="d-none d-md-inline">Service Engineer Portal &mdash; Daily Field Tasks</span>
+                    <span class="d-md-none">Engineer Portal</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Current Logged In Engineer Dropdown / Switcher -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle d-flex align-items-center gap-2" type="button" id="engUserMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span id="activeEngNameHeader">Select Engineer</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" id="engUserDropdownList">
+                            <li><h6 class="dropdown-header">Switch Active Site Engineer</h6></li>
+                            <li id="dropdownEngOptions">Loading engineers...</li>
+                        </ul>
+                    </div>
+
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-3 px-md-4 py-2" id="main-content">
+                <!-- Engineer Header Profile Card -->
+                <div class="card shadow-sm border-0 mb-4 p-3 bg-gradient">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="manuals/logo (2).ico" id="portalEngAvatar" class="eng-avatar shadow-sm" alt="Avatar" onerror="this.src='manuals/logo (2).ico'">
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h4 class="fw-bold mb-0 text-dark" id="portalEngFullName">Rahul Krish</h4>
+                                    <span class="badge bg-success" id="portalEngStatusBadge">Active</span>
+                                </div>
+                                <div class="small text-muted mt-1" id="portalEngSubtext">
+                                    <span id="portalEngDesig">Senior Field Service Engineer</span> &bull; 
+                                    <span id="portalEngDept">Service & Instrumentation</span> &bull; 
+                                    <span class="font-monospace fw-semibold" id="portalEngIdBadge">ENG-AIT-001</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" id="btnRefreshTasks">
+                                <i class="fa-solid fa-rotate-right me-1"></i> Refresh Tasks
+                            </button>
+                            <a href="online services report/index.html" class="btn btn-sm btn-primary">
+                                <i class="fa-solid fa-file-circle-plus me-1"></i> New Service Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Overview Cards -->
+                <div class="row g-2 g-md-3 mb-4" id="engineerMetricsRow">
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Today's Visits</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-primary" id="metricTodayTasks">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Pending Action</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-warning" id="metricPendingTasks">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">In Progress / Traveling</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-info" id="metricActiveTasks">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="text-muted small fw-semibold">Completed</div>
+                            <h3 class="fw-bold mb-0 mt-1 text-success" id="metricCompletedTasks">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs / Filters (Section 9) -->
+                <div class="d-flex gap-2 overflow-auto pb-2 mb-4" id="taskFilterTabs">
+                    <button class="filter-tab-btn active" data-filter="all">
+                        <span>All Tasks</span> <span class="badge bg-secondary" id="badgeFilterAll">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="today">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>Today</span> <span class="badge bg-primary" id="badgeFilterToday">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="upcoming">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>Upcoming</span> <span class="badge bg-info" id="badgeFilterUpcoming">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="accepted">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Accepted</span> <span class="badge bg-primary" id="badgeFilterAccepted">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="on-the-way">
+                        <i class="fa-solid fa-route"></i>
+                        <span>On The Way</span> <span class="badge bg-purple" id="badgeFilterOnTheWay">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="in-progress">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <span>In Progress</span> <span class="badge bg-primary" id="badgeFilterInProgress">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="completed">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Completed</span> <span class="badge bg-success" id="badgeFilterCompleted">0</span>
+                    </button>
+                    <button class="filter-tab-btn" data-filter="rescheduled">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        <span>Rescheduled</span> <span class="badge bg-secondary" id="badgeFilterRescheduled">0</span>
+                    </button>
+                </div>
+
+                <!-- Assigned Tasks Container -->
+                <div class="row g-3 mb-5" id="engineerTasksContainer">
+                    <div class="col-12 text-center py-5 text-muted">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <div class="mt-2">Loading your assigned service tasks...</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: DAILY SERVICE ACTIVITY LOG (Section 9)                             -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalServiceActivity" tabindex="-1" aria-labelledby="modalServiceActivityTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form class="modal-content" id="formServiceActivity" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalServiceActivityTitle">
+                        <i class="fa-solid fa-clipboard-check text-success me-2"></i>Record Daily Service Activity
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="actTaskId" value="">
+
+                        <!-- Task Context Summary -->
+                        <div class="alert alert-light border mb-4">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="small text-muted">Company & Location:</div>
+                                    <strong id="actSummaryCompany">Global Calcium Pvt Ltd</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small text-muted">Service ID & Type:</div>
+                                    <strong id="actSummaryServiceId" class="font-monospace">AIT-SRV-20261118-001</strong> (<span id="actSummaryType">OCEMS AMC</span>)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Inputs -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Service Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="actStatus" required>
+                                    <option value="completed" selected>Work Completed Successfully</option>
+                                    <option value="in progress">Work In Progress (Will Continue Tomorrow)</option>
+                                    <option value="rescheduled">Rescheduled / Spares Needed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Time Spent on Site</label>
+                                <input type="text" class="form-control" id="actTimeSpent" placeholder="e.g. 3 Hours 30 Mins">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Work Carried Out / Daily Service Activity <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="actNotes" rows="4" required placeholder="Detail the activities carried out (e.g. optical cleaning, sensor calibration, span zero check, 4-20mA loop test, sample probe inspection)..."></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Sensor Parameters & Calibration Readings</label>
+                                <textarea class="form-control font-monospace" id="actReadings" rows="2" placeholder="e.g. Zero: 0.02 mg/m3, Span: 98.4%, Flow: 14.2 m/s, Temperature: 42°C, Pressure: 101.3 kPa"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Spare Parts Replaced / Consumables Used</label>
+                                <input type="text" class="form-control" id="actSpares" placeholder="e.g. Filter element, tubing, O-ring kit">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Customer Sign-off Person & Designation</label>
+                                <input type="text" class="form-control" id="actSignoffPerson" placeholder="e.g. Mr. Murugan (Plant Manager)">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Engineer Remarks / Follow-up Advice</label>
+                                <input type="text" class="form-control" id="actRemarks" placeholder="Next calibration recommended on December 2026. Purge air blower operating normally.">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success fw-bold" id="btnSubmitActivity">
+                            <i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Daily Activity Log
+                        </button>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: RESCHEDULE TASK                                                    -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalRescheduleTask" tabindex="-1" aria-labelledby="modalRescheduleTaskTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <form class="modal-content" id="formReschedule" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalRescheduleTaskTitle">
+                        <i class="fa-solid fa-calendar-xmark text-warning me-2"></i>Reschedule Service Task
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reschedTaskId" value="">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">New Planned Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="reschedNewDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Reason for Rescheduling <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="reschedReason" rows="3" required placeholder="e.g. Plant shutdown, site safety clearance awaited, spare part under transit..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning fw-bold" id="btnConfirmReschedule">
+                        <i class="fa-solid fa-calendar-check me-1"></i> Confirm Reschedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Action completed successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/engineer-portal.js"></script>
+</body>
+</html>

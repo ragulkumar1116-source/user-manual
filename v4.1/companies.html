@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="manuals/logo (2).ico">
+    <title>Company Management & Engineer Responsibility - Aadhav Intech</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .company-row-badge {
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .allocation-company-item {
+            padding: 8px 12px;
+            border: 1px solid var(--ent-border);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            background: var(--ent-surface);
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .allocation-company-item:hover {
+            border-color: var(--ent-accent);
+            background: rgba(37, 99, 235, 0.04);
+        }
+        .allocation-company-item.selected {
+            border-color: var(--ent-accent);
+            background: rgba(37, 99, 235, 0.08);
+        }
+        .inst-row-item {
+            background: var(--ent-bg, #f8fafc);
+            border: 1px dashed var(--ent-border, #cbd5e1);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Backdrop for mobile drawer -->
+        <div id="sidebar-backdrop"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <img src="manuals/logo (2).ico" alt="Logo" class="app-company-logo mb-2">
+                <div class="app-company-name">Aadhav Intech</div>
+            </div>
+            <div class="sidebar-nav-title">Main Menu</div>
+            <div class="list-group list-group-flush">
+                <a href="maindashbod.html" class="list-group-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="companies.html" class="list-group-item active"><i class="fa-solid fa-building-user"></i> Company Management</a>
+                <a href="dispatch.html" class="list-group-item"><i class="fa-solid fa-calendar-days"></i> Daily Service Scheduling</a>
+                <a href="engineers.html" class="list-group-item"><i class="fa-solid fa-user-gear"></i> Engineer Management</a>
+                <a href="engineer-portal.html" class="list-group-item"><i class="fa-solid fa-clipboard-check"></i> Field Engineer Portal</a>
+                <a href="dashboard.html" class="list-group-item"><i class="fa-solid fa-book-open"></i> User Manuals Library</a>
+                <a href="library.html" class="list-group-item"><i class="fa-solid fa-list-check"></i> Instrument Library</a>
+                <a href="add.html" class="list-group-item"><i class="fa-solid fa-plus-circle"></i> Add Instrument</a>
+                <a href="staff.html" class="list-group-item"><i class="fa-solid fa-users-gear"></i> Company Staff</a>
+                <a href="config.html" class="list-group-item"><i class="fa-solid fa-sliders"></i> User Manuals Config</a>
+                <a href="index2.html" class="list-group-item"><i class="fa-solid fa-microchip"></i> MODSCAN</a>
+                <a href="video1.html" class="list-group-item"><i class="fa-solid fa-circle-play"></i> Video Training</a>
+                <a href="online services report/index.html" class="list-group-item"><i class="fa-solid fa-file-invoice"></i> Service Reports</a>
+                <a href="settings.html" class="list-group-item"><i class="fa-solid fa-gear"></i> Company Settings</a>
+                <a href="#" class="list-group-item text-danger btn-logout mt-2 border-top pt-2"><i class="fa-solid fa-arrow-right-from-bracket text-danger"></i> Logout</a>
+            </div>
+            <div class="sidebar-footer">
+                <span>Enterprise Portal</span>
+                <span class="badge badge-soft-primary">v3.0</span>
+            </div>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- Navbar -->
+            <nav class="navbar d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn pill-nav-dark d-lg-none" id="menu-toggle" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="pill-nav-white d-none d-sm-flex">
+                        <i class="fa-regular fa-clock text-primary"></i> 
+                        <span id="liveClock">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="navbar-brand-badge d-none d-md-flex align-items-center gap-2">
+                    <i class="fa-solid fa-building-user text-primary"></i>
+                    <span><span class="app-company-name">Aadhav Intech</span> &mdash; Company & Territory Management</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="pill-nav-soft d-none d-sm-flex">
+                        <span class="status-pulse-dot"></span>
+                        <span class="fw-semibold">Database Sync</span>
+                    </div>
+                    <button class="btn pill-nav-dark" id="themeToggle" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="btn pill-nav-dark text-danger btn-logout" title="Sign Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-lg-inline ms-1 fw-semibold">Logout</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Main Content Container -->
+            <main class="container-fluid flex-grow-1 px-4 py-2" id="main-content">
+                <!-- Page Header with Action Buttons -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="page-title"><i class="fa-solid fa-building text-primary me-2"></i>Company & Engineer Responsibility Management</h2>
+                        <p class="page-subtitle">Register new client companies, manage instruments, and assign dedicated site engineer responsibilities</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="dispatch.html" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-calendar-days me-1"></i> Daily Service Scheduling
+                        </a>
+                        <!-- Option 2: Engineer Bulk Responsibility Allocation -->
+                        <button class="btn btn-outline-primary fw-semibold" id="btnOpenEngineerAllocation">
+                            <i class="fa-solid fa-user-check me-1"></i> Assign Companies to Engineer
+                        </button>
+                        <!-- Option 1: Add New Company -->
+                        <button class="btn btn-primary fw-semibold shadow-sm" id="btnOpenAddCompany">
+                            <i class="fa-solid fa-plus me-1"></i> Add New Company
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="row g-3 mb-4" id="companyStatsRow">
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Total Companies</div>
+                                    <h3 class="fw-bold mb-0 mt-1" id="statTotalCompanies">0</h3>
+                                </div>
+                                <div class="stat-icon-circle bg-primary-subtle text-primary">
+                                    <i class="fa-solid fa-building fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Engineer Assigned</div>
+                                    <h3 class="fw-bold mb-0 mt-1 text-success" id="statAssignedCompanies">0</h3>
+                                </div>
+                                <div class="stat-icon-circle bg-success-subtle text-success">
+                                    <i class="fa-solid fa-user-check fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Unassigned Companies</div>
+                                    <h3 class="fw-bold mb-0 mt-1 text-warning" id="statUnassignedCompanies">0</h3>
+                                </div>
+                                <div class="stat-icon-circle bg-warning-subtle text-warning">
+                                    <i class="fa-solid fa-user-clock fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="card stat-card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small fw-semibold">Active Engineers</div>
+                                    <h3 class="fw-bold mb-0 mt-1 text-info" id="statActiveEngineers">0</h3>
+                                </div>
+                                <div class="stat-icon-circle bg-info-subtle text-info">
+                                    <i class="fa-solid fa-user-gear fa-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Bar -->
+                <div class="card border mb-4">
+                    <div class="card-body p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-12 col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                    <input type="text" class="form-control border-start-0" id="searchCompanyInput" placeholder="Search company, location, contact, phone...">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select class="form-select" id="filterResponsibleEngineer">
+                                    <option value="all">All Engineers (Allocation)</option>
+                                    <option value="assigned">Only Assigned Companies</option>
+                                    <option value="unassigned">Only Unassigned Companies</option>
+                                    <!-- Populated dynamically with engineers -->
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select class="form-select" id="filterCity">
+                                    <option value="all">All Cities / Regions</option>
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2 d-flex gap-2">
+                                <button class="btn btn-outline-secondary w-100" id="btnResetFilters" title="Reset Filters">
+                                    <i class="fa-solid fa-arrows-rotate me-1"></i> Reset
+                                </button>
+                                <button class="btn btn-outline-primary" id="btnRefreshList" title="Refresh from Firebase">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Companies Directory Table -->
+                <div class="card border shadow-sm">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-list-check text-primary me-2"></i>Client Company Directory</h5>
+                            <span class="badge bg-light text-dark border font-monospace" id="badgeTotalCompaniesCount">0 companies</span>
+                        </div>
+                        <div class="small text-muted">
+                            <i class="fa-solid fa-circle-info me-1 text-primary"></i> Newly added companies immediately appear in <strong>Daily Service Scheduling</strong>.
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="companiesTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="min-width: 220px;">Company Name</th>
+                                    <th>Location & Address</th>
+                                    <th>Primary Contact</th>
+                                    <th>Instruments</th>
+                                    <th style="min-width: 180px;">Responsible Engineer</th>
+                                    <th class="text-end" style="width: 140px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="companiesTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <div class="spinner-border text-primary" role="status"></div>
+                                        <div class="mt-2">Loading companies from Firebase...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 1: ADD / EDIT COMPANY (Option 1: Assign Engineer to Company)         -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalCompanyForm" tabindex="-1" aria-labelledby="modalCompanyFormTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form class="modal-content" id="formCompany" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalCompanyFormTitle">
+                        <i class="fa-solid fa-building-circle-check text-primary me-2"></i>Register New Client Company
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editCompanyKey" value="">
+
+                    <!-- Section 1: Core Company Profile -->
+                    <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                        <i class="fa-solid fa-building me-1"></i> 1. Company Information
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label small fw-semibold">Company Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputCompanyName" required placeholder="e.g. Global Calcium Pvt Ltd">
+                            <div class="form-text small">This exact name will appear in scheduling selection lists.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Company ID</label>
+                            <input type="text" class="form-control font-monospace" id="inputCompanyId" placeholder="Auto-generated" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Site Location / City <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputSiteLocation" required placeholder="e.g. Coimbatore, Hosur, Perundurai">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Google Maps / Route URL</label>
+                            <input type="url" class="form-control" id="inputLocationUrl" placeholder="https://maps.google.com/...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Complete Postal Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="inputCompanyAddress" rows="2" required placeholder="Plot number, industrial area, road, pincode..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Contact Person Details -->
+                    <div class="fw-bold text-primary mb-3 pb-1 border-bottom">
+                        <i class="fa-solid fa-address-book me-1"></i> 2. Primary Customer Contact
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Contact Person Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="inputContactPerson" required placeholder="e.g. S. Murugan">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Contact Person Designation</label>
+                            <input type="text" class="form-control" id="inputContactDesignation" placeholder="e.g. Plant Maintenance Manager">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Contact Mobile / Phone <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                                <input type="tel" class="form-control" id="inputContactMobile" required placeholder="e.g. 9842109876">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="inputContactEmail" placeholder="e.g. maintenance@globalcalcium.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Responsible Site Engineer (Option 1) -->
+                    <div class="fw-bold text-primary mb-3 pb-1 border-bottom d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-user-gear me-1"></i> 3. Responsible Site Engineer Allocation</span>
+                        <span class="badge badge-soft-success"><i class="fa-solid fa-check me-1"></i> Dedicated Territory</span>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Responsible Engineer for this Account</label>
+                            <select class="form-select form-select-lg" id="inputResponsibleEngineer">
+                                <option value="">-- No dedicated engineer assigned (Unassigned) --</option>
+                                <!-- Populated dynamically from engineers node -->
+                            </select>
+                            <div class="form-text small">
+                                When selected, this company will automatically be mapped to the engineer's profile, and will auto-populate as the assigned engineer during Daily Service Scheduling.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Instruments at this Site -->
+                    <div class="fw-bold text-primary mb-3 pb-1 border-bottom d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-microchip me-1"></i> 4. Installed Instruments & Equipment</span>
+                        <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2" id="btnAddInstrumentRow">
+                            <i class="fa-solid fa-plus me-1"></i> Add Instrument
+                        </button>
+                    </div>
+                    <div id="instrumentsRowsContainer">
+                        <!-- Dynamic instrument rows -->
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary fw-bold" id="btnSaveCompany">
+                        <i class="fa-solid fa-cloud-arrow-up me-1"></i> Save Company Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 2: BULK ENGINEER RESPONSIBILITY ALLOCATION (Option 2)                -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalEngineerAllocation" tabindex="-1" aria-labelledby="modalEngineerAllocationTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <form class="modal-content" id="formEngineerAllocation" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalEngineerAllocationTitle">
+                        <i class="fa-solid fa-user-check text-primary me-2"></i>Assign Companies to Site Engineer
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Step 1: Select Engineer -->
+                    <div class="mb-4 p-3 bg-light rounded border">
+                        <label class="form-label fw-bold text-dark mb-1">Step 1: Select Field Service Engineer</label>
+                        <select class="form-select form-select-lg mb-2" id="allocSelectEngineer" required>
+                            <option value="">-- Choose engineer to assign companies --</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                        <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span id="allocEngineerDetailsText">Select an engineer to load their current assigned companies.</span>
+                            <span class="badge bg-primary" id="allocCurrentCountBadge">0 Companies Assigned</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Company Selection Checklist -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <label class="form-label fw-bold text-dark mb-0">Step 2: Check Companies Responsible for this Engineer</label>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" id="btnAllocSelectAll">Select All</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" id="btnAllocDeselectAll">Clear Selection</button>
+                            </div>
+                        </div>
+
+                        <!-- Search within checklist -->
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0" id="allocSearchCompaniesInput" placeholder="Filter company checklist by name, city...">
+                        </div>
+
+                        <!-- Checklist Container with Scroll -->
+                        <div class="border rounded p-2 bg-light" style="max-height: 380px; overflow-y: auto;" id="allocCompaniesListContainer">
+                            <div class="text-center py-4 text-muted">
+                                Please select an engineer above to manage company responsibilities.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info py-2 small mb-0">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        When you click <strong>Save & Update Engineer Profile</strong>, this engineer's profile will be updated with all selected companies, and each company's designated engineer will be synchronized in the database.
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success fw-bold" id="btnSaveAllocation">
+                        <i class="fa-solid fa-circle-check me-1"></i> Save & Update Engineer Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 3: VIEW COMPANY PROFILE & INSTRUMENTS DOSSIER                       -->
+    <!-- ========================================================================= -->
+    <div class="modal fade" id="modalViewCompany" tabindex="-1" aria-labelledby="modalViewCompanyTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalViewCompanyTitle">
+                        <i class="fa-solid fa-building text-primary me-2"></i>Company Details & Instruments
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Company Overview Header -->
+                    <div class="p-3 bg-light rounded border mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h4 class="fw-bold mb-1" id="viewCompanyName">-</h4>
+                                <div class="text-muted small"><i class="fa-solid fa-location-dot text-danger me-1"></i> <span id="viewSiteLocation">-</span></div>
+                            </div>
+                            <span class="badge bg-primary font-monospace" id="viewCompanyIdBadge">comp_id</span>
+                        </div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="card p-3 h-100 bg-light border-0">
+                                <h6 class="fw-bold text-secondary mb-2"><i class="fa-solid fa-address-card me-1"></i> Primary Contact</h6>
+                                <div class="small fw-bold text-dark" id="viewContactPerson">-</div>
+                                <div class="small text-muted" id="viewContactDesignation">-</div>
+                                <div class="small mt-2">
+                                    <i class="fa-solid fa-phone text-muted me-1"></i> <span id="viewContactMobile" class="font-monospace">-</span>
+                                </div>
+                                <div class="small mt-1">
+                                    <i class="fa-solid fa-envelope text-muted me-1"></i> <span id="viewContactEmail">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 h-100 bg-light border-0">
+                                <h6 class="fw-bold text-secondary mb-2"><i class="fa-solid fa-user-gear me-1"></i> Responsible Site Engineer</h6>
+                                <div id="viewResponsibleEngineerContainer">
+                                    <span class="badge bg-warning text-dark">Unassigned</span>
+                                </div>
+                                <div class="small text-muted mt-2">
+                                    This engineer handles service callouts and routine AMC maintenance for this client.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card p-3 bg-light border-0">
+                                <h6 class="fw-bold text-secondary mb-1"><i class="fa-solid fa-map-location-dot me-1"></i> Complete Postal Address</h6>
+                                <div class="small text-dark" id="viewCompleteAddress">-</div>
+                                <div class="mt-2" id="viewMapUrlContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instruments Section -->
+                    <div class="card border">
+                        <div class="card-header bg-white fw-bold py-2">
+                            <i class="fa-solid fa-microchip text-primary me-1"></i> Registered Instruments & Analyzers
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-striped mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Instrument Name</th>
+                                            <th>Model Number</th>
+                                            <th>Serial Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="viewInstrumentsTableBody">
+                                        <tr><td colspan="4" class="text-center py-2 text-muted">No instruments recorded</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-outline-danger btn-sm" id="btnDeleteFromCompanyView">
+                            <i class="fa-solid fa-trash-can me-1"></i> Delete Company
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnScheduleFromCompanyView">
+                            <i class="fa-solid fa-calendar-plus me-1"></i> Schedule Service
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnEditFromCompanyView">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Edit Company
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">Action completed successfully.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/companies.js"></script>
+</body>
+</html>
